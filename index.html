@@ -1,35 +1,493 @@
----
-layout: splash
-title: "Semih Guresci"
-excerpt: "Personal website, notes, and links."
-header:
-  actions:
-    - label: "About"
-      url: "/about/"
-    - label: "GitHub"
-      url: "https://github.com/semihguresci"
-intro:
-  - excerpt: "A clean personal site built with Jekyll, GitHub Pages, and the Minimal Mistakes theme."
-feature_row:
-  - title: "About"
-    excerpt: "Learn more about me and what this site is for."
-    url: "/about/"
-    btn_label: "Read more"
-    btn_class: "btn--primary"
-  - title: "GitHub"
-    excerpt: "Browse my repositories, experiments, and ongoing work."
-    url: "https://github.com/semihguresci"
-    btn_label: "Visit GitHub"
-    btn_class: "btn--primary"
-  - title: "Domain"
-    excerpt: "This site is configured for the custom domain semihguresci.com."
-    url: "https://semihguresci.com"
-    btn_label: "Open site"
-    btn_class: "btn--primary"
----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Semih Guresci</title>
+  <meta name="description" content="Personal website of Semih Guresci, a Vulkan and C++ developer based in Luxembourg.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #f3eadb;
+      --paper-strong: #fbf5ec;
+      --ink: #111317;
+      --muted: #4b4f57;
+      --line: rgba(17, 19, 23, 0.14);
+      --forest: #123c3d;
+      --rust: #d2643f;
+      --sand: #d8c2a2;
+      --shadow: 0 32px 80px rgba(30, 17, 10, 0.15);
+    }
 
-Welcome to my personal website. This homepage is the starting point for sharing who I am, what I am building, and where to find my work online.
+    * {
+      box-sizing: border-box;
+    }
 
-{% include feature_row id="intro" type="center" %}
+    html {
+      scroll-behavior: smooth;
+    }
 
-{% include feature_row %}
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Bricolage Grotesque", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 12%, rgba(210, 100, 63, 0.18), transparent 26%),
+        radial-gradient(circle at 85% 10%, rgba(18, 60, 61, 0.2), transparent 24%),
+        linear-gradient(180deg, #efe3d2 0%, #f3eadb 48%, #efe6d8 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.32;
+      background-image:
+        linear-gradient(rgba(17, 19, 23, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(17, 19, 23, 0.035) 1px, transparent 1px);
+      background-size: 34px 34px;
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.85), transparent 92%);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(1240px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 24px 0 44px;
+    }
+
+    .masthead {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 20px;
+      align-items: center;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .brand-mark {
+      font-size: 0.86rem;
+      font-weight: 800;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+    }
+
+    .brand-sub {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 20px;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .nav a {
+      position: relative;
+    }
+
+    .nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -4px;
+      width: 100%;
+      height: 2px;
+      background: var(--rust);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 180ms ease;
+    }
+
+    .nav a:hover::after {
+      transform: scaleX(1);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+      gap: 28px;
+      padding-top: 28px;
+      align-items: stretch;
+    }
+
+    .hero-copy {
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 24px;
+      min-height: 720px;
+    }
+
+    .tagline {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border: 1px solid var(--line);
+      background: rgba(255, 250, 242, 0.74);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      backdrop-filter: blur(12px);
+    }
+
+    .tagline::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--rust);
+      box-shadow: 0 0 0 6px rgba(210, 100, 63, 0.14);
+    }
+
+    .headline {
+      margin: 0;
+      font-size: clamp(4.2rem, 13vw, 9.4rem);
+      line-height: 0.88;
+      letter-spacing: -0.08em;
+      text-transform: uppercase;
+      max-width: 8ch;
+    }
+
+    .headline .muted {
+      color: rgba(17, 19, 23, 0.34);
+      display: block;
+    }
+
+    .summary {
+      margin: 0;
+      max-width: 34rem;
+      color: var(--muted);
+      font-size: 1.08rem;
+      line-height: 1.8;
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 56px;
+      padding: 0 22px;
+      border: 1px solid var(--ink);
+      background: var(--ink);
+      color: var(--paper-strong);
+      font-weight: 700;
+      transition: transform 180ms ease, box-shadow 180ms ease;
+      box-shadow: 0 16px 32px rgba(17, 19, 23, 0.16);
+    }
+
+    .button.secondary {
+      background: transparent;
+      color: var(--ink);
+      border-color: var(--line);
+      box-shadow: none;
+    }
+
+    .button:hover {
+      transform: translateY(-2px);
+    }
+
+    .signal-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0;
+      border: 1px solid var(--line);
+      background: rgba(255, 251, 245, 0.78);
+      box-shadow: var(--shadow);
+    }
+
+    .signal {
+      padding: 22px 20px 20px;
+      border-right: 1px solid var(--line);
+    }
+
+    .signal:last-child {
+      border-right: 0;
+    }
+
+    .signal-label {
+      margin: 0 0 10px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .signal p {
+      margin: 0;
+      font-size: 1.02rem;
+      line-height: 1.5;
+    }
+
+    .hero-art {
+      position: relative;
+      min-height: 720px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(150deg, rgba(18, 60, 61, 0.96), rgba(15, 39, 40, 0.98)),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0));
+      box-shadow: var(--shadow);
+    }
+
+    .hero-art::before {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border: 1px solid rgba(255, 247, 235, 0.14);
+      pointer-events: none;
+    }
+
+    .art-copy {
+      position: absolute;
+      top: 28px;
+      left: 28px;
+      right: 28px;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: flex-start;
+      color: rgba(255, 247, 235, 0.84);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .art-panel {
+      position: absolute;
+      left: 10%;
+      right: 10%;
+      bottom: 12%;
+      aspect-ratio: 0.8 / 1;
+      background: linear-gradient(180deg, rgba(255, 244, 229, 0.18), rgba(255, 244, 229, 0.04));
+      border: 1px solid rgba(255, 247, 235, 0.14);
+      transform: rotate(-6deg);
+      box-shadow: 0 28px 60px rgba(0, 0, 0, 0.24);
+      overflow: hidden;
+    }
+
+    .art-panel::before {
+      content: "";
+      position: absolute;
+      inset: 14px;
+      border: 1px solid rgba(255, 247, 235, 0.18);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .art-panel img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: saturate(0.94) contrast(1.03);
+    }
+
+    .stamp {
+      position: absolute;
+      padding: 12px 14px;
+      background: var(--paper-strong);
+      color: var(--ink);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+    }
+
+    .stamp.top {
+      right: 7%;
+      top: 18%;
+      transform: rotate(8deg);
+    }
+
+    .stamp.bottom {
+      left: 8%;
+      bottom: 8%;
+      background: var(--rust);
+      color: var(--paper-strong);
+      transform: rotate(-5deg);
+    }
+
+    .footer {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 20px;
+      align-items: center;
+      padding-top: 22px;
+      margin-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 12px 18px;
+    }
+
+    @media (max-width: 980px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-copy,
+      .hero-art {
+        min-height: auto;
+      }
+
+      .hero-art {
+        min-height: 640px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .page {
+        width: min(1240px, calc(100% - 20px));
+        padding-top: 18px;
+      }
+
+      .masthead,
+      .footer {
+        grid-template-columns: 1fr;
+      }
+
+      .headline {
+        font-size: clamp(3.2rem, 20vw, 5.6rem);
+      }
+
+      .signal-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .signal {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .signal:last-child {
+        border-bottom: 0;
+      }
+
+      .hero-art {
+        min-height: 520px;
+      }
+
+      .art-panel {
+        left: 12%;
+        right: 12%;
+        bottom: 14%;
+      }
+
+      .footer-links {
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="masthead">
+      <div class="brand">
+        <div class="brand-mark">Semih Guresci</div>
+        <div class="brand-sub">Personal site / semihguresci.com</div>
+      </div>
+      <nav class="nav" aria-label="Primary">
+        <a href="#profile">Profile</a>
+        <a href="#focus">Focus</a>
+        <a href="https://github.com/semihguresci" target="_blank" rel="noreferrer">GitHub</a>
+      </nav>
+    </header>
+
+    <main class="hero">
+      <section class="hero-copy" id="profile">
+        <div class="tagline">Vulkan / C++ / Luxembourg</div>
+
+        <h1 class="headline">
+          Semih
+          <span class="muted">Guresci</span>
+        </h1>
+
+        <p class="summary">
+          I build software with a focus on low-level systems, graphics, and performance.
+          This page is a direct personal landing page rather than a blog theme, with my GitHub profile as the main destination.
+        </p>
+
+        <div>
+          <div class="action-row">
+            <a class="button" href="https://github.com/semihguresci" target="_blank" rel="noreferrer">Open GitHub</a>
+            <a class="button secondary" href="#focus">See focus</a>
+          </div>
+        </div>
+
+        <section class="signal-strip" id="focus" aria-label="Highlights">
+          <div class="signal">
+            <p class="signal-label">Discipline</p>
+            <p>Systems-minded engineering with an emphasis on graphics, tooling, and the details that make software feel solid.</p>
+          </div>
+          <div class="signal">
+            <p class="signal-label">Current profile</p>
+            <p>Vulkan and C++ development are the center of gravity, with a clean web presence built around that identity.</p>
+          </div>
+          <div class="signal">
+            <p class="signal-label">Home base</p>
+            <p>This site is hosted on GitHub Pages and connected to semihguresci.com as a lightweight personal homepage.</p>
+          </div>
+        </section>
+      </section>
+
+      <aside class="hero-art" aria-label="Portrait">
+        <div class="art-copy">
+          <span>Personal website</span>
+          <span>2026</span>
+        </div>
+
+        <div class="stamp top">Based in Luxembourg</div>
+        <div class="art-panel">
+          <img src="https://avatars.githubusercontent.com/u/5203151?v=4" alt="Portrait of Semih Guresci">
+        </div>
+        <div class="stamp bottom">Graphics / Systems / C++</div>
+      </aside>
+    </main>
+
+    <footer class="footer">
+      <div>Semih Guresci. A direct personal homepage with GitHub at the center.</div>
+      <div class="footer-links">
+        <a href="https://github.com/semihguresci" target="_blank" rel="noreferrer">github.com/semihguresci</a>
+        <a href="https://semihguresci.com">semihguresci.com</a>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
