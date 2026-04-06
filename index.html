@@ -10,17 +10,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0f0f10;
-      --bg-soft: #171719;
-      --surface: rgba(24, 24, 26, 0.86);
-      --surface-strong: #1f1f22;
-      --text: #f5f5f5;
-      --muted: #c3c3c8;
-      --line: rgba(255, 255, 255, 0.16);
-      --brand: #ffffff;
-      --brand-strong: #ececec;
-      --accent: #ffffff;
-      --shadow: 0 20px 60px rgba(0, 0, 0, 0.42);
+      --bg: #0b1020;
+      --bg-soft: #111935;
+      --surface: rgba(15, 23, 46, 0.8);
+      --surface-strong: #121d3d;
+      --text: #edf2ff;
+      --muted: #b8c3e6;
+      --line: rgba(187, 201, 241, 0.2);
+      --brand: #7cc6ff;
+      --brand-strong: #38a3ff;
+      --accent: #91f0c3;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.38);
     }
 
     * {
@@ -37,9 +37,9 @@
       font-family: Inter, sans-serif;
       color: var(--text);
       background:
-        radial-gradient(1200px 700px at 92% -12%, rgba(255, 255, 255, 0.06), transparent 60%),
-        radial-gradient(1000px 700px at -15% 10%, rgba(255, 255, 255, 0.04), transparent 56%),
-        linear-gradient(180deg, #0e0e0f 0%, #111113 55%, #161618 100%);
+        radial-gradient(1200px 700px at 95% -10%, rgba(56, 163, 255, 0.15), transparent 60%),
+        radial-gradient(1000px 700px at -15% 10%, rgba(145, 240, 195, 0.12), transparent 55%),
+        linear-gradient(180deg, #0a0f1f 0%, #0b1020 55%, #0e1630 100%);
     }
 
     a {
@@ -65,7 +65,7 @@
       padding: 14px 16px;
       border: 1px solid var(--line);
       border-radius: 16px;
-      background: rgba(13, 13, 14, 0.86);
+      background: rgba(9, 16, 34, 0.86);
       backdrop-filter: blur(12px);
       box-shadow: var(--shadow);
     }
@@ -142,7 +142,7 @@
       height: 8px;
       border-radius: 50%;
       background: var(--accent);
-      box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.14);
+      box-shadow: 0 0 0 6px rgba(145, 240, 195, 0.15);
     }
 
     h1 {
@@ -182,7 +182,7 @@
 
     .button.primary {
       background: linear-gradient(120deg, var(--brand-strong), var(--brand));
-      color: #121214;
+      color: #051123;
     }
 
     .button.ghost {
@@ -199,14 +199,14 @@
       padding: 28px;
       display: grid;
       gap: 16px;
-      background: linear-gradient(180deg, rgba(28, 28, 31, 0.9), rgba(20, 20, 22, 0.97));
+      background: linear-gradient(180deg, rgba(17, 28, 58, 0.86), rgba(14, 22, 48, 0.95));
     }
 
     .meta-card {
       border: 1px solid var(--line);
       border-radius: 14px;
       padding: 14px;
-      background: rgba(14, 14, 16, 0.65);
+      background: rgba(10, 17, 34, 0.6);
     }
 
     .meta-label {
@@ -255,7 +255,7 @@
       border: 1px solid var(--line);
       border-radius: 14px;
       padding: 18px;
-      background: rgba(14, 14, 16, 0.72);
+      background: rgba(9, 16, 34, 0.75);
       min-height: 220px;
       display: flex;
       flex-direction: column;
@@ -287,7 +287,7 @@
 
     .post a {
       margin-top: auto;
-      color: #ffffff;
+      color: var(--brand);
       font-weight: 600;
       font-size: 0.94rem;
     }
@@ -367,25 +367,24 @@
         <div class="brand-sub">Personal Website &amp; Blog</div>
       </div>
       <nav class="nav" aria-label="Primary">
-        <a href="#home">Home</a>
-        <a href="#blog">Blog</a>
-        <a href="#projects">Projects</a>
         <a href="#about">About</a>
+        <a href="#writing">Writing</a>
+        <a href="#now">Now</a>
         <a href="#contact">Contact</a>
       </nav>
     </header>
 
     <main>
-      <section class="hero" id="home">
+      <section class="hero" id="about">
         <article class="panel hero-copy">
           <div class="kicker">Systems Engineering • Graphics • Performance</div>
           <h1>Building reliable software and sharing what works.</h1>
           <p class="lead">
-            I’m Semih Guresci, a Vulkan and C++ engineer. This is my professional home on the web — a place where I publish practical notes on low-level development, document lessons learned, and share the thinking behind robust software.
+            I’m Semih Guresci, a Vulkan and C++ engineer based in Luxembourg. This is my professional home on the web — a place where I publish practical notes on low-level development, document lessons learned, and share the thinking behind robust software.
           </p>
           <div class="action-row">
             <a class="button primary" href="https://github.com/semihguresci" target="_blank" rel="noreferrer">View GitHub</a>
-            <a class="button ghost" href="#blog">Read the blog</a>
+            <a class="button ghost" href="#writing">Read the blog</a>
           </div>
         </article>
 
@@ -405,8 +404,8 @@
         </aside>
       </section>
 
-      <section class="panel section" id="blog">
-        <h2 class="section-title">Blog</h2>
+      <section class="panel section" id="writing">
+        <h2 class="section-title">Featured Writing</h2>
         <p class="section-intro">Use these as starter posts (or replace them with your latest articles). The structure is designed to make your blog feel intentional and editorial rather than just a link list.</p>
 
         <div class="grid posts">
@@ -433,50 +432,22 @@
         </div>
       </section>
 
-      <section class="panel section" id="projects">
-        <h2 class="section-title">Projects</h2>
-        <p class="section-intro">Selected projects that reflect my focus on graphics, systems programming, and software quality.</p>
-
-        <div class="grid posts">
-          <article class="post">
-            <p class="post-tag">Graphics</p>
-            <h3>Renderer Experiment</h3>
-            <p>A Vulkan-based renderer where I explore frame pacing, resource management, and render graph design.</p>
-            <a href="https://github.com/semihguresci" target="_blank" rel="noreferrer">View on GitHub →</a>
-          </article>
-
-          <article class="post">
-            <p class="post-tag">Tooling</p>
-            <h3>Profiling Workflow Toolkit</h3>
-            <p>Utilities and scripts for repeatable performance analysis, helping prioritize impactful optimizations.</p>
-            <a href="https://github.com/semihguresci" target="_blank" rel="noreferrer">View on GitHub →</a>
-          </article>
-
-          <article class="post">
-            <p class="post-tag">Systems</p>
-            <h3>C++ Infrastructure Patterns</h3>
-            <p>Reusable patterns for codebase organization, maintainability, and reliable low-level development practices.</p>
-            <a href="https://github.com/semihguresci" target="_blank" rel="noreferrer">View on GitHub →</a>
-          </article>
-        </div>
-      </section>
-
-      <section class="panel section grid split" id="about">
+      <section class="panel section grid split" id="now">
         <div>
-          <h2 class="section-title">About</h2>
-          <p class="section-intro">I build robust software with a systems mindset and share practical lessons for engineers who care about quality.</p>
+          <h2 class="section-title">Now</h2>
+          <p class="section-intro">A concise snapshot of what I’m currently investing in.</p>
           <ul class="list">
-            <li><strong>Focus:</strong> Vulkan, modern C++, profiling, and engineering processes that scale.</li>
-            <li><strong>Publishing:</strong> Blog posts on architecture, performance, and software craftsmanship.</li>
-            <li><strong>Approach:</strong> Clear thinking, measurable impact, and long-term maintainability.</li>
+            <li><strong>Deep work:</strong> Improving renderer architecture and GPU debugging workflows.</li>
+            <li><strong>Writing:</strong> Publishing practical, implementation-focused blog posts every month.</li>
+            <li><strong>Learning:</strong> Better mental models for graphics pipeline bottlenecks.</li>
           </ul>
         </div>
         <div id="contact">
-          <h2 class="section-title">Contact</h2>
-          <p class="section-intro">If you want to connect professionally, feel free to reach out through the platforms below.</p>
+          <h2 class="section-title">Work With Me</h2>
+          <p class="section-intro">If you’re building serious software and value quality in execution, I’m happy to connect.</p>
           <div class="action-row">
             <a class="button primary" href="https://github.com/semihguresci" target="_blank" rel="noreferrer">GitHub</a>
-            <a class="button ghost" href="https://www.linkedin.com/in/semihguresci/" target="_blank" rel="noreferrer">LinkedIn</a>
+            <a class="button ghost" href="https://semihguresci.com">semihguresci.com</a>
           </div>
         </div>
       </section>
@@ -486,7 +457,6 @@
       <div>© 2026 Semih Guresci. Crafted as a professional personal website and blog hub.</div>
       <div class="footer-links">
         <a href="https://github.com/semihguresci" target="_blank" rel="noreferrer">GitHub</a>
-        <a href="https://www.linkedin.com/in/semihguresci/" target="_blank" rel="noreferrer">LinkedIn</a>
         <a href="https://semihguresci.com">Website</a>
       </div>
     </footer>
