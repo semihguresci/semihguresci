@@ -17,6 +17,8 @@ DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 FRONT_MATTER_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n?(.*)$", re.S)
 HTML_TAG_RE = re.compile(r"<[^>]+>")
 POST_NAME_RE = re.compile(r"^\d{4}-\d{2}-\d{2}-(.+)\.md$")
+INLINE_TOKEN_RE = re.compile(r"!\[([^\]]*)\]\(([^)]+)\)|\[([^\]]+)\]\(([^)]+)\)|\*\*(.+?)\*\*")
+TABLE_SEPARATOR_CELL_RE = re.compile(r"^:?-{3,}:?$")
 
 
 @dataclass
@@ -210,6 +212,30 @@ def truncate_text(text: str, length: int) -> str:
     return f"{clipped}..."
 
 
+def render_inline_segment(text: str) -> str:
+    rendered: list[str] = []
+    last_index = 0
+
+    for match in INLINE_TOKEN_RE.finditer(text):
+        rendered.append(html.escape(text[last_index : match.start()], quote=False))
+
+        image_alt, image_src, link_label, link_href, strong_text = match.groups()
+        if image_src is not None:
+            alt_attr = html.escape(image_alt, quote=True)
+            src_attr = html.escape(image_src.strip(), quote=True)
+            rendered.append(f'<img src="{src_attr}" alt="{alt_attr}" />')
+        elif link_href is not None:
+            href_attr = html.escape(link_href.strip(), quote=True)
+            rendered.append(f'<a href="{href_attr}">{render_inline_segment(link_label)}</a>')
+        else:
+            rendered.append(f"<strong>{render_inline_segment(strong_text)}</strong>")
+
+        last_index = match.end()
+
+    rendered.append(html.escape(text[last_index:], quote=False))
+    return "".join(rendered)
+
+
 def render_inline_markdown(text: str) -> str:
     parts = re.split(r"(`[^`]+`)", text)
     rendered: list[str] = []
@@ -221,11 +247,37 @@ def render_inline_markdown(text: str) -> str:
             rendered.append(f"<code>{html.escape(part[1:-1], quote=False)}</code>")
             continue
 
-        escaped = html.escape(part, quote=False)
-        escaped = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", escaped)
-        rendered.append(escaped)
+        rendered.append(render_inline_segment(part))
 
     return "".join(rendered)
+
+
+def parse_table_row(line: str) -> list[str]:
+    trimmed = line.strip()
+    if trimmed.startswith("|"):
+        trimmed = trimmed[1:]
+    if trimmed.endswith("|"):
+        trimmed = trimmed[:-1]
+    return [cell.strip() for cell in trimmed.split("|")]
+
+
+def parse_table_alignments(separator_line: str) -> list[str | None] | None:
+    alignments: list[str | None] = []
+
+    for cell in parse_table_row(separator_line):
+        compact = cell.replace(" ", "")
+        if not TABLE_SEPARATOR_CELL_RE.fullmatch(compact):
+            return None
+        if compact.startswith(":") and compact.endswith(":"):
+            alignments.append("center")
+        elif compact.endswith(":"):
+            alignments.append("right")
+        elif compact.startswith(":"):
+            alignments.append("left")
+        else:
+            alignments.append(None)
+
+    return alignments
 
 
 def render_markdown(text: str) -> str:
@@ -234,6 +286,7 @@ def render_markdown(text: str) -> str:
     paragraph: list[str] = []
     unordered_items: list[str] = []
     ordered_items: list[str] = []
+    table_lines: list[str] = []
     code_lines: list[str] = []
     code_language = ""
     in_code_block = False
@@ -262,6 +315,54 @@ def render_markdown(text: str) -> str:
         html_lines.append("</ol>")
         ordered_items.clear()
 
+    def flush_table() -> None:
+        if not table_lines:
+            return
+
+        if len(table_lines) < 2:
+            for line in table_lines:
+                html_lines.append(f"<p>{render_inline_markdown(line)}</p>")
+            table_lines.clear()
+            return
+
+        header_cells = parse_table_row(table_lines[0])
+        alignments = parse_table_alignments(table_lines[1])
+
+        if not header_cells or alignments is None or len(alignments) != len(header_cells):
+            for line in table_lines:
+                html_lines.append(f"<p>{render_inline_markdown(line)}</p>")
+            table_lines.clear()
+            return
+
+        html_lines.append("<table>")
+        html_lines.append("  <thead>")
+        html_lines.append("    <tr>")
+        for index, cell in enumerate(header_cells):
+            style_attr = f' style="text-align: {alignments[index]};"' if alignments[index] else ""
+            html_lines.append(f"      <th{style_attr}>{render_inline_markdown(cell)}</th>")
+        html_lines.append("    </tr>")
+        html_lines.append("  </thead>")
+
+        body_rows = table_lines[2:]
+        if body_rows:
+            html_lines.append("  <tbody>")
+            for row in body_rows:
+                cells = parse_table_row(row)
+                if len(cells) < len(header_cells):
+                    cells.extend([""] * (len(header_cells) - len(cells)))
+                elif len(cells) > len(header_cells):
+                    cells = cells[: len(header_cells)]
+
+                html_lines.append("    <tr>")
+                for index, cell in enumerate(cells):
+                    style_attr = f' style="text-align: {alignments[index]};"' if alignments[index] else ""
+                    html_lines.append(f"      <td{style_attr}>{render_inline_markdown(cell)}</td>")
+                html_lines.append("    </tr>")
+            html_lines.append("  </tbody>")
+
+        html_lines.append("</table>")
+        table_lines.clear()
+
     def flush_lists() -> None:
         flush_unordered()
         flush_ordered()
@@ -284,6 +385,7 @@ def render_markdown(text: str) -> str:
         if stripped.startswith("```"):
             flush_paragraph()
             flush_lists()
+            flush_table()
             in_code_block = True
             code_language = stripped[3:].strip()
             continue
@@ -291,12 +393,14 @@ def render_markdown(text: str) -> str:
         if not stripped:
             flush_paragraph()
             flush_lists()
+            flush_table()
             continue
 
         heading_match = re.match(r"^(#{1,6})\s+(.*)$", stripped)
         if heading_match:
             flush_paragraph()
             flush_lists()
+            flush_table()
             level = len(heading_match.group(1))
             html_lines.append(f"<h{level}>{render_inline_markdown(heading_match.group(2))}</h{level}>")
             continue
@@ -305,6 +409,7 @@ def render_markdown(text: str) -> str:
         if unordered_match:
             flush_paragraph()
             flush_ordered()
+            flush_table()
             unordered_items.append(unordered_match.group(1))
             continue
 
@@ -312,13 +417,22 @@ def render_markdown(text: str) -> str:
         if ordered_match:
             flush_paragraph()
             flush_unordered()
+            flush_table()
             ordered_items.append(ordered_match.group(1))
             continue
 
+        if stripped.startswith("|"):
+            flush_paragraph()
+            flush_lists()
+            table_lines.append(stripped)
+            continue
+
+        flush_table()
         paragraph.append(stripped)
 
     flush_paragraph()
     flush_lists()
+    flush_table()
 
     if in_code_block:
         class_attr = f' class="language-{code_language}"' if code_language else ""

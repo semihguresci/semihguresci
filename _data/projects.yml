@@ -3,10 +3,10 @@
   link: "https://github.com/semihguresci/gpu-memory-access-benchmark"
   cta: "View repository"
 
-- title: "Mobile XR Rendering Engine"
-  description: "Rendering architecture for AR headsets including multiview stereo, tile-based rendering, and GPU memory systems."
-  link: "#experience"
-  cta: "See experience"
+- title: "VulkanContainer"
+  description: "Cross-platform Vulkan project covering core Vulkan features on Windows and Linux, built with CMake and vcpkg-based dependency management."
+  link: "https://github.com/semihguresci/VulkanContainer"
+  cta: "View repository"
 
 - title: "GPU Profiling Playground"
   description: "A focused playground for GPU profiling experiments, measurement workflows, and performance analysis across graphics workloads."
