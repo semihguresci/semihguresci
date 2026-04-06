@@ -8,7 +8,7 @@
   link: "#experience"
   cta: "See experience"
 
-- title: "C++ Engineering & Algorithms"
-  description: "Systems-level programming, algorithm implementations, and performance-focused C++ experiments."
-  link: "https://github.com/semihguresci"
-  cta: "Browse GitHub"
+- title: "GPU Profiling Playground"
+  description: "A focused playground for GPU profiling experiments, measurement workflows, and performance analysis across graphics workloads."
+  link: "https://github.com/semihguresci/GpuProfilingPayground"
+  cta: "View repository"
