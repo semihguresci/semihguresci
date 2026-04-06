@@ -3,22 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Semih Guresci</title>
-  <meta name="description" content="Personal website of Semih Guresci, a Vulkan and C++ developer based in Luxembourg.">
+  <title>Semih Guresci | Systems, Graphics, and Writing</title>
+  <meta name="description" content="Personal website and blog of Semih Guresci — systems engineering, Vulkan, C++, and practical writing on performance and software craftsmanship.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --paper: #f3eadb;
-      --paper-strong: #fbf5ec;
-      --ink: #111317;
-      --muted: #4b4f57;
-      --line: rgba(17, 19, 23, 0.14);
-      --forest: #123c3d;
-      --rust: #d2643f;
-      --sand: #d8c2a2;
-      --shadow: 0 32px 80px rgba(30, 17, 10, 0.15);
+      --bg: #0b1020;
+      --bg-soft: #111935;
+      --surface: rgba(15, 23, 46, 0.8);
+      --surface-strong: #121d3d;
+      --text: #edf2ff;
+      --muted: #b8c3e6;
+      --line: rgba(187, 201, 241, 0.2);
+      --brand: #7cc6ff;
+      --brand-strong: #38a3ff;
+      --accent: #91f0c3;
+      --shadow: 0 20px 60px rgba(0, 0, 0, 0.38);
     }
 
     * {
@@ -32,25 +34,12 @@
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: "Bricolage Grotesque", sans-serif;
-      color: var(--ink);
+      font-family: Inter, sans-serif;
+      color: var(--text);
       background:
-        radial-gradient(circle at 12% 12%, rgba(210, 100, 63, 0.18), transparent 26%),
-        radial-gradient(circle at 85% 10%, rgba(18, 60, 61, 0.2), transparent 24%),
-        linear-gradient(180deg, #efe3d2 0%, #f3eadb 48%, #efe6d8 100%);
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0.32;
-      background-image:
-        linear-gradient(rgba(17, 19, 23, 0.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(17, 19, 23, 0.035) 1px, transparent 1px);
-      background-size: 34px 34px;
-      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.85), transparent 92%);
+        radial-gradient(1200px 700px at 95% -10%, rgba(56, 163, 255, 0.15), transparent 60%),
+        radial-gradient(1000px 700px at -15% 10%, rgba(145, 240, 195, 0.12), transparent 55%),
+        linear-gradient(180deg, #0a0f1f 0%, #0b1020 55%, #0e1630 100%);
     }
 
     a {
@@ -59,359 +48,313 @@
     }
 
     .page {
-      width: min(1240px, calc(100% - 32px));
+      width: min(1140px, calc(100% - 36px));
       margin: 0 auto;
-      padding: 24px 0 44px;
+      padding-bottom: 54px;
     }
 
     .masthead {
+      position: sticky;
+      top: 14px;
+      z-index: 20;
       display: grid;
       grid-template-columns: 1fr auto;
-      gap: 20px;
       align-items: center;
-      padding-bottom: 18px;
-      border-bottom: 1px solid var(--line);
+      gap: 18px;
+      margin-top: 14px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(9, 16, 34, 0.86);
+      backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
     }
 
     .brand {
       display: flex;
       align-items: baseline;
-      gap: 14px;
       flex-wrap: wrap;
+      gap: 10px;
     }
 
     .brand-mark {
-      font-size: 0.86rem;
-      font-weight: 800;
-      letter-spacing: 0.24em;
+      font-size: 0.9rem;
+      letter-spacing: 0.18em;
       text-transform: uppercase;
+      font-weight: 800;
     }
 
     .brand-sub {
       color: var(--muted);
-      font-size: 0.92rem;
+      font-size: 0.88rem;
     }
 
     .nav {
       display: flex;
+      gap: 18px;
       flex-wrap: wrap;
-      gap: 12px 20px;
-      font-size: 0.95rem;
+      align-items: center;
+      font-size: 0.92rem;
       font-weight: 600;
+      color: var(--muted);
     }
 
-    .nav a {
-      position: relative;
-    }
-
-    .nav a::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: -4px;
-      width: 100%;
-      height: 2px;
-      background: var(--rust);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 180ms ease;
-    }
-
-    .nav a:hover::after {
-      transform: scaleX(1);
+    .nav a:hover {
+      color: var(--text);
     }
 
     .hero {
+      padding-top: 68px;
       display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+      grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
       gap: 28px;
-      padding-top: 28px;
       align-items: stretch;
     }
 
-    .hero-copy {
-      display: grid;
-      grid-template-rows: auto auto 1fr auto;
-      gap: 24px;
-      min-height: 720px;
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
     }
 
-    .tagline {
+    .hero-copy {
+      padding: 36px;
+    }
+
+    .kicker {
       display: inline-flex;
-      width: fit-content;
       align-items: center;
-      gap: 12px;
-      padding: 10px 14px;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 999px;
       border: 1px solid var(--line);
-      background: rgba(255, 250, 242, 0.74);
+      color: var(--muted);
       font-family: "IBM Plex Mono", monospace;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
-      backdrop-filter: blur(12px);
     }
 
-    .tagline::before {
+    .kicker::before {
       content: "";
-      width: 10px;
-      height: 10px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background: var(--rust);
-      box-shadow: 0 0 0 6px rgba(210, 100, 63, 0.14);
+      background: var(--accent);
+      box-shadow: 0 0 0 6px rgba(145, 240, 195, 0.15);
     }
 
-    .headline {
+    h1 {
+      margin: 20px 0 16px;
+      font-size: clamp(2.2rem, 6vw, 4.7rem);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+      max-width: 12ch;
+    }
+
+    .lead {
       margin: 0;
-      font-size: clamp(4.2rem, 13vw, 9.4rem);
-      line-height: 0.88;
-      letter-spacing: -0.08em;
-      text-transform: uppercase;
-      max-width: 8ch;
-    }
-
-    .headline .muted {
-      color: rgba(17, 19, 23, 0.34);
-      display: block;
-    }
-
-    .summary {
-      margin: 0;
-      max-width: 34rem;
       color: var(--muted);
       font-size: 1.08rem;
-      line-height: 1.8;
+      line-height: 1.75;
+      max-width: 50ch;
     }
 
     .action-row {
+      margin-top: 28px;
       display: flex;
       flex-wrap: wrap;
-      gap: 14px;
-      align-items: center;
+      gap: 12px;
     }
 
     .button {
       display: inline-flex;
-      align-items: center;
       justify-content: center;
-      min-height: 56px;
-      padding: 0 22px;
-      border: 1px solid var(--ink);
-      background: var(--ink);
-      color: var(--paper-strong);
+      align-items: center;
+      min-height: 50px;
+      padding: 0 20px;
+      border-radius: 12px;
+      border: 1px solid transparent;
       font-weight: 700;
-      transition: transform 180ms ease, box-shadow 180ms ease;
-      box-shadow: 0 16px 32px rgba(17, 19, 23, 0.16);
+      transition: transform 180ms ease, background-color 180ms ease;
     }
 
-    .button.secondary {
-      background: transparent;
-      color: var(--ink);
+    .button.primary {
+      background: linear-gradient(120deg, var(--brand-strong), var(--brand));
+      color: #051123;
+    }
+
+    .button.ghost {
       border-color: var(--line);
-      box-shadow: none;
+      color: var(--text);
+      background: transparent;
     }
 
     .button:hover {
       transform: translateY(-2px);
     }
 
-    .signal-strip {
+    .hero-meta {
+      padding: 28px;
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 0;
+      gap: 16px;
+      background: linear-gradient(180deg, rgba(17, 28, 58, 0.86), rgba(14, 22, 48, 0.95));
+    }
+
+    .meta-card {
       border: 1px solid var(--line);
-      background: rgba(255, 251, 245, 0.78);
-      box-shadow: var(--shadow);
+      border-radius: 14px;
+      padding: 14px;
+      background: rgba(10, 17, 34, 0.6);
     }
 
-    .signal {
-      padding: 22px 20px 20px;
-      border-right: 1px solid var(--line);
-    }
-
-    .signal:last-child {
-      border-right: 0;
-    }
-
-    .signal-label {
-      margin: 0 0 10px;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 0.78rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
+    .meta-label {
+      margin: 0 0 8px;
       color: var(--muted);
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
-    .signal p {
+    .meta-card p {
       margin: 0;
-      font-size: 1.02rem;
+      font-size: 1rem;
       line-height: 1.5;
     }
 
-    .hero-art {
-      position: relative;
-      min-height: 720px;
-      overflow: hidden;
+    .section {
+      margin-top: 30px;
+      padding: 30px;
+    }
+
+    .section-title {
+      margin: 0 0 16px;
+      font-size: clamp(1.35rem, 2vw, 1.8rem);
+      letter-spacing: -0.02em;
+    }
+
+    .section-intro {
+      margin: 0 0 20px;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 64ch;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .posts {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .post {
       border: 1px solid var(--line);
-      background:
-        linear-gradient(150deg, rgba(18, 60, 61, 0.96), rgba(15, 39, 40, 0.98)),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0));
-      box-shadow: var(--shadow);
-    }
-
-    .hero-art::before {
-      content: "";
-      position: absolute;
-      inset: 18px;
-      border: 1px solid rgba(255, 247, 235, 0.14);
-      pointer-events: none;
-    }
-
-    .art-copy {
-      position: absolute;
-      top: 28px;
-      left: 28px;
-      right: 28px;
+      border-radius: 14px;
+      padding: 18px;
+      background: rgba(9, 16, 34, 0.75);
+      min-height: 220px;
       display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      align-items: flex-start;
-      color: rgba(255, 247, 235, 0.84);
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .post-tag {
+      margin: 0;
       font-family: "IBM Plex Mono", monospace;
-      font-size: 0.82rem;
-      letter-spacing: 0.08em;
+      font-size: 0.72rem;
+      color: var(--accent);
       text-transform: uppercase;
+      letter-spacing: 0.07em;
     }
 
-    .art-panel {
-      position: absolute;
-      left: 10%;
-      right: 10%;
-      bottom: 12%;
-      aspect-ratio: 0.8 / 1;
-      background: linear-gradient(180deg, rgba(255, 244, 229, 0.18), rgba(255, 244, 229, 0.04));
-      border: 1px solid rgba(255, 247, 235, 0.14);
-      transform: rotate(-6deg);
-      box-shadow: 0 28px 60px rgba(0, 0, 0, 0.24);
-      overflow: hidden;
+    .post h3 {
+      margin: 0;
+      font-size: 1.08rem;
+      line-height: 1.4;
+      letter-spacing: -0.01em;
     }
 
-    .art-panel::before {
-      content: "";
-      position: absolute;
-      inset: 14px;
-      border: 1px solid rgba(255, 247, 235, 0.18);
-      z-index: 1;
-      pointer-events: none;
+    .post p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.65;
+      font-size: 0.97rem;
     }
 
-    .art-panel img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      filter: saturate(0.94) contrast(1.03);
+    .post a {
+      margin-top: auto;
+      color: var(--brand);
+      font-weight: 600;
+      font-size: 0.94rem;
     }
 
-    .stamp {
-      position: absolute;
-      padding: 12px 14px;
-      background: var(--paper-strong);
-      color: var(--ink);
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 0.76rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+    .split {
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 16px;
     }
 
-    .stamp.top {
-      right: 7%;
-      top: 18%;
-      transform: rotate(8deg);
+    .list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.9;
     }
 
-    .stamp.bottom {
-      left: 8%;
-      bottom: 8%;
-      background: var(--rust);
-      color: var(--paper-strong);
-      transform: rotate(-5deg);
+    .list strong {
+      color: var(--text);
     }
 
     .footer {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: 20px;
-      align-items: center;
-      padding-top: 22px;
-      margin-top: 18px;
+      margin-top: 30px;
+      padding: 22px 4px 0;
       border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
       color: var(--muted);
       font-size: 0.92rem;
+      flex-wrap: wrap;
     }
 
     .footer-links {
       display: flex;
+      gap: 16px;
       flex-wrap: wrap;
-      justify-content: flex-end;
-      gap: 12px 18px;
     }
 
     @media (max-width: 980px) {
-      .hero {
+      .hero,
+      .split,
+      .posts {
         grid-template-columns: 1fr;
       }
 
-      .hero-copy,
-      .hero-art {
-        min-height: auto;
+      .hero {
+        padding-top: 26px;
       }
 
-      .hero-art {
-        min-height: 640px;
+      .masthead {
+        position: static;
       }
     }
 
-    @media (max-width: 720px) {
+    @media (max-width: 680px) {
       .page {
-        width: min(1240px, calc(100% - 20px));
-        padding-top: 18px;
+        width: min(1140px, calc(100% - 20px));
       }
 
-      .masthead,
-      .footer {
-        grid-template-columns: 1fr;
+      .hero-copy,
+      .hero-meta,
+      .section {
+        padding: 20px;
       }
 
-      .headline {
-        font-size: clamp(3.2rem, 20vw, 5.6rem);
-      }
-
-      .signal-strip {
-        grid-template-columns: 1fr;
-      }
-
-      .signal {
-        border-right: 0;
-        border-bottom: 1px solid var(--line);
-      }
-
-      .signal:last-child {
-        border-bottom: 0;
-      }
-
-      .hero-art {
-        min-height: 520px;
-      }
-
-      .art-panel {
-        left: 12%;
-        right: 12%;
-        bottom: 14%;
-      }
-
-      .footer-links {
-        justify-content: flex-start;
+      .nav {
+        gap: 12px;
       }
     }
   </style>
@@ -421,71 +364,100 @@
     <header class="masthead">
       <div class="brand">
         <div class="brand-mark">Semih Guresci</div>
-        <div class="brand-sub">Personal site / semihguresci.com</div>
+        <div class="brand-sub">Personal Website &amp; Blog</div>
       </div>
       <nav class="nav" aria-label="Primary">
-        <a href="#profile">Profile</a>
-        <a href="#focus">Focus</a>
-        <a href="https://github.com/semihguresci" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="#about">About</a>
+        <a href="#writing">Writing</a>
+        <a href="#now">Now</a>
+        <a href="#contact">Contact</a>
       </nav>
     </header>
 
-    <main class="hero">
-      <section class="hero-copy" id="profile">
-        <div class="tagline">Vulkan / C++ / Luxembourg</div>
-
-        <h1 class="headline">
-          Semih
-          <span class="muted">Guresci</span>
-        </h1>
-
-        <p class="summary">
-          I build software with a focus on low-level systems, graphics, and performance.
-          This page is a direct personal landing page rather than a blog theme, with my GitHub profile as the main destination.
-        </p>
-
-        <div>
+    <main>
+      <section class="hero" id="about">
+        <article class="panel hero-copy">
+          <div class="kicker">Systems Engineering • Graphics • Performance</div>
+          <h1>Building reliable software and sharing what works.</h1>
+          <p class="lead">
+            I’m Semih Guresci, a Vulkan and C++ engineer based in Luxembourg. This is my professional home on the web — a place where I publish practical notes on low-level development, document lessons learned, and share the thinking behind robust software.
+          </p>
           <div class="action-row">
-            <a class="button" href="https://github.com/semihguresci" target="_blank" rel="noreferrer">Open GitHub</a>
-            <a class="button secondary" href="#focus">See focus</a>
+            <a class="button primary" href="https://github.com/semihguresci" target="_blank" rel="noreferrer">View GitHub</a>
+            <a class="button ghost" href="#writing">Read the blog</a>
           </div>
-        </div>
+        </article>
 
-        <section class="signal-strip" id="focus" aria-label="Highlights">
-          <div class="signal">
-            <p class="signal-label">Discipline</p>
-            <p>Systems-minded engineering with an emphasis on graphics, tooling, and the details that make software feel solid.</p>
+        <aside class="panel hero-meta" aria-label="Professional profile">
+          <div class="meta-card">
+            <p class="meta-label">Primary Focus</p>
+            <p>Vulkan, modern C++, performance tooling, and engineering discipline for production-grade software.</p>
           </div>
-          <div class="signal">
-            <p class="signal-label">Current profile</p>
-            <p>Vulkan and C++ development are the center of gravity, with a clean web presence built around that identity.</p>
+          <div class="meta-card">
+            <p class="meta-label">What You’ll Find Here</p>
+            <p>Technical essays, architecture notes, writing on process, and high-signal updates from active projects.</p>
           </div>
-          <div class="signal">
-            <p class="signal-label">Home base</p>
-            <p>This site is hosted on GitHub Pages and connected to semihguresci.com as a lightweight personal homepage.</p>
+          <div class="meta-card">
+            <p class="meta-label">Long-term Goal</p>
+            <p>Build a body of work that is useful to other developers and representative of thoughtful craftsmanship.</p>
           </div>
-        </section>
+        </aside>
       </section>
 
-      <aside class="hero-art" aria-label="Portrait">
-        <div class="art-copy">
-          <span>Personal website</span>
-          <span>2026</span>
-        </div>
+      <section class="panel section" id="writing">
+        <h2 class="section-title">Featured Writing</h2>
+        <p class="section-intro">Use these as starter posts (or replace them with your latest articles). The structure is designed to make your blog feel intentional and editorial rather than just a link list.</p>
 
-        <div class="stamp top">Based in Luxembourg</div>
-        <div class="art-panel">
-          <img src="https://avatars.githubusercontent.com/u/5203151?v=4" alt="Portrait of Semih Guresci">
+        <div class="grid posts">
+          <article class="post">
+            <p class="post-tag">Vulkan / Architecture</p>
+            <h3>Designing a Frame Graph That Stays Understandable at Scale</h3>
+            <p>A practical guide to balancing flexibility and clarity in render graph design, with trade-offs from real-world constraints.</p>
+            <a href="#">Read article →</a>
+          </article>
+
+          <article class="post">
+            <p class="post-tag">C++ / Performance</p>
+            <h3>Five Profiling Habits That Prevent Premature Optimization</h3>
+            <p>How to establish repeatable profiling workflows and make performance decisions based on evidence, not intuition.</p>
+            <a href="#">Read article →</a>
+          </article>
+
+          <article class="post">
+            <p class="post-tag">Engineering / Career</p>
+            <h3>From Personal Projects to Professional Reputation</h3>
+            <p>Turning side projects into a coherent portfolio that communicates your standards, strengths, and long-term direction.</p>
+            <a href="#">Read article →</a>
+          </article>
         </div>
-        <div class="stamp bottom">Graphics / Systems / C++</div>
-      </aside>
+      </section>
+
+      <section class="panel section grid split" id="now">
+        <div>
+          <h2 class="section-title">Now</h2>
+          <p class="section-intro">A concise snapshot of what I’m currently investing in.</p>
+          <ul class="list">
+            <li><strong>Deep work:</strong> Improving renderer architecture and GPU debugging workflows.</li>
+            <li><strong>Writing:</strong> Publishing practical, implementation-focused blog posts every month.</li>
+            <li><strong>Learning:</strong> Better mental models for graphics pipeline bottlenecks.</li>
+          </ul>
+        </div>
+        <div id="contact">
+          <h2 class="section-title">Work With Me</h2>
+          <p class="section-intro">If you’re building serious software and value quality in execution, I’m happy to connect.</p>
+          <div class="action-row">
+            <a class="button primary" href="https://github.com/semihguresci" target="_blank" rel="noreferrer">GitHub</a>
+            <a class="button ghost" href="https://semihguresci.com">semihguresci.com</a>
+          </div>
+        </div>
+      </section>
     </main>
 
     <footer class="footer">
-      <div>Semih Guresci. A direct personal homepage with GitHub at the center.</div>
+      <div>© 2026 Semih Guresci. Crafted as a professional personal website and blog hub.</div>
       <div class="footer-links">
-        <a href="https://github.com/semihguresci" target="_blank" rel="noreferrer">github.com/semihguresci</a>
-        <a href="https://semihguresci.com">semihguresci.com</a>
+        <a href="https://github.com/semihguresci" target="_blank" rel="noreferrer">GitHub</a>
+        <a href="https://semihguresci.com">Website</a>
       </div>
     </footer>
   </div>
