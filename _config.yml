@@ -1,26 +1,35 @@
-title: "Your Site Title"
+# Site Settings
+title: My Site
+email: your-email@example.com
+description: >-
+  Your site description here
+url: "https://semihguresci.github.io"
+baseurl: ""
 
-# Minimal Mistakes theme settings
-# For more options visit: https://mmistakes.github.io/minimal-mistakes/docs/configuration/ 
-theme: "minimal-mistakes"
+# Theme
+theme: minimal-mistakes-jekyll
+minimal_mistakes_skin: "default"
 
-# Author information
-
+# Site Author
 author:
-  name: "Your Name"
-  email: "your-email@example.com"
+  name   : "Your Name"
+  avatar : "/assets/images/bio-photo.jpg"
+  bio    : "Your bio here"
+  links:
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/semihguresci"
 
 # Build settings
-
+markdown: kramdown
 plugins:
+  - jekyll-paginate
+  - jekyll-sitemap
+  - jekyll-gist
   - jekyll-feed
-  - jekyll-seo-tag
+  - jemoji
+  - jekyll-include-cache
 
-exclude:
-  - Gemfile
-  - Gemfile.lock
-  - node_modules
-  - vendor
-
-# Other configurations
-# Add additional configurations as needed.
+# Pagination
+paginate: 5
+paginate_path: /page:num/
