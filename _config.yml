@@ -1,0 +1,26 @@
+title: "Your Site Title"
+
+# Minimal Mistakes theme settings
+# For more options visit: https://mmistakes.github.io/minimal-mistakes/docs/configuration/ 
+theme: "minimal-mistakes"
+
+# Author information
+
+author:
+  name: "Your Name"
+  email: "your-email@example.com"
+
+# Build settings
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+
+# Other configurations
+# Add additional configurations as needed.
