@@ -1,0 +1,14 @@
+- title: "GPU Memory Access & Cache Behavior Benchmark Suite"
+  description: "Experiments comparing AoS vs SoA, coalesced vs strided access, and GPU memory layouts to analyze cache behavior and bandwidth."
+  link: "https://github.com/semihguresci/gpu-memory-access-benchmark"
+  cta: "View repository"
+
+- title: "Mobile XR Rendering Engine"
+  description: "Rendering architecture for AR headsets including multiview stereo, tile-based rendering, and GPU memory systems."
+  link: "#experience"
+  cta: "See experience"
+
+- title: "C++ Engineering & Algorithms"
+  description: "Systems-level programming, algorithm implementations, and performance-focused C++ experiments."
+  link: "https://github.com/semihguresci"
+  cta: "Browse GitHub"

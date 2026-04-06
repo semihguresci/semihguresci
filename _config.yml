@@ -1,6 +1,17 @@
-title: Semih Güreşçi
+title: Semih G&uuml;re&#351;&ccedil;i
 email: semih.guresci@gmail.com
 description: GPU Rendering & Performance Engineer specializing in C++, Vulkan, mobile XR, and real-time graphics optimization.
 baseurl: ""
 url: ""
 markdown: kramdown
+permalink: /blog/:title/
+timezone: Europe/Luxembourg
+
+collections: {}
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post

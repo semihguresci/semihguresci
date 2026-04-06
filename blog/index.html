@@ -1,0 +1,45 @@
+---
+layout: default
+title: Blog
+---
+
+<section class="blog-section">
+  <div class="container">
+    <h1 class="section-title">Blog</h1>
+    <p class="section-description">Thoughts on graphics programming, performance optimization, and technology.</p>
+
+    <div class="blog-posts">
+      {% for post in site.posts %}
+      <article class="blog-post-card">
+        <header class="post-card-header">
+          <h2 class="post-card-title">
+            <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+          </h2>
+          <div class="post-card-meta">
+            <time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: "%B %d, %Y" }}</time>
+            {% if post.tags %}
+              <span class="post-card-tags">
+                {% for tag in post.tags %}
+                  <span class="tag">{{ tag }}</span>
+                {% endfor %}
+              </span>
+            {% endif %}
+          </div>
+        </header>
+
+        <div class="post-card-excerpt">
+          {% if post.excerpt %}
+            {{ post.excerpt | strip_html | truncate: 200 }}
+          {% else %}
+            {{ post.content | strip_html | truncate: 200 }}
+          {% endif %}
+        </div>
+
+        <footer class="post-card-footer">
+          <a href="{{ post.url | relative_url }}" class="read-more">Read more &rarr;</a>
+        </footer>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
