@@ -3,24 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Semih Guresci | Systems, Graphics, and Writing</title>
-  <meta name="description" content="Personal website and blog of Semih Guresci — systems engineering, Vulkan, C++, and practical writing on performance and software craftsmanship.">
+  <title>Semih Guresci</title>
+  <meta name="description" content="Personal website of Semih Guresci, focused on systems engineering, graphics, and software development.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0b1020;
-      --bg-soft: #111935;
-      --surface: rgba(15, 23, 46, 0.8);
-      --surface-strong: #121d3d;
-      --text: #edf2ff;
-      --muted: #b8c3e6;
-      --line: rgba(187, 201, 241, 0.2);
-      --brand: #7cc6ff;
-      --brand-strong: #38a3ff;
-      --accent: #91f0c3;
-      --shadow: 0 20px 60px rgba(0, 0, 0, 0.38);
+      --bg: #f5f7fb;
+      --surface: rgba(255, 255, 255, 0.86);
+      --surface-strong: #ffffff;
+      --text: #122033;
+      --muted: #58657a;
+      --line: rgba(18, 32, 51, 0.1);
+      --brand: #114b8c;
+      --brand-soft: rgba(17, 75, 140, 0.08);
+      --accent: #d99b45;
+      --shadow: 0 24px 60px rgba(17, 35, 61, 0.09);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --container: 1180px;
     }
 
     * {
@@ -34,12 +37,24 @@
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: Inter, sans-serif;
+      font-family: "Manrope", sans-serif;
       color: var(--text);
       background:
-        radial-gradient(1200px 700px at 95% -10%, rgba(56, 163, 255, 0.15), transparent 60%),
-        radial-gradient(1000px 700px at -15% 10%, rgba(145, 240, 195, 0.12), transparent 55%),
-        linear-gradient(180deg, #0a0f1f 0%, #0b1020 55%, #0e1630 100%);
+        radial-gradient(circle at top left, rgba(17, 75, 140, 0.08), transparent 32%),
+        radial-gradient(circle at top right, rgba(217, 155, 69, 0.08), transparent 22%),
+        linear-gradient(180deg, #f8f9fc 0%, #f3f6fa 45%, #edf2f8 100%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(18, 32, 51, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(18, 32, 51, 0.03) 1px, transparent 1px);
+      background-size: 36px 36px;
+      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.38), transparent 92%);
     }
 
     a {
@@ -48,55 +63,50 @@
     }
 
     .page {
-      width: min(1140px, calc(100% - 36px));
+      width: min(var(--container), calc(100% - 32px));
       margin: 0 auto;
-      padding-bottom: 54px;
+      padding: 22px 0 48px;
     }
 
-    .masthead {
-      position: sticky;
-      top: 14px;
-      z-index: 20;
-      display: grid;
-      grid-template-columns: 1fr auto;
+    .topbar {
+      display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 18px;
-      margin-top: 14px;
-      padding: 14px 16px;
+      padding: 16px 18px;
       border: 1px solid var(--line);
-      border-radius: 16px;
-      background: rgba(9, 16, 34, 0.86);
-      backdrop-filter: blur(12px);
-      box-shadow: var(--shadow);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 10px 30px rgba(17, 35, 61, 0.05);
     }
 
     .brand {
       display: flex;
-      align-items: baseline;
-      flex-wrap: wrap;
-      gap: 10px;
+      flex-direction: column;
+      gap: 2px;
     }
 
     .brand-mark {
-      font-size: 0.9rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
+      font-size: 0.88rem;
       font-weight: 800;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
     }
 
     .brand-sub {
       color: var(--muted);
-      font-size: 0.88rem;
+      font-size: 0.9rem;
     }
 
     .nav {
       display: flex;
-      gap: 18px;
-      flex-wrap: wrap;
       align-items: center;
-      font-size: 0.92rem;
-      font-weight: 600;
+      gap: 20px;
+      flex-wrap: wrap;
       color: var(--muted);
+      font-size: 0.95rem;
+      font-weight: 600;
     }
 
     .nav a:hover {
@@ -104,360 +114,362 @@
     }
 
     .hero {
-      padding-top: 68px;
       display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
-      gap: 28px;
+      grid-template-columns: minmax(0, 1.15fr) 360px;
+      gap: 26px;
+      margin-top: 26px;
       align-items: stretch;
     }
 
-    .panel {
+    .card {
       border: 1px solid var(--line);
-      border-radius: 22px;
+      border-radius: var(--radius-xl);
       background: var(--surface);
       box-shadow: var(--shadow);
+      backdrop-filter: blur(16px);
     }
 
     .hero-copy {
-      padding: 36px;
+      padding: 40px;
+      display: grid;
+      gap: 26px;
+      min-height: 620px;
     }
 
-    .kicker {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 12px;
+    .eyebrow {
+      width: fit-content;
+      padding: 10px 14px;
       border-radius: 999px;
-      border: 1px solid var(--line);
-      color: var(--muted);
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 0.75rem;
+      background: var(--brand-soft);
+      color: var(--brand);
+      font-size: 0.78rem;
+      font-weight: 800;
       letter-spacing: 0.08em;
       text-transform: uppercase;
     }
 
-    .kicker::before {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 0 6px rgba(145, 240, 195, 0.15);
-    }
-
-    h1 {
-      margin: 20px 0 16px;
-      font-size: clamp(2.2rem, 6vw, 4.7rem);
-      line-height: 1.02;
-      letter-spacing: -0.04em;
-      max-width: 12ch;
-    }
-
-    .lead {
+    .headline {
       margin: 0;
+      font-family: "Source Serif 4", serif;
+      font-size: clamp(3rem, 7vw, 5.8rem);
+      line-height: 0.95;
+      letter-spacing: -0.05em;
+      max-width: 10ch;
+    }
+
+    .lede {
+      margin: 0;
+      max-width: 60ch;
       color: var(--muted);
       font-size: 1.08rem;
-      line-height: 1.75;
-      max-width: 50ch;
+      line-height: 1.8;
     }
 
-    .action-row {
-      margin-top: 28px;
+    .actions {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 14px;
     }
 
     .button {
       display: inline-flex;
-      justify-content: center;
       align-items: center;
-      min-height: 50px;
-      padding: 0 20px;
-      border-radius: 12px;
-      border: 1px solid transparent;
+      justify-content: center;
+      min-height: 52px;
+      padding: 0 22px;
+      border-radius: 999px;
       font-weight: 700;
-      transition: transform 180ms ease, background-color 180ms ease;
+      transition: transform 160ms ease, box-shadow 160ms ease;
     }
 
     .button.primary {
-      background: linear-gradient(120deg, var(--brand-strong), var(--brand));
-      color: #051123;
+      background: var(--text);
+      color: #f6f8fc;
+      box-shadow: 0 16px 32px rgba(18, 32, 51, 0.16);
     }
 
-    .button.ghost {
-      border-color: var(--line);
+    .button.secondary {
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid var(--line);
       color: var(--text);
-      background: transparent;
     }
 
     .button:hover {
       transform: translateY(-2px);
     }
 
-    .hero-meta {
-      padding: 28px;
+    .highlights {
       display: grid;
-      gap: 16px;
-      background: linear-gradient(180deg, rgba(17, 28, 58, 0.86), rgba(14, 22, 48, 0.95));
-    }
-
-    .meta-card {
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 14px;
-      background: rgba(10, 17, 34, 0.6);
-    }
-
-    .meta-label {
-      margin: 0 0 8px;
-      color: var(--muted);
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 0.72rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .meta-card p {
-      margin: 0;
-      font-size: 1rem;
-      line-height: 1.5;
-    }
-
-    .section {
-      margin-top: 30px;
-      padding: 30px;
-    }
-
-    .section-title {
-      margin: 0 0 16px;
-      font-size: clamp(1.35rem, 2vw, 1.8rem);
-      letter-spacing: -0.02em;
-    }
-
-    .section-intro {
-      margin: 0 0 20px;
-      color: var(--muted);
-      line-height: 1.7;
-      max-width: 64ch;
-    }
-
-    .grid {
-      display: grid;
-      gap: 16px;
-    }
-
-    .posts {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
     }
 
-    .post {
-      border: 1px solid var(--line);
-      border-radius: 14px;
+    .highlight {
       padding: 18px;
-      background: rgba(9, 16, 34, 0.75);
-      min-height: 220px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.66);
     }
 
-    .post-tag {
-      margin: 0;
-      font-family: "IBM Plex Mono", monospace;
-      font-size: 0.72rem;
-      color: var(--accent);
+    .highlight-label {
+      margin: 0 0 10px;
+      color: var(--brand);
+      font-size: 0.76rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      letter-spacing: 0.07em;
     }
 
-    .post h3 {
-      margin: 0;
-      font-size: 1.08rem;
-      line-height: 1.4;
-      letter-spacing: -0.01em;
-    }
-
-    .post p {
+    .highlight p {
       margin: 0;
       color: var(--muted);
       line-height: 1.65;
-      font-size: 0.97rem;
+      font-size: 0.96rem;
     }
 
-    .post a {
-      margin-top: auto;
-      color: var(--brand);
-      font-weight: 600;
-      font-size: 0.94rem;
+    .profile {
+      padding: 22px;
+      display: grid;
+      gap: 18px;
+      align-content: start;
     }
 
-    .split {
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 16px;
+    .portrait {
+      position: relative;
+      aspect-ratio: 0.92 / 1.08;
+      overflow: hidden;
+      border-radius: 22px;
+      background: linear-gradient(160deg, #dfe7f4, #f8fbff);
+      border: 1px solid var(--line);
     }
 
-    .list {
+    .portrait img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .profile-name {
       margin: 0;
-      padding-left: 18px;
-      color: var(--muted);
-      line-height: 1.9;
+      font-size: 1.5rem;
+      letter-spacing: -0.03em;
     }
 
-    .list strong {
-      color: var(--text);
+    .profile-role {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .profile-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    .profile-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .profile-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 6px rgba(217, 155, 69, 0.12);
+      flex: none;
+    }
+
+    .section-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 22px;
+    }
+
+    .section-card {
+      padding: 24px;
+    }
+
+    .section-card h2 {
+      margin: 0 0 12px;
+      font-size: 1.15rem;
+      line-height: 1.35;
+    }
+
+    .section-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .section-label {
+      margin: 0 0 12px;
+      color: var(--brand);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
     }
 
     .footer {
-      margin-top: 30px;
-      padding: 22px 4px 0;
+      margin-top: 26px;
+      padding: 18px 4px 0;
       border-top: 1px solid var(--line);
       display: flex;
       justify-content: space-between;
       gap: 20px;
-      color: var(--muted);
-      font-size: 0.92rem;
       flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 0.93rem;
     }
 
     .footer-links {
       display: flex;
-      gap: 16px;
+      gap: 14px 18px;
       flex-wrap: wrap;
     }
 
     @media (max-width: 980px) {
-      .hero,
-      .split,
-      .posts {
+      .hero {
         grid-template-columns: 1fr;
       }
 
-      .hero {
-        padding-top: 26px;
+      .profile {
+        max-width: 420px;
       }
 
-      .masthead {
-        position: static;
+      .highlights,
+      .section-grid {
+        grid-template-columns: 1fr;
       }
     }
 
-    @media (max-width: 680px) {
+    @media (max-width: 720px) {
       .page {
-        width: min(1140px, calc(100% - 20px));
+        width: min(var(--container), calc(100% - 20px));
+        padding-top: 16px;
       }
 
-      .hero-copy,
-      .hero-meta,
-      .section {
-        padding: 20px;
+      .topbar {
+        border-radius: 24px;
+        align-items: flex-start;
+        flex-direction: column;
       }
 
       .nav {
-        gap: 12px;
+        gap: 12px 16px;
+      }
+
+      .hero-copy,
+      .profile,
+      .section-card {
+        padding: 22px;
+      }
+
+      .headline {
+        font-size: clamp(2.6rem, 14vw, 4.2rem);
       }
     }
   </style>
 </head>
 <body>
   <div class="page">
-    <header class="masthead">
+    <header class="topbar">
       <div class="brand">
         <div class="brand-mark">Semih Guresci</div>
-        <div class="brand-sub">Personal Website &amp; Blog</div>
+        <div class="brand-sub">Personal website</div>
       </div>
       <nav class="nav" aria-label="Primary">
         <a href="#about">About</a>
-        <a href="#writing">Writing</a>
-        <a href="#now">Now</a>
+        <a href="#focus">Focus</a>
         <a href="#contact">Contact</a>
+        <a href="https://github.com/semihguresci" target="_blank" rel="noreferrer">GitHub</a>
       </nav>
     </header>
 
     <main>
       <section class="hero" id="about">
-        <article class="panel hero-copy">
-          <div class="kicker">Systems Engineering • Graphics • Performance</div>
-          <h1>Building reliable software and sharing what works.</h1>
-          <p class="lead">
-            I’m Semih Guresci, a Vulkan and C++ engineer based in Luxembourg. This is my professional home on the web — a place where I publish practical notes on low-level development, document lessons learned, and share the thinking behind robust software.
+        <article class="card hero-copy">
+          <div class="eyebrow">Systems and graphics</div>
+
+          <h1 class="headline">Professional software, low-level thinking, clear execution.</h1>
+
+          <p class="lede">
+            I am Semih Guresci. This site is a straightforward professional homepage built around software engineering,
+            with an emphasis on systems work, graphics, and technical depth. It is designed to be clear, credible, and easy to navigate.
           </p>
-          <div class="action-row">
+
+          <div class="actions">
             <a class="button primary" href="https://github.com/semihguresci" target="_blank" rel="noreferrer">View GitHub</a>
-            <a class="button ghost" href="#writing">Read the blog</a>
+            <a class="button secondary" href="https://semihguresci.com">Open semihguresci.com</a>
+          </div>
+
+          <div class="highlights" id="focus">
+            <div class="highlight">
+              <p class="highlight-label">Focus</p>
+              <p>Engineering work centered on systems, graphics, and software that rewards precision.</p>
+            </div>
+            <div class="highlight">
+              <p class="highlight-label">Approach</p>
+              <p>Clear architecture, practical implementation, and attention to the details that hold up in real use.</p>
+            </div>
+            <div class="highlight">
+              <p class="highlight-label">Presence</p>
+              <p>A direct personal site that supports a professional profile instead of looking like a generic theme.</p>
+            </div>
           </div>
         </article>
 
-        <aside class="panel hero-meta" aria-label="Professional profile">
-          <div class="meta-card">
-            <p class="meta-label">Primary Focus</p>
-            <p>Vulkan, modern C++, performance tooling, and engineering discipline for production-grade software.</p>
+        <aside class="card profile" aria-label="Profile">
+          <div class="portrait">
+            <img src="https://github.com/semihguresci.png?size=720" alt="Portrait of Semih Guresci">
           </div>
-          <div class="meta-card">
-            <p class="meta-label">What You’ll Find Here</p>
-            <p>Technical essays, architecture notes, writing on process, and high-signal updates from active projects.</p>
+
+          <div>
+            <h2 class="profile-name">Semih Guresci</h2>
+            <p class="profile-role">Software engineer with a focus on technical depth, systems-minded work, and a clean professional presentation.</p>
           </div>
-          <div class="meta-card">
-            <p class="meta-label">Long-term Goal</p>
-            <p>Build a body of work that is useful to other developers and representative of thoughtful craftsmanship.</p>
+
+          <div class="profile-list">
+            <div class="profile-item"><span class="profile-dot"></span><span>GitHub-backed personal site</span></div>
+            <div class="profile-item"><span class="profile-dot"></span><span>Custom domain: semihguresci.com</span></div>
+            <div class="profile-item"><span class="profile-dot"></span><span>Profile image sourced from GitHub</span></div>
           </div>
         </aside>
       </section>
 
-      <section class="panel section" id="writing">
-        <h2 class="section-title">Featured Writing</h2>
-        <p class="section-intro">Use these as starter posts (or replace them with your latest articles). The structure is designed to make your blog feel intentional and editorial rather than just a link list.</p>
+      <section class="section-grid" id="contact">
+        <article class="card section-card">
+          <p class="section-label">Profile</p>
+          <h2>Professional first impression</h2>
+          <p>The page now emphasizes clarity, typography, spacing, and restrained visuals rather than a blog template or loud effects.</p>
+        </article>
 
-        <div class="grid posts">
-          <article class="post">
-            <p class="post-tag">Vulkan / Architecture</p>
-            <h3>Designing a Frame Graph That Stays Understandable at Scale</h3>
-            <p>A practical guide to balancing flexibility and clarity in render graph design, with trade-offs from real-world constraints.</p>
-            <a href="#">Read article →</a>
-          </article>
+        <article class="card section-card">
+          <p class="section-label">Destination</p>
+          <h2>GitHub as the main portfolio surface</h2>
+          <p>Your repositories and public work stay the primary destination, with this site acting as a cleaner entry point.</p>
+        </article>
 
-          <article class="post">
-            <p class="post-tag">C++ / Performance</p>
-            <h3>Five Profiling Habits That Prevent Premature Optimization</h3>
-            <p>How to establish repeatable profiling workflows and make performance decisions based on evidence, not intuition.</p>
-            <a href="#">Read article →</a>
-          </article>
-
-          <article class="post">
-            <p class="post-tag">Engineering / Career</p>
-            <h3>From Personal Projects to Professional Reputation</h3>
-            <p>Turning side projects into a coherent portfolio that communicates your standards, strengths, and long-term direction.</p>
-            <a href="#">Read article →</a>
-          </article>
-        </div>
-      </section>
-
-      <section class="panel section grid split" id="now">
-        <div>
-          <h2 class="section-title">Now</h2>
-          <p class="section-intro">A concise snapshot of what I’m currently investing in.</p>
-          <ul class="list">
-            <li><strong>Deep work:</strong> Improving renderer architecture and GPU debugging workflows.</li>
-            <li><strong>Writing:</strong> Publishing practical, implementation-focused blog posts every month.</li>
-            <li><strong>Learning:</strong> Better mental models for graphics pipeline bottlenecks.</li>
-          </ul>
-        </div>
-        <div id="contact">
-          <h2 class="section-title">Work With Me</h2>
-          <p class="section-intro">If you’re building serious software and value quality in execution, I’m happy to connect.</p>
-          <div class="action-row">
-            <a class="button primary" href="https://github.com/semihguresci" target="_blank" rel="noreferrer">GitHub</a>
-            <a class="button ghost" href="https://semihguresci.com">semihguresci.com</a>
-          </div>
-        </div>
+        <article class="card section-card">
+          <p class="section-label">Contact</p>
+          <h2>Simple and direct</h2>
+          <p>For now the site stays intentionally lean. If you want, the next step can be adding selected projects, an about page, or a CV link.</p>
+        </article>
       </section>
     </main>
 
     <footer class="footer">
-      <div>© 2026 Semih Guresci. Crafted as a professional personal website and blog hub.</div>
+      <div>Hosted on GitHub Pages and configured for semihguresci.com.</div>
       <div class="footer-links">
-        <a href="https://github.com/semihguresci" target="_blank" rel="noreferrer">GitHub</a>
-        <a href="https://semihguresci.com">Website</a>
+        <a href="https://github.com/semihguresci" target="_blank" rel="noreferrer">github.com/semihguresci</a>
+        <a href="https://semihguresci.com">semihguresci.com</a>
       </div>
     </footer>
   </div>
