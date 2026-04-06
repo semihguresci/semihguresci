@@ -1,35 +1,49 @@
-# Site Settings
-title: My Site
-email: your-email@example.com
-description: >-
-  Your site description here
-url: "https://semihguresci.github.io"
+locale: "en-US"
+title: "Semih Guresci"
+title_separator: "-"
+name: "Semih Guresci"
+description: "Personal website, notes, and links for Semih Guresci."
+url: "https://semihguresci.com"
 baseurl: ""
+repository: "semihguresci/semihguresci"
 
-# Theme
-theme: minimal-mistakes-jekyll
-minimal_mistakes_skin: "default"
+remote_theme: "mmistakes/minimal-mistakes@4.28.0"
+minimal_mistakes_skin: "sunrise"
 
-# Site Author
+markdown: kramdown
+permalink: /:categories/:title/
+
 author:
-  name   : "Your Name"
-  avatar : "/assets/images/bio-photo.jpg"
-  bio    : "Your bio here"
+  name: "Semih Guresci"
+  bio: "Personal website, notes, and links."
   links:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/semihguresci"
+    - label: "Website"
+      icon: "fas fa-fw fa-link"
+      url: "https://semihguresci.com"
 
-# Build settings
-markdown: kramdown
 plugins:
-  - jekyll-paginate
-  - jekyll-sitemap
-  - jekyll-gist
   - jekyll-feed
-  - jemoji
+  - jekyll-sitemap
   - jekyll-include-cache
 
-# Pagination
-paginate: 5
-paginate_path: /page:num/
+include:
+  - _pages
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: single
+      author_profile: true
+
+atom_feed:
+  hide: true
+
+footer:
+  links:
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/semihguresci"
