@@ -1,477 +1,285 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Semih Guresci</title>
-  <meta name="description" content="Personal website of Semih Guresci, focused on systems engineering, graphics, and software development.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Source+Serif+4:wght@600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #f5f7fb;
-      --surface: rgba(255, 255, 255, 0.86);
-      --surface-strong: #ffffff;
-      --text: #122033;
-      --muted: #58657a;
-      --line: rgba(18, 32, 51, 0.1);
-      --brand: #114b8c;
-      --brand-soft: rgba(17, 75, 140, 0.08);
-      --accent: #d99b45;
-      --shadow: 0 24px 60px rgba(17, 35, 61, 0.09);
-      --radius-xl: 28px;
-      --radius-lg: 20px;
-      --radius-md: 14px;
-      --container: 1180px;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: "Manrope", sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(17, 75, 140, 0.08), transparent 32%),
-        radial-gradient(circle at top right, rgba(217, 155, 69, 0.08), transparent 22%),
-        linear-gradient(180deg, #f8f9fc 0%, #f3f6fa 45%, #edf2f8 100%);
-    }
-
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      background-image:
-        linear-gradient(rgba(18, 32, 51, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(18, 32, 51, 0.03) 1px, transparent 1px);
-      background-size: 36px 36px;
-      mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.38), transparent 92%);
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .page {
-      width: min(var(--container), calc(100% - 32px));
-      margin: 0 auto;
-      padding: 22px 0 48px;
-    }
-
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-      padding: 16px 18px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.72);
-      backdrop-filter: blur(14px);
-      box-shadow: 0 10px 30px rgba(17, 35, 61, 0.05);
-    }
-
-    .brand {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .brand-mark {
-      font-size: 0.88rem;
-      font-weight: 800;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-    }
-
-    .brand-sub {
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .nav {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: 0.95rem;
-      font-weight: 600;
-    }
-
-    .nav a:hover {
-      color: var(--text);
-    }
-
-    .hero {
-      display: grid;
-      grid-template-columns: minmax(0, 1.15fr) 360px;
-      gap: 26px;
-      margin-top: 26px;
-      align-items: stretch;
-    }
-
-    .card {
-      border: 1px solid var(--line);
-      border-radius: var(--radius-xl);
-      background: var(--surface);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(16px);
-    }
-
-    .hero-copy {
-      padding: 40px;
-      display: grid;
-      gap: 26px;
-      min-height: 620px;
-    }
-
-    .eyebrow {
-      width: fit-content;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: var(--brand-soft);
-      color: var(--brand);
-      font-size: 0.78rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .headline {
-      margin: 0;
-      font-family: "Source Serif 4", serif;
-      font-size: clamp(3rem, 7vw, 5.8rem);
-      line-height: 0.95;
-      letter-spacing: -0.05em;
-      max-width: 10ch;
-    }
-
-    .lede {
-      margin: 0;
-      max-width: 60ch;
-      color: var(--muted);
-      font-size: 1.08rem;
-      line-height: 1.8;
-    }
-
-    .actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-    }
-
-    .button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 52px;
-      padding: 0 22px;
-      border-radius: 999px;
-      font-weight: 700;
-      transition: transform 160ms ease, box-shadow 160ms ease;
-    }
-
-    .button.primary {
-      background: var(--text);
-      color: #f6f8fc;
-      box-shadow: 0 16px 32px rgba(18, 32, 51, 0.16);
-    }
-
-    .button.secondary {
-      background: rgba(255, 255, 255, 0.7);
-      border: 1px solid var(--line);
-      color: var(--text);
-    }
-
-    .button:hover {
-      transform: translateY(-2px);
-    }
-
-    .highlights {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .highlight {
-      padding: 18px;
-      border: 1px solid var(--line);
-      border-radius: var(--radius-md);
-      background: rgba(255, 255, 255, 0.66);
-    }
-
-    .highlight-label {
-      margin: 0 0 10px;
-      color: var(--brand);
-      font-size: 0.76rem;
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-
-    .highlight p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.65;
-      font-size: 0.96rem;
-    }
-
-    .profile {
-      padding: 22px;
-      display: grid;
-      gap: 18px;
-      align-content: start;
-    }
-
-    .portrait {
-      position: relative;
-      aspect-ratio: 0.92 / 1.08;
-      overflow: hidden;
-      border-radius: 22px;
-      background: linear-gradient(160deg, #dfe7f4, #f8fbff);
-      border: 1px solid var(--line);
-    }
-
-    .portrait img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .profile-name {
-      margin: 0;
-      font-size: 1.5rem;
-      letter-spacing: -0.03em;
-    }
-
-    .profile-role {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.7;
-    }
-
-    .profile-list {
-      display: grid;
-      gap: 12px;
-      margin-top: 6px;
-    }
-
-    .profile-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: var(--muted);
-      font-size: 0.95rem;
-    }
-
-    .profile-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 0 6px rgba(217, 155, 69, 0.12);
-      flex: none;
-    }
-
-    .section-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 18px;
-      margin-top: 22px;
-    }
-
-    .section-card {
-      padding: 24px;
-    }
-
-    .section-card h2 {
-      margin: 0 0 12px;
-      font-size: 1.15rem;
-      line-height: 1.35;
-    }
-
-    .section-card p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.75;
-    }
-
-    .section-label {
-      margin: 0 0 12px;
-      color: var(--brand);
-      font-size: 0.78rem;
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-
-    .footer {
-      margin-top: 26px;
-      padding: 18px 4px 0;
-      border-top: 1px solid var(--line);
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: 0.93rem;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 14px 18px;
-      flex-wrap: wrap;
-    }
-
-    @media (max-width: 980px) {
-      .hero {
-        grid-template-columns: 1fr;
-      }
-
-      .profile {
-        max-width: 420px;
-      }
-
-      .highlights,
-      .section-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 720px) {
-      .page {
-        width: min(var(--container), calc(100% - 20px));
-        padding-top: 16px;
-      }
-
-      .topbar {
-        border-radius: 24px;
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .nav {
-        gap: 12px 16px;
-      }
-
-      .hero-copy,
-      .profile,
-      .section-card {
-        padding: 22px;
-      }
-
-      .headline {
-        font-size: clamp(2.6rem, 14vw, 4.2rem);
-      }
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Semih Güreşçi | Semih Güreşçi</title>
+  <meta name="description" content="GPU Rendering & Performance Engineer specializing in C++, Vulkan, mobile XR, and real-time graphics optimization." />
+  <link rel="stylesheet" href="/assets/css/style.css" />
 </head>
 <body>
-  <div class="page">
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-mark">Semih Guresci</div>
-        <div class="brand-sub">Personal website</div>
-      </div>
-      <nav class="nav" aria-label="Primary">
-        <a href="#about">About</a>
-        <a href="#focus">Focus</a>
-        <a href="#contact">Contact</a>
-        <a href="https://github.com/semihguresci" target="_blank" rel="noreferrer">GitHub</a>
-      </nav>
-    </header>
-
-    <main>
-      <section class="hero" id="about">
-        <article class="card hero-copy">
-          <div class="eyebrow">Systems and graphics</div>
-
-          <h1 class="headline">Professional software, low-level thinking, clear execution.</h1>
-
-          <p class="lede">
-            I am Semih Guresci. This site is a straightforward professional homepage built around software engineering,
-            with an emphasis on systems work, graphics, and technical depth. It is designed to be clear, credible, and easy to navigate.
-          </p>
-
-          <div class="actions">
-            <a class="button primary" href="https://github.com/semihguresci" target="_blank" rel="noreferrer">View GitHub</a>
-            <a class="button secondary" href="https://semihguresci.com">Open semihguresci.com</a>
-          </div>
-
-          <div class="highlights" id="focus">
-            <div class="highlight">
-              <p class="highlight-label">Focus</p>
-              <p>Engineering work centered on systems, graphics, and software that rewards precision.</p>
-            </div>
-            <div class="highlight">
-              <p class="highlight-label">Approach</p>
-              <p>Clear architecture, practical implementation, and attention to the details that hold up in real use.</p>
-            </div>
-            <div class="highlight">
-              <p class="highlight-label">Presence</p>
-              <p>A direct personal site that supports a professional profile instead of looking like a generic theme.</p>
-            </div>
-          </div>
-        </article>
-
-        <aside class="card profile" aria-label="Profile">
-          <div class="portrait">
-            <img src="https://github.com/semihguresci.png?size=720" alt="Portrait of Semih Guresci">
-          </div>
-
-          <div>
-            <h2 class="profile-name">Semih Guresci</h2>
-            <p class="profile-role">Software engineer with a focus on technical depth, systems-minded work, and a clean professional presentation.</p>
-          </div>
-
-          <div class="profile-list">
-            <div class="profile-item"><span class="profile-dot"></span><span>GitHub-backed personal site</span></div>
-            <div class="profile-item"><span class="profile-dot"></span><span>Custom domain: semihguresci.com</span></div>
-            <div class="profile-item"><span class="profile-dot"></span><span>Profile image sourced from GitHub</span></div>
-          </div>
-        </aside>
-      </section>
-
-      <section class="section-grid" id="contact">
-        <article class="card section-card">
-          <p class="section-label">Profile</p>
-          <h2>Professional first impression</h2>
-          <p>The page now emphasizes clarity, typography, spacing, and restrained visuals rather than a blog template or loud effects.</p>
-        </article>
-
-        <article class="card section-card">
-          <p class="section-label">Destination</p>
-          <h2>GitHub as the main portfolio surface</h2>
-          <p>Your repositories and public work stay the primary destination, with this site acting as a cleaner entry point.</p>
-        </article>
-
-        <article class="card section-card">
-          <p class="section-label">Contact</p>
-          <h2>Simple and direct</h2>
-          <p>For now the site stays intentionally lean. If you want, the next step can be adding selected projects, an about page, or a CV link.</p>
-        </article>
-      </section>
-    </main>
-
-    <footer class="footer">
-      <div>Hosted on GitHub Pages and configured for semihguresci.com.</div>
-      <div class="footer-links">
-        <a href="https://github.com/semihguresci" target="_blank" rel="noreferrer">github.com/semihguresci</a>
-        <a href="https://semihguresci.com">semihguresci.com</a>
-      </div>
-    </footer>
+<header class="topbar">
+  <div class="container topbar-inner">
+    <a class="brand" href="#home">Semih Güreşçi</a>
+    <nav class="nav" aria-label="Primary navigation">
+      <a href="#about">About</a>
+      <a href="#expertise">Expertise</a>
+      <a href="#projects">Projects</a>
+      <a href="#experience">Experience</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Toggle light and dark theme">Toggle theme</button>
   </div>
+</header>
+
+<main id="home">
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <div class="eyebrow">Luxembourg · Available for engineering opportunities</div>
+      <h1>
+        <span>GPU Rendering</span>
+        <span>& Performance</span>
+        <span>Engineer</span>
+      </h1>
+      <p class="hero-subtitle">
+        I build performance-critical real-time rendering systems for mobile and XR platforms, with a focus on C++, Vulkan, GPU optimization, memory-efficient pipelines, and data-oriented engine design.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#projects">View Projects</a>
+        <a class="btn btn-secondary" href="/SemihGuresciCV.pdf" target="_blank" rel="noopener">Download CV</a>
+        <a class="btn btn-secondary" href="https://github.com/semihguresci" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn btn-secondary" href="https://www.linkedin.com/in/semihguresci/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+      <div class="hero-meta">
+        <span>C++ / Vulkan</span>
+        <span>Mobile XR</span>
+        <span>Tile-Based GPUs</span>
+        <span>RenderDoc / Nsight</span>
+      </div>
+    </div>
+
+    <aside class="hero-card" aria-label="Key impact metrics">
+      <div class="hero-card-label">Selected impact</div>
+      <div class="stat-list">
+        <div class="stat-item">
+          <div class="stat-value">35%</div>
+          <div class="stat-text">Faster stereo rendering on Adreno GPUs through Vulkan multiview.</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">30%</div>
+          <div class="stat-text">Lower global memory bandwidth using tile-based rendering with render passes and subpasses.</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">50%</div>
+          <div class="stat-text">Reduced sparse volume rendering time with compute-driven acceleration and empty-space skipping.</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">10+</div>
+          <div class="stat-text">Years of experience across graphics, simulation, mobile rendering, and XR systems.</div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="container">
+    <h2 class="section-title">About</h2>
+    <p class="section-intro">
+      I am a graphics engineer specializing in Vulkan-based rendering, GPU performance optimization, and rendering architecture for mobile and XR systems. My background spans AR headset rendering, simulation and training platforms, technical leadership in mobile graphics, and reproducible GPU benchmark development.
+    </p>
+    <div class="grid-2">
+      <div class="card">
+        <h3>What I focus on</h3>
+        <p>
+          Building rendering systems that are fast, measurable, and maintainable under real platform constraints such as bandwidth, memory pressure, and synchronization cost.
+        </p>
+      </div>
+      <div class="card">
+        <h3>What I value</h3>
+        <p>
+          Clear architecture, data-oriented thinking, strong profiling discipline, and technical work that can be explained with concrete performance outcomes.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="expertise">
+  <div class="container">
+    <h2 class="section-title">Core expertise</h2>
+    <p class="section-intro">
+      The areas where I bring the most value: graphics architecture, GPU efficiency, and performance-critical engineering for real-time systems.
+    </p>
+    <div class="grid-3">
+      <article class="card skill-card">
+        <h3>Rendering & GPU Systems</h3>
+        <p>Vulkan, OpenGL, OpenXR, multiview stereo rendering, tile-based rendering, compute pipelines, volume rendering, and memory-aware pipeline design.</p>
+      </article>
+      <article class="card skill-card">
+        <h3>Performance Engineering</h3>
+        <p>GPU profiling, bottleneck analysis, cache-aware data layout, coalesced access patterns, synchronization strategy, and memory bandwidth reduction.</p>
+      </article>
+      <article class="card skill-card">
+        <h3>Engineering Stack</h3>
+        <p>C++, C, GLSL, Python, CMake, Git, RenderDoc, Nsight, Android, Linux, and Windows for production and experimental workflows.</p>
+      </article>
+    </div>
+    <div class="tags" aria-label="skills list">
+      <span class="tag">C++</span>
+      <span class="tag">Vulkan</span>
+      <span class="tag">GPU Optimization</span>
+      <span class="tag">Tile-Based Rendering</span>
+      <span class="tag">Multiview</span>
+      <span class="tag">Volume Rendering</span>
+      <span class="tag">Compute Pipelines</span>
+      <span class="tag">VMA</span>
+      <span class="tag">Synchronization</span>
+      <span class="tag">RenderDoc</span>
+      <span class="tag">Nsight</span>
+      <span class="tag">Android / Adreno</span>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="projects">
+  <div class="container">
+    <h2 class="section-title">Featured projects</h2>
+    <p class="section-intro">
+      A selection of work that best represents my technical direction: rendering architecture, GPU behavior, and reproducible engineering.
+    </p>
+    <div class="grid-3">
+      <article class="card project-card">
+        <div class="project-top">
+          <h3>GPU Memory Access & Cache Behavior Benchmark Suite</h3>
+        </div>
+        <p>
+          A public benchmark project exploring AoS vs SoA, coalesced vs strided access, and layout choices that affect GPU cache behavior and bandwidth efficiency.
+        </p>
+        <div class="project-links">
+          <a class="text-link" href="https://github.com/semihguresci/gpu-memory-access-benchmark" target="_blank" rel="noopener">View repository</a>
+        </div>
+      </article>
+
+      <article class="card project-card">
+        <div class="project-top">
+          <h3>Mobile XR Rendering Engine Work</h3>
+        </div>
+        <p>
+          Rendering architecture and optimization work for AR headset platforms, including multiview stereo rendering, tile-based subpass design, synchronization systems, and compute-driven sparse volume rendering.
+        </p>
+        <div class="project-links">
+          <a class="text-link" href="#experience">See experience</a>
+        </div>
+      </article>
+
+      <article class="card project-card">
+        <div class="project-top">
+          <h3>C++ Engineering & Technical Foundations</h3>
+        </div>
+        <p>
+          Public code and experiments covering systems-level engineering, algorithmic practice, and technical foundations that support high-performance graphics work.
+        </p>
+        <div class="project-links">
+          <a class="text-link" href="https://github.com/semihguresci" target="_blank" rel="noopener">Browse GitHub</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="experience">
+  <div class="container">
+    <h2 class="section-title">Experience</h2>
+    <p class="section-intro">
+      My path across computer graphics, simulation, VR, mobile rendering, and performance-focused engineering.
+    </p>
+    <div class="timeline">
+      <article class="card timeline-card">
+        <div class="timeline-date">2022 — Present</div>
+        <div>
+          <div class="timeline-role">Computer Graphics Engineer</div>
+          <div class="timeline-company">Arspectra Sàrl · Luxembourg</div>
+          <p>Architected and optimized GPU pipelines for mobile XR systems, focusing on Vulkan multiview, tile-based rendering, GPU memory systems, and sparse volume rendering performance.</p>
+        </div>
+      </article>
+
+      <article class="card timeline-card">
+        <div class="timeline-date">2020 — 2021</div>
+        <div>
+          <div class="timeline-role">Technical Lead (Mobile Graphics)</div>
+          <div class="timeline-company">Roar Games Studio · Ankara</div>
+          <p>Led technical development for 40+ mobile game prototypes, defining rendering direction and low-level CPU/GPU optimization strategies.</p>
+        </div>
+      </article>
+
+      <article class="card timeline-card">
+        <div class="timeline-date">2016 — 2020</div>
+        <div>
+          <div class="timeline-role">Senior Game Developer (Simulation / VR)</div>
+          <div class="timeline-company">SimBT · Ankara</div>
+          <p>Developed real-time simulation and training systems including VR navigation training, military simulations, and geographic visualization tools.</p>
+        </div>
+      </article>
+
+      <article class="card timeline-card">
+        <div class="timeline-date">2015 — 2016</div>
+        <div>
+          <div class="timeline-role">Game Developer (VR Systems)</div>
+          <div class="timeline-company">A Information Technologies · Ankara</div>
+          <p>Worked on VR simulation systems with motion tracking, real-time interaction pipelines, and immersive application development.</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="contact">
+  <div class="container">
+    <h2 class="section-title">Contact</h2>
+    <div class="contact-box">
+      <div>
+        <h3 class="contact-title">Let’s connect</h3>
+        <p class="contact-text">semih.guresci@gmail.com · Luxembourg</p>
+      </div>
+      <div class="hero-actions contact-actions">
+        <a class="btn btn-primary" href="mailto:semih.guresci@gmail.com">Email me</a>
+        <a class="btn btn-secondary" href="https://github.com/semihguresci" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn btn-secondary" href="https://www.linkedin.com/in/semihguresci/" target="_blank" rel="noopener">LinkedIn</a>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <span>© 2026 Semih Güreşçi</span>
+    <span>Built with Jekyll / GitHub Pages</span>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    const root = document.documentElement;
+    const toggle = document.getElementById('theme-toggle');
+    const storageKey = 'site-theme';
+
+    function applyTheme(theme) {
+      root.setAttribute('data-theme', theme);
+      if (toggle) {
+        toggle.textContent = theme === 'dark' ? 'Switch to light' : 'Switch to dark';
+      }
+    }
+
+    const saved = localStorage.getItem(storageKey);
+    if (saved === 'light' || saved === 'dark') {
+      applyTheme(saved);
+    } else {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      applyTheme(prefersDark ? 'dark' : 'light');
+    }
+
+    if (toggle) {
+      toggle.addEventListener('click', function () {
+        const current = root.getAttribute('data-theme') || 'light';
+        const next = current === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+        localStorage.setItem(storageKey, next);
+      });
+    }
+  })();
+</script>
 </body>
 </html>
