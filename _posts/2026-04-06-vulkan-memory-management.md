@@ -1,6 +1,6 @@
 ---
 title: "Vulkan Memory Management: Best Practices for High-Performance Rendering"
-date: 2024-01-15
+date: 2026-04-06
 tags: [vulkan, graphics, performance, memory]
 ---
 

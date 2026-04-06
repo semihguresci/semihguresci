@@ -1,8 +1,13 @@
 <script>
   (function () {
     const root = document.documentElement;
+    root.classList.remove('no-js');
+    root.classList.add('js');
+
     const toggle = document.getElementById('theme-toggle');
     const toggleText = toggle ? toggle.querySelector('.theme-toggle-text') : null;
+    const navToggle = document.getElementById('nav-toggle');
+    const mobileNav = document.getElementById('mobile-nav');
     const storageKey = 'site-theme';
 
     function applyTheme(theme) {
@@ -28,6 +33,44 @@
         const next = current === 'dark' ? 'light' : 'dark';
         applyTheme(next);
         localStorage.setItem(storageKey, next);
+      });
+    }
+
+    function setMobileNav(open) {
+      if (!navToggle || !mobileNav) {
+        return;
+      }
+
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      navToggle.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
+      mobileNav.setAttribute('aria-hidden', open ? 'false' : 'true');
+      mobileNav.classList.toggle('is-open', open);
+    }
+
+    if (navToggle && mobileNav) {
+      setMobileNav(false);
+
+      navToggle.addEventListener('click', function () {
+        const open = navToggle.getAttribute('aria-expanded') !== 'true';
+        setMobileNav(open);
+      });
+
+      mobileNav.querySelectorAll('a').forEach(function (link) {
+        link.addEventListener('click', function () {
+          setMobileNav(false);
+        });
+      });
+
+      window.addEventListener('resize', function () {
+        if (window.innerWidth > 920) {
+          setMobileNav(false);
+        }
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+          setMobileNav(false);
+        }
       });
     }
   })();

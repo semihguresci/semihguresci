@@ -1,6 +1,6 @@
 ---
 title: "Optimizing Mobile XR Applications: Power Efficiency and Performance"
-date: 2024-02-01
+date: 2026-04-06
 tags: [mobile, xr, optimization, performance]
 ---
 

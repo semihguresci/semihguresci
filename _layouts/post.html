@@ -10,7 +10,17 @@ layout: default
       {% if page.tags %}
         <span class="post-tags">
           {% for tag in page.tags %}
-            <span class="tag">{{ tag }}</span>
+            {% assign tag_label = tag | replace: '-', ' ' | capitalize %}
+            {% if tag == 'cpp' %}
+              {% assign tag_label = 'C++' %}
+            {% endif %}
+            {% if tag == 'xr' %}
+              {% assign tag_label = 'XR' %}
+            {% endif %}
+            {% if tag == 'best-practices' %}
+              {% assign tag_label = 'Best Practices' %}
+            {% endif %}
+            <span class="tag">{{ tag_label }}</span>
           {% endfor %}
         </span>
       {% endif %}

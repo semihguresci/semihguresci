@@ -6,6 +6,7 @@ import html
 import re
 import shutil
 import sys
+import textwrap
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -86,6 +87,8 @@ def parse_scalar(value: str) -> Any:
 
     if not text:
         return ""
+    if text.lower() in {"null", "~"}:
+        return None
     if text in {"{}", "[]"}:
         return {} if text == "{}" else []
     if text.lower() == "true":
@@ -159,6 +162,32 @@ def parse_mapping_list(text: str) -> list[dict[str, Any]]:
         items.append(current)
 
     return items
+
+
+def extract_top_level_block(text: str, key: str) -> str:
+    lines = text.splitlines()
+    collecting = False
+    block_lines: list[str] = []
+
+    for line in lines:
+        if not collecting:
+            if line.startswith(f"{key}:"):
+                collecting = True
+            continue
+
+        if line and not line.startswith((" ", "\t")):
+            break
+
+        block_lines.append(line)
+
+    return textwrap.dedent("\n".join(block_lines)).strip()
+
+
+def parse_config(text: str) -> dict[str, Any]:
+    config = parse_mapping(text)
+    defaults_block = extract_top_level_block(text, "defaults")
+    config["defaults"] = parse_mapping_list(defaults_block) if defaults_block else []
+    return config
 
 
 def read_front_matter(path: Path) -> tuple[dict[str, Any], str]:
@@ -435,7 +464,7 @@ class TemplateEngine:
 
             if isinstance(node, IfNode):
                 branch = node.true_branch if self._evaluate_condition(node.condition, context) else node.false_branch
-                output.append(self._render_nodes(branch, context.copy()))
+                output.append(self._render_nodes(branch, context))
                 continue
 
             if isinstance(node, ForNode):
@@ -557,6 +586,8 @@ class TemplateEngine:
             return date_value.strftime(fmt)
         if name == "strip_html":
             return strip_html(stringify(value))
+        if name == "strip_newlines":
+            return stringify(value).replace("\r", "").replace("\n", "")
         if name == "truncate":
             limit = int(args[0]) if args else 50
             return truncate_text(stringify(value), limit)
@@ -664,6 +695,36 @@ def load_posts(source_root: Path) -> list[dict[str, Any]]:
     return posts
 
 
+def apply_defaults(
+    defaults: list[dict[str, Any]],
+    metadata: dict[str, Any],
+    *,
+    source_root: Path,
+    source_path: Path,
+    content_type: str | None = None,
+) -> dict[str, Any]:
+    resolved = dict(metadata)
+    relative_path = source_path.relative_to(source_root).as_posix()
+
+    for default in defaults:
+        scope_type = stringify(default.get("type")).strip()
+        scope_path = stringify(default.get("path")).strip().strip("/")
+
+        if content_type and scope_type and scope_type != content_type:
+            continue
+        if not content_type and scope_type:
+            continue
+        if scope_path and not relative_path.startswith(scope_path):
+            continue
+
+        for key, value in default.items():
+            if key in {"scope", "values", "path", "type"}:
+                continue
+            resolved.setdefault(key, value)
+
+    return resolved
+
+
 def apply_layouts(
     engine: TemplateEngine,
     source_root: Path,
@@ -692,7 +753,13 @@ def apply_layouts(
 
 def render_page(engine: TemplateEngine, page_path: Path, page_overrides: dict[str, Any] | None = None) -> str:
     metadata, body = read_front_matter(page_path)
-    page = {**metadata, **(page_overrides or {})}
+    page = apply_defaults(
+        engine.site.get("defaults", []),
+        metadata,
+        source_root=engine.source_root,
+        source_path=page_path,
+    )
+    page.update(page_overrides or {})
     content_html = engine.render(
         body,
         {
@@ -701,13 +768,20 @@ def render_page(engine: TemplateEngine, page_path: Path, page_overrides: dict[st
             "content": "",
         },
     )
-    return apply_layouts(engine, engine.source_root, page, metadata.get("layout"), content_html)
+    return apply_layouts(engine, engine.source_root, page, page.get("layout"), content_html)
 
 
 def render_post(engine: TemplateEngine, post: dict[str, Any]) -> str:
-    page = {key: value for key, value in post.items() if key != "source_path"}
     metadata, _ = read_front_matter(post["source_path"])
-    return apply_layouts(engine, engine.source_root, page, metadata.get("layout"), post["content"])
+    page = apply_defaults(
+        engine.site.get("defaults", []),
+        metadata,
+        source_root=engine.source_root,
+        source_path=post["source_path"],
+        content_type="posts",
+    )
+    page.update({key: value for key, value in post.items() if key != "source_path"})
+    return apply_layouts(engine, engine.source_root, page, page.get("layout"), post["content"])
 
 
 def write_output(path: Path, content: str) -> None:
@@ -716,12 +790,13 @@ def write_output(path: Path, content: str) -> None:
 
 
 def build_preview(source_root: Path, output_root: Path) -> None:
-    config = parse_mapping((source_root / "_config.yml").read_text(encoding="utf-8"))
+    config = parse_config((source_root / "_config.yml").read_text(encoding="utf-8"))
     projects = parse_mapping_list((source_root / "_data" / "projects.yml").read_text(encoding="utf-8"))
     posts = load_posts(source_root)
 
     site = {
         **config,
+        "time": dt.datetime.now(),
         "data": {
             "projects": projects,
         },
@@ -739,6 +814,25 @@ def build_preview(source_root: Path, output_root: Path) -> None:
 
     write_output(output_root / "index.html", home_html)
     write_output(output_root / "blog" / "index.html", blog_html)
+
+    extra_templates = [
+        ("robots.txt", "/robots.txt"),
+        ("sitemap.xml", "/sitemap.xml"),
+    ]
+
+    for page_path in sorted(source_root.glob("*.html")):
+        if page_path.name == "index.html":
+            continue
+        extra_templates.append((page_path.name, f"/{page_path.stem}/"))
+
+    for relative_path, page_url in extra_templates:
+        source_path = source_root / relative_path
+        if source_path.exists():
+            extra_html = render_page(engine, source_path, {"url": page_url})
+            if relative_path.endswith(".html"):
+                write_output(output_root / Path(relative_path).stem / "index.html", extra_html)
+            else:
+                write_output(output_root / relative_path, extra_html)
 
     for post in posts:
         post_html = render_post(engine, post)

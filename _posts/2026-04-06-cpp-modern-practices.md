@@ -1,6 +1,6 @@
 ---
 title: "Modern C++ Practices for Graphics Programming"
-date: 2024-02-15
+date: 2026-04-06
 tags: [cpp, graphics, programming, best-practices]
 ---
 

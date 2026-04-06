@@ -49,7 +49,6 @@ layout: default
 
       <aside class="hero-card hero-photo-card" aria-label="Semih Guresci profile photo">
         <div class="hero-photo-stage">
-          <!-- <span class="hero-photo-badge hero-photo-badge-top">C++ / Vulkan</span> -->
           <a class="hero-photo-link" href="https://www.linkedin.com/in/semihguresci/" target="_blank" rel="noopener" aria-label="Open LinkedIn profile">
             <span class="hero-photo-frame">
               <img
@@ -59,11 +58,10 @@ layout: default
               />
             </span>
           </a>
-          <!-- <span class="hero-photo-badge hero-photo-badge-bottom">Luxembourg</span> -->
         </div>
         <div class="hero-photo-copy">
           <div class="hero-photo-eyebrow">Computer Graphics Engineer</div>
-          <div class="hero-photo-title">Semih G&uuml;re&#351;&ccedil;i</div>
+          <div class="hero-photo-title">Semih Güreşçi</div>
           <p class="hero-photo-text">Real-time rendering, GPU optimization, and mobile XR engineering.</p>
           <a class="hero-photo-cta" href="https://www.linkedin.com/in/semihguresci/" target="_blank" rel="noopener">
             <span class="btn-icon" aria-hidden="true">
@@ -75,6 +73,29 @@ layout: default
           </a>
         </div>
       </aside>
+  </div>
+</section>
+
+<section class="hero-proof-strip" aria-label="Key credibility points">
+  <div class="container">
+    <div class="hero-proof-list">
+      <div class="hero-proof-item">
+        <div class="hero-proof-value">10+ years</div>
+        <div class="hero-proof-label">Graphics, simulation, and XR engineering</div>
+      </div>
+      <div class="hero-proof-item">
+        <div class="hero-proof-value">Vulkan</div>
+        <div class="hero-proof-label">Rendering architecture and GPU performance work</div>
+      </div>
+      <div class="hero-proof-item">
+        <div class="hero-proof-value">Mobile XR</div>
+        <div class="hero-proof-label">Real-time systems tuned for constrained devices</div>
+      </div>
+      <div class="hero-proof-item">
+        <div class="hero-proof-value">GPU Performance</div>
+        <div class="hero-proof-label">Profiling, optimization, and memory-aware rendering pipelines</div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -171,11 +192,15 @@ layout: default
       {% if featured_posts.size > 0 %}
         {% for post in featured_posts %}
         {% assign primary_tag = post.tags | first %}
+        {% assign primary_tag_label = primary_tag | replace: '-', ' ' | capitalize %}
+        {% if primary_tag == 'cpp' %}
+          {% assign primary_tag_label = 'C++' %}
+        {% endif %}
         <article class="card blog-card">
           <h3>{{ post.title }}</h3>
           <div class="blog-meta">
             {% if primary_tag %}
-              {{ primary_tag | replace: '-', ' ' | capitalize }} &middot;
+              {{ primary_tag_label }} &middot;
             {% endif %}
             {{ post.date | date: "%b %d, %Y" }}
           </div>
@@ -257,10 +282,10 @@ layout: default
 
 <section class="section" id="contact">
   <div class="container">
-     <h2 class="section-title">Contact</h2>
-    <!-- <p class="section-intro">
-      
-    </p> -->
+    <h2 class="section-title">Contact</h2>
+    <p class="section-intro">
+      For collaborations, and graphics-focused conversations.
+    </p>
     <div class="contact-box">
       <div>
         <h3 class="contact-title">Let&#39;s connect</h3>

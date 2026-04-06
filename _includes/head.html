@@ -2,6 +2,69 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% if page.title %}{{ page.title }} | {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
-  <meta name="description" content="{{ site.description }}" />
+  <meta name="description" content="{% if page.description %}{{ page.description | strip_html | strip_newlines | truncate: 160 }}{% else %}{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}{% endif %}" />
+  <meta name="author" content="{{ site.author_name }}" />
+  <meta name="robots" content="{% if page.noindex %}noindex, nofollow{% else %}index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1{% endif %}" />
+  <meta name="googlebot" content="{% if page.noindex %}noindex, nofollow{% else %}index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1{% endif %}" />
+  <link rel="icon" type="image/svg+xml" href="{{ '/assets/images/favicon.svg' | relative_url }}" />
+  <link rel="canonical" href="{{ site.url }}{{ page.url }}" />
+  <meta property="og:type" content="{% if page.layout == 'post' %}article{% else %}website{% endif %}" />
+  <meta property="og:site_name" content="{{ site.title }}" />
+  <meta property="og:url" content="{{ site.url }}{{ page.url }}" />
+  <meta property="og:title" content="{% if page.title %}{{ page.title }} | {{ site.title }}{% else %}{{ site.title }}{% endif %}" />
+  <meta property="og:description" content="{% if page.description %}{{ page.description | strip_html | strip_newlines | truncate: 160 }}{% else %}{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}{% endif %}" />
+  <meta property="og:image" content="{% if page.og_image %}{{ site.url }}{{ page.og_image }}{% else %}{{ site.url }}{{ site.seo_image }}{% endif %}" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{% if page.title %}{{ page.title }} | {{ site.title }}{% else %}{{ site.title }}{% endif %}" />
+  <meta name="twitter:description" content="{% if page.description %}{{ page.description | strip_html | strip_newlines | truncate: 160 }}{% else %}{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}{% endif %}" />
+  <meta name="twitter:image" content="{% if page.og_image %}{{ site.url }}{{ page.og_image }}{% else %}{{ site.url }}{{ site.seo_image }}{% endif %}" />
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}" />
+  {% if page.layout == 'post' %}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "{{ page.title | replace: '"', '\"' }}",
+      "description": "{% if page.description %}{{ page.description | strip_html | strip_newlines | truncate: 160 | replace: '"', '\"' }}{% else %}{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 | replace: '"', '\"' }}{% else %}{{ site.description | replace: '"', '\"' }}{% endif %}{% endif %}",
+      "datePublished": "{{ page.date | date: "%Y-%m-%d" }}",
+      "dateModified": "{{ page.date | date: "%Y-%m-%d" }}",
+      "mainEntityOfPage": "{{ site.url }}{{ page.url }}",
+      "author": {
+        "@type": "Person",
+        "name": "{{ site.author_name }}"
+      },
+      "publisher": {
+        "@type": "Person",
+        "name": "{{ site.author_name }}"
+      },
+      "image": "{% if page.og_image %}{{ site.url }}{{ page.og_image }}{% else %}{{ site.url }}{{ site.seo_image }}{% endif %}"
+    }
+  </script>
+  {% endif %}
+  {% if page.url == '/' %}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "{{ site.author_name }}",
+      "url": "{{ site.url }}/",
+      "image": "{{ site.url }}{{ site.seo_image }}",
+      "jobTitle": "{{ site.job_title }}",
+      "email": "mailto:{{ site.email }}",
+      "sameAs": [
+        "{{ site.social_github }}",
+        "{{ site.social_linkedin }}"
+      ]
+    }
+  </script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "{{ site.title }}",
+      "url": "{{ site.url }}/",
+      "description": "{{ site.description | replace: '"', '\"' }}"
+    }
+  </script>
+  {% endif %}
 </head>
