@@ -3,9 +3,9 @@
   link: "https://github.com/semihguresci/gpu-memory-access-benchmark"
   cta: "View repository"
 
-- title: "VulkanContainer"
+- title: "VulkanSceneRenderer"
   description: "Cross-platform Vulkan project covering core Vulkan features on Windows and Linux, built with CMake and vcpkg-based dependency management."
-  link: "https://github.com/semihguresci/VulkanContainer"
+  link: "https://github.com/semihguresci/VulkanSceneRenderer"
   cta: "View repository"
 
 - title: "vk-profiling-benchmark"
