@@ -4,13 +4,11 @@ date: 2026-04-06
 tags: [vulkan, graphics, performance, benchmark]
 ---
 
-# vk-bench: a Vulkan benchmark you can actually reason about
-
 Big graphics codebases are good at shipping features, but they are bad at answering narrow performance questions. Once frame time depends on scene streaming, asset formats, material systems, and background work, it becomes hard to tell what a single draw or dispatch really cost.
 
 `vk-bench` takes the opposite route. The repository is a deliberately small Vulkan micro-benchmark with one executable, a handful of controlled scenes, and JSON output that is simple enough to diff in CI or compare by hand. The point is not to simulate a game engine. The point is to make GPU experiments easy to repeat and easy to explain.
 
-Repository: [semihguresci/GpuProfilingPayground](https://github.com/semihguresci/GpuProfilingPayground)
+Repository: [semihguresci/vk-profiling-benchmark](https://github.com/semihguresci/vk-profiling-benchmark)
 
 ## Why this repository is useful
 
@@ -24,7 +22,7 @@ That gives the repository a good shape for regression tracking. When a number mo
 
 ## What the benchmark covers
 
-Today the executable exposes four scenes:
+Today the executable exposes three scenes:
 
 - `triangle`: minimal graphics path with one triangle by default, or `--triangles N` for controlled scaling.
 - `million-tris`: a raster-heavy draw of 1,000,000 triangle instances.

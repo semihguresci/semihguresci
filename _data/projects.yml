@@ -8,7 +8,7 @@
   link: "https://github.com/semihguresci/VulkanContainer"
   cta: "View repository"
 
-- title: "GPU Profiling Playground"
+- title: "vk-profiling-benchmark"
   description: "A focused playground for GPU profiling experiments, measurement workflows, and performance analysis across graphics workloads."
-  link: "https://github.com/semihguresci/GpuProfilingPayground"
+  link: "https://github.com/semihguresci/vk-profiling-benchmark"
   cta: "View repository"

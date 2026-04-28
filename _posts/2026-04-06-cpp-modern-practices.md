@@ -87,7 +87,6 @@ private:
 
 ## Performance Considerations
 
-- **Zero-cost abstractions**: Modern C++ features don't impact performance
 - **Compile-time computation**: Use constexpr for calculations
 - **Move semantics**: Efficient resource transfer
 - **Inline functions**: Reduce function call overhead
