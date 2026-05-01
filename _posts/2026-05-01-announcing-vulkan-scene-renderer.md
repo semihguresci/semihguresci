@@ -10,6 +10,8 @@ has reached the point where it can load production-style sample assets, render
 them through a modern deferred pipeline, and expose enough debug information to
 make rendering problems inspectable instead of mysterious.
 
+![Sponza hallway rendered in VulkanSceneRenderer](/assets/blog/vulkan-scene-renderer/sponza-hallway.jpg)
+
 ![Sponza lion relief rendered in VulkanSceneRenderer](/assets/blog/vulkan-scene-renderer/sponza-lion-relief.png)
 
 ## What It Renders
