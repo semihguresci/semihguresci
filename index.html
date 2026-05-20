@@ -196,6 +196,9 @@ layout: default
         {% if primary_tag == 'cpp' %}
           {% assign primary_tag_label = 'C++' %}
         {% endif %}
+        {% if primary_tag == 'gpu' %}
+          {% assign primary_tag_label = 'GPU' %}
+        {% endif %}
         <article class="card blog-card">
           <h3>{{ post.title }}</h3>
           <div class="blog-meta">
