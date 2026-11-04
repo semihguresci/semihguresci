@@ -1,1 +1,6 @@
 .preview/
+dist/
+output/
+tmp/
+__pycache__/
+*.pyc

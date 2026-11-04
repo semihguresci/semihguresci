@@ -1,113 +1,176 @@
 ---
-title: "Announcing VulkanSceneRenderer"
+title: "Building a Vulkan 1.4 scene renderer"
 date: 2026-05-01
+last_modified_at: 2026-10-23
+description: "A look at forward and deferred rendering, scene inspection, and GPU profiling in my C++23 and Vulkan 1.4 renderer."
+excerpt: "Forward and deferred rendering, scene inspection, and GPU profiling in a C++23 and Vulkan 1.4 scene engine."
 tags: [vulkan, graphics, renderer, gltf]
+cover_image: /assets/blog/vulkan-scene-renderer/current/flight-helmet-pbr.jpg
+cover_alt: "Flight Helmet rendered with physically based materials in VulkanSceneRenderer"
+cover_caption: "Repository capture · 4 October 2026 · Deferred raster, TAA, 1600 × 900 · Flight Helmet by Gary Hsu, CC0"
+og_image: /assets/blog/vulkan-scene-renderer/current/flight-helmet-pbr.jpg
 ---
 
-VulkanSceneRenderer is a C++23 Vulkan renderer built for real-time glTF scene
-rendering, physically based materials, and renderer experimentation. The project
-has reached the point where it can load production-style sample assets, render
-them through a modern deferred pipeline, and expose enough debug information to
-make rendering problems inspectable instead of mysterious.
+I’m building VulkanSceneRenderer to explore real-time graphics in C++23 and
+Vulkan 1.4. It supports forward and deferred rendering, GPU-driven visibility,
+layered physically based materials, and scenes ranging from glTF assets to
+BIM buildings and USD meshes.
 
-![Sponza hallway rendered in VulkanSceneRenderer](/assets/blog/vulkan-scene-renderer/sponza-hallway.jpg)
+I want to understand how each frame is produced and where its time goes. The
+project combines rendering with scene inspection, debug views, and GPU
+profiling. This article covers the current source; some features are newer
+than the downloadable TAA preview.
 
-![Sponza lion relief rendered in VulkanSceneRenderer](/assets/blog/vulkan-scene-renderer/sponza-lion-relief.png)
+## Forward and deferred rendering
 
-## What It Renders
+You can switch between forward and deferred rendering while keeping the same
+scenes, materials, lights, and editor controls. Both paths share environment
+lighting, culling, and telemetry.
 
-The renderer supports a deferred opaque path, a forward transparent path with
-order-independent transparency, and a glTF-focused material system. Current PBR
-coverage includes metallic-roughness, normal maps, occlusion, emissive textures,
-alpha mask and blend modes, specular, clearcoat, sheen, transmission, volume,
-iridescence, dispersion, and multiple-scattering compensation for specular IBL.
+The core targets Vulkan 1.4 with dynamic rendering and synchronization2.
+Vulkan-Hpp RAII manages Vulkan object lifetime, VMA manages GPU allocations,
+and Slang compiles shaders to SPIR-V 1.6. Bindless descriptors, buffer device
+addresses, indirect draws, and indirect draw counts support the rendering paths.
 
-![Default diagnostic scene](/assets/blog/vulkan-scene-renderer/diagnostic-default-scene.png)
+GPU compute passes cull objects outside the camera and use hierarchical depth
+to reject hidden geometry. Supported opaque draws then use indirect commands
+generated on the GPU. BIM scenes have a separate visibility and draw-compaction
+path. Transparent surfaces, double-sided geometry, and diagnostic draws keep
+their own draw paths.
 
-The diagnostic scene is intentionally simple: a triangle, cube, and procedural
-sphere under the same camera, environment, and lighting controls used by larger
-assets. It gives the renderer a fast sanity check for transforms, winding,
-depth, normals, lighting, and post-process output before moving on to heavier
-content.
-
-![Texture settings validation scene](/assets/blog/vulkan-scene-renderer/texture-settings-culling.png)
-
-## Under The Hood
-
-The frame is organized as a render graph rather than a single monolithic render
-function. `RendererFrontend` owns the frame-level orchestration, while focused
-managers own lighting, shadows, frame resources, culling, OIT, bloom,
-environment maps, scene data, and GPU allocations. `FrameRecorder` records the
-passes in graph order and keeps image layout transitions close to the pass that
-needs them.
-
-The current frame flow is:
+A simplified view of the frame is:
 
 ```text
-Depth prepass
-  -> Hi-Z / occlusion cull
-  -> G-buffer
-  -> shadow cascades
-  -> tile light cull
-  -> GTAO
-  -> deferred lighting + transparent OIT
-  -> bloom
-  -> post-process + debug output
+Scene providers: glTF / BIM / USD
+  -> GPU visibility + depth + Hi-Z
+  -> Forward raster OR deferred G-buffer + lighting
+  -> Transparency / OIT
+  -> Native HDR temporal resolve, when enabled
+  -> Exposure + bloom + display conversion
+  -> Scene inspection, overlays, and UI
 ```
 
-For materials, the renderer uses a compact bridge between object data and
-material data. Each object carries transform data, a normal matrix, bounds, and
-an `objectInfo` vector. `objectInfo.x` stores the material index. Full material
-factors, texture indices, texture transforms, and feature flags live in a
-`GpuMaterial` storage buffer, with bindless sampled images and sampler metadata
-in the scene descriptor set.
+`RendererFrontend` manages renderer lifetime and frame submission.
+`FrameRecorder` records the passes in render-graph order. Separate managers
+handle scenes, lighting, shadows, visibility, temporal rendering, and
+post-processing, along with the resources each system needs.
 
-That keeps draw submission object-index based while still letting shaders fetch
-the complete glTF material when needed:
+## Materials, lighting, and temporal rendering
 
-```text
-glTF material
-  -> container::material::Material
-  -> container::gpu::GpuMaterial
-  -> shaders/material_data_common.slang::GpuMaterial
+The glTF material system covers metallic-roughness PBR, normal and emissive
+maps, alpha masks, specular, clearcoat, sheen, transmission and volume,
+iridescence, and dispersion. Refraction and some layered effects remain
+approximations.
 
-Scene object
-  -> ObjectData.objectInfo.x
-  -> uMaterials[objectInfo.x]
-```
+Lighting combines HDR image-based lighting, cascaded directional and local
+shadow maps, tiled light culling, and GTAO for ambient occlusion. Rectangular
+and disk lights use linearly transformed cosine (LTC) integration. When the
+lookup tables or material conditions do not support it, they use sampled
+lighting.
 
-Opaque and alpha-masked geometry write compact G-buffer channels first. Deferred
-lighting then combines per-pixel data with material-index lookups for layered
-terms that do not fit cleanly in the G-buffer, such as clearcoat, sheen,
-iridescence, and colored dielectric specular. Transparent and transmission
-materials use the forward path, where the full material record is available
-during shading.
+Both rendering paths support native-resolution HDR temporal anti-aliasing
+(TAA). It uses signed motion, surface identity, depth, and reactive masks to
+decide when previous frames can contribute. Only successfully submitted frames
+become history. TAA is optional and currently works at 1× samples; MSAA is a
+separate option in both paths. Transparent regions and surfaces without
+reliable history use the current frame.
 
-![Sponza debug overview with material and normal views](/assets/blog/vulkan-scene-renderer/sponza-debug-overview.png)
+## Beyond glTF: BIM and USD inspection
 
-The debug overview is part of the workflow. It makes the renderer show final
-lighting alongside material, depth, normal, and intermediate views, which is
-useful when investigating problems like reversed winding, incorrect sampler
-state, culling mistakes, or unexpected PBR channel packing.
+Alongside a primary glTF/GLB scene, the viewer loads `.bim`, STEP IFC, IFCX,
+and USD/USDA/USDC/USDZ mesh files. BIM geometry and metadata stay in a dedicated
+provider, separate from the primary glTF buffers.
 
-The next steps are to keep tightening correctness and visual quality: more
-reference scenes, better glass and transmission, stronger visual baselines,
-further GPU-driven rendering work, and continued cleanup around renderer
-ownership boundaries.
+Native IFC import handles a growing set of representations. When an import is
+partial, it reports the affected source entities and products. USD mesh
+loading uses TinyUSDZ. Both import paths have documented coverage limits.
 
-To build it on Windows:
+![Tekla House IFCX building rendered in VulkanSceneRenderer](/assets/blog/vulkan-scene-renderer/current/bim-tekla-house.jpg)
+
+You can select and move objects in the viewport, browse the scene hierarchy,
+and search BIM elements to inspect their properties and relationships. Filters,
+section cuts, and measurement tools help inspect larger models. Models are
+decoded in the background before the render thread installs their GPU
+resources. A failed load leaves the current scene open.
+
+The current source also includes optional CPU rigid-body physics through Jolt.
+You can attach box colliders to scene meshes or BIM/USD products, then play,
+pause, step, or reset the simulation. Fixed, hinge, and slider joints support
+simple connected mechanisms, with limits and motors for hinges and sliders.
+The tools focus on these rigid-body interactions.
+
+## Ray queries and experimental diffuse GI
+
+Two optional lighting features share acceleration structures built from glTF,
+BIM, and USD geometry.
+
+**Ray-query shadows** trace the scene geometry to check whether lights are
+blocked. Directional and local lights support hard shadows; rectangular and
+disk emitters can produce sampled soft shadows.
+
+**Experimental dynamic diffuse global illumination (DDGI)** estimates indirect
+lighting using probes and a bounded ray budget. It stores irradiance and
+visibility in atlases, with controls for scene fitting, probe classification,
+and relocation. Probe volumes can blend together and follow the camera.
+
+Both require ray-query-capable hardware. Raster shadows are the default and
+fallback. DDGI is off by default and still under development. These features
+extend the raster pipelines; a full path tracer, Gaussian splatting, and
+radiance-field rendering are not implemented.
+
+## Debugging and profiling
+
+Material, normal, depth, shadow, transparency, temporal, and intermediate-target
+views help trace rendering problems back to the data and pass responsible.
+
+![Flight Helmet across VulkanSceneRenderer diagnostic render targets](/assets/blog/vulkan-scene-renderer/current/debug-render-targets.jpg)
+
+The telemetry panel shows CPU phase timings and GPU pass timings alongside
+render-graph state, culling and light counters, synchronization, and resource
+capacity. GPU timing uses performance queries when supported and falls back
+to timestamp queries. Deterministic captures save telemetry in accompanying
+files so runs can be compared.
+
+The repository includes CPU tests and opt-in GPU validation for rendering
+conventions, temporal history, model loading, lighting, and scene behavior.
+Recorded quality and performance results apply to the listed scenes, devices,
+and settings.
+
+## Build and explore
+
+Windows and Linux source-build presets are provided. On Windows, use a Visual
+Studio Developer Command Prompt with a C++23 compiler, the Vulkan 1.4 SDK, and
+`VCPKG_ROOT` configured:
 
 ```powershell
 cmake --preset windows-release
 cmake --build out/build/windows-release --target VulkanSceneRenderer --config Release
-```
-
-To run the test suite:
-
-```powershell
 ctest --test-dir out/build/windows-release --output-on-failure
 ```
 
-VulkanSceneRenderer is now a working foundation for renderer experiments:
-grounded in glTF assets, explicit about its frame graph, and instrumented enough
-to make every rendered image explainable.
+Run the two raster techniques from the built runtime directory:
+
+```powershell
+.\VulkanSceneRenderer.exe --render-technique deferred-raster --taa --msaa 1
+.\VulkanSceneRenderer.exe --render-technique forward-raster --msaa 4
+```
+
+Use a current source build for ray-query shadows, DDGI, and physics. The
+published `v0.2.0-taa-preview` is an earlier snapshot and does not include all
+of the features described here.
+
+[Explore VulkanSceneRenderer on GitHub](https://github.com/semihguresci/VulkanSceneRenderer)
+
+## Capture notes and credits
+
+The images on this page are repository captures from 4 October 2026, using
+a Release build on an NVIDIA GeForce RTX 2080 SUPER with Vulkan 1.4.325,
+deferred raster rendering, TAA, and 1× MSAA at 1600 × 900. They illustrate
+material rendering, IFCX content, and diagnostics; they do not demonstrate
+the later ray-query or DDGI additions.
+
+Flight Helmet is by Gary Hsu (CC0). Tekla House is from buildingSMART's IFC 5
+development examples. The environment is Poly Haven's Citrus Orchard Road
+(Pure Sky), CC0. The repository records
+[asset attribution and usage notes](https://github.com/semihguresci/VulkanSceneRenderer/blob/main/docs/images/readme/README.md)
+and [capture settings](https://github.com/semihguresci/VulkanSceneRenderer/blob/main/docs/images/readme/capture-settings.json).

@@ -1,0 +1,26 @@
+Source: VulkanSceneRenderer repository, docs/images/readme
+Copied without modification for the local website article update on 2026-10-23.
+
+All three images were captured directly by VulkanSceneRenderer on 2026-10-04,
+using a Visual Studio Release build matching source commit
+65b58c1514281105a3d9a6733712ff4d33ae9ea0, NVIDIA GeForce RTX 2080 SUPER,
+Vulkan 1.4.325, deferred raster, TAA, 1x MSAA, 1600x900. The repository's native
+PNG captures were converted there to JPEG at quality 93 with no cropping,
+retouching, or generated image content. They predate later renderer additions.
+
+flight-helmet-pbr.jpg / debug-render-targets.jpg:
+Flight Helmet by Gary Hsu, CC0-1.0.
+https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/FlightHelmet
+
+bim-tekla-house.jpg:
+Tekla House, buildingSMART IFC 5 development educational/testing examples.
+https://github.com/buildingSMART/IFC5-development/tree/1a63082ada967c683cfacee2005f8f749c8e1b79/examples/Tekla%20House
+Usage notes:
+https://github.com/buildingSMART/IFC5-development/blob/1a63082ada967c683cfacee2005f8f749c8e1b79/README.md
+
+Environment: Poly Haven, Citrus Orchard Road (Pure Sky), CC0.
+https://polyhaven.com/a/citrus_orchard_road_puresky
+
+Full provenance and settings are retained in the renderer source:
+docs/images/readme/README.md
+docs/images/readme/capture-settings.json

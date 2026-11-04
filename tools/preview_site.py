@@ -789,7 +789,7 @@ def load_posts(source_root: Path) -> list[dict[str, Any]]:
 
         slug = filename_match.group(1)
         content_html = render_markdown(body)
-        excerpt = extract_excerpt(body)
+        excerpt = str(metadata.get("excerpt") or "").strip() or extract_excerpt(body)
         post = {
             **metadata,
             "slug": slug,
@@ -922,12 +922,18 @@ def build_preview(source_root: Path, output_root: Path) -> None:
     clear_directory(output_root)
 
     copy_static_files(source_root, output_root)
+    write_output(output_root / ".nojekyll", "")
 
     home_html = render_page(engine, source_root / "index.html", {"url": "/"})
     blog_html = render_page(engine, source_root / "blog" / "index.html", {"url": "/blog/"})
 
     write_output(output_root / "index.html", home_html)
     write_output(output_root / "blog" / "index.html", blog_html)
+
+    cv_path = source_root / "cv" / "index.html"
+    if cv_path.exists():
+        cv_html = render_page(engine, cv_path, {"url": "/cv/"})
+        write_output(output_root / "cv" / "index.html", cv_html)
 
     extra_templates = [
         ("robots.txt", "/robots.txt"),

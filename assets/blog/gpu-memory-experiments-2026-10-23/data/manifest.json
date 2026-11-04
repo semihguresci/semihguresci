@@ -1,0 +1,1131 @@
+{
+  "snapshot_date": "2026-10-23",
+  "measurement_revision": "2026-10-23-integrity-fixes",
+  "repository": "https://github.com/semihguresci/gpu-memory-access-benchmark",
+  "provenance_scope": "Exact local working-tree collection; base Git commit alone does not identify the measured build.",
+  "gpu_name": "NVIDIA GeForce RTX 2080 SUPER",
+  "driver_version_display": "610.88",
+  "vulkan_api_version": "1.4.341",
+  "timed_iterations": 5,
+  "warmup_iterations": 2,
+  "scratch_budget": "32 MiB total payload per experiment, except 34 at 128 MiB; allocation padding is separate.",
+  "correctness_scope": "All exported flags pass their implemented oracles. This does not certify independent algorithm or format correctness; see known_issues.",
+  "known_issues": [
+    {
+      "experiment_id": "10_scalar_type_width_sweep",
+      "variant": "fp16_storage",
+      "status": "Known host conversion defect in this frozen collection; excluded from precision and performance recommendations.",
+      "details": "Signed adjusted_exponent is compared to unsigned 0x1FU; zero and sufficiently small finite values can become infinity. Host input packing and the format-specific oracle share this converter. Common-fp32 error exposes the discrepancy.",
+      "independent_boundary_reproduction": "data/reproduce_fp16_packing.py",
+      "reproduction_output": "data/reproduce_fp16_packing.txt"
+    }
+  ],
+  "files": [
+    {
+      "path": "data/01_dispatch_basics.json",
+      "kind": "raw_export",
+      "experiment_id": "01_dispatch_basics",
+      "sha256": "ee10b6ecdc9a0637438c55f633ca5b9bde43e87062b3eec46fb415a8dd792552",
+      "bytes": 463744
+    },
+    {
+      "path": "data/02_local_size_sweep.json",
+      "kind": "raw_export",
+      "experiment_id": "02_local_size_sweep",
+      "sha256": "9e0ef84ecb976e90441a1073871d12c09e15cd7cb1485c0b551640fccc53c7de",
+      "bytes": 264242
+    },
+    {
+      "path": "data/03_memory_copy_baseline.json",
+      "kind": "raw_export",
+      "experiment_id": "03_memory_copy_baseline",
+      "sha256": "157ed88666acbe1ef944da59f92569a92df1bc01090aa9bdc9a8aa5a255a4dd4",
+      "bytes": 36345
+    },
+    {
+      "path": "data/04_sequential_indexing.json",
+      "kind": "raw_export",
+      "experiment_id": "04_sequential_indexing",
+      "sha256": "212d3fa2a9abe58b924e8640bcb9b527a00eb502faea944f962bbf55dea02730",
+      "bytes": 282049
+    },
+    {
+      "path": "data/05_global_id_mapping_variants.json",
+      "kind": "raw_export",
+      "experiment_id": "05_global_id_mapping_variants",
+      "sha256": "8a3ab37759432b2aacbc6e95ee09af2c2d2485dbb0ede104e1ba425d0eeb22ab",
+      "bytes": 958310
+    },
+    {
+      "path": "data/06_aos_vs_soa.json",
+      "kind": "raw_export",
+      "experiment_id": "06_aos_vs_soa",
+      "sha256": "64d975168597372b6f48221fac053e32d1317433fd528ce4f42993a2a7720862",
+      "bytes": 26437
+    },
+    {
+      "path": "data/07_aosoa_blocked_layout.json",
+      "kind": "raw_export",
+      "experiment_id": "07_aosoa_blocked_layout",
+      "sha256": "f25905e88aacb38d993e7ed91dabeaa1bafe60e594a7d8fa4dc85dd3575aa201",
+      "bytes": 52794
+    },
+    {
+      "path": "data/08_std430_std140_packed.json",
+      "kind": "raw_export",
+      "experiment_id": "08_std430_std140_packed",
+      "sha256": "9e0020f986e2d3398c5eef30728d57ef1f3c3825b57e5d66ae1b398657c6f518",
+      "bytes": 43266
+    },
+    {
+      "path": "data/09_vec3_vec4_padding_costs.json",
+      "kind": "raw_export",
+      "experiment_id": "09_vec3_vec4_padding_costs",
+      "sha256": "3462fb62e066e2b95e23c153c60860d5c09290033b02cad5989ae9cf76536501",
+      "bytes": 43800
+    },
+    {
+      "path": "data/10_scalar_type_width_sweep.json",
+      "kind": "raw_export",
+      "experiment_id": "10_scalar_type_width_sweep",
+      "sha256": "da3e62fac8f29f093002a89d932eafb82a7971da33b2c9ff9bce79ee392e508c",
+      "bytes": 40428
+    },
+    {
+      "path": "data/11_coalesced_vs_strided.json",
+      "kind": "raw_export",
+      "experiment_id": "11_coalesced_vs_strided",
+      "sha256": "49f444121564c52cd645cfcf645a0dade1d988ae4ef93aded1038f1dd188bb6c",
+      "bytes": 25724
+    },
+    {
+      "path": "data/12_gather_access_pattern.json",
+      "kind": "raw_export",
+      "experiment_id": "12_gather_access_pattern",
+      "sha256": "4a905a0a20a628afc0ef241921e8f055dde3e2668e7a51a02478ccb80d6aab21",
+      "bytes": 18192
+    },
+    {
+      "path": "data/13_scatter_access_pattern.json",
+      "kind": "raw_export",
+      "experiment_id": "13_scatter_access_pattern",
+      "sha256": "e1c93e21b71259eb15d0b66f197fc3dd62774dfde4d12d3e20236ff2001d7441",
+      "bytes": 14355
+    },
+    {
+      "path": "data/14_read_reuse_cache_locality.json",
+      "kind": "raw_export",
+      "experiment_id": "14_read_reuse_cache_locality",
+      "sha256": "fdc5d35e57c894a4ed5e4a511dde5ef0d6334f01abb7274d801ebe5d507d0d5a",
+      "bytes": 26520
+    },
+    {
+      "path": "data/15_bandwidth_saturation_sweep.json",
+      "kind": "raw_export",
+      "experiment_id": "15_bandwidth_saturation_sweep",
+      "sha256": "f0d11f3d9222b2f07db66f1231df267cefc5f8b0642fb5981b7fa1bfdada45bc",
+      "bytes": 40624
+    },
+    {
+      "path": "data/16_shared_memory_tiling.json",
+      "kind": "raw_export",
+      "experiment_id": "16_shared_memory_tiling",
+      "sha256": "7c707edf400ef6094920065ea810473bf2d369deb8869f4d6805adf15310b777",
+      "bytes": 35482
+    },
+    {
+      "path": "data/17_tile_size_sweep.json",
+      "kind": "raw_export",
+      "experiment_id": "17_tile_size_sweep",
+      "sha256": "40a52115316e6ae47f41b000e9751a0e96a20369fd287333b6c2efc7b36acab7",
+      "bytes": 34739
+    },
+    {
+      "path": "data/18_register_pressure_proxy.json",
+      "kind": "raw_export",
+      "experiment_id": "18_register_pressure_proxy",
+      "sha256": "a1e20671d0042f54e65ef85c7f2d621d393d6ae949d5893781c217989e5c8ebd",
+      "bytes": 18852
+    },
+    {
+      "path": "data/19_branch_divergence.json",
+      "kind": "raw_export",
+      "experiment_id": "19_branch_divergence",
+      "sha256": "28afd4285018bfd065a45ed5092c20b2923be3f1a8318a3fd5afc44e783f95d6",
+      "bytes": 25218
+    },
+    {
+      "path": "data/20_barrier_synchronization_cost.json",
+      "kind": "raw_export",
+      "experiment_id": "20_barrier_synchronization_cost",
+      "sha256": "be0150862ce0f3e3016430e1ba50ba4e3d0c44d71c00c8760bf902740914f07a",
+      "bytes": 47299
+    },
+    {
+      "path": "data/21_parallel_reduction.json",
+      "kind": "raw_export",
+      "experiment_id": "21_parallel_reduction",
+      "sha256": "6f672a89347b5d6617fe044b1fd981c450632af2741d54bd74e50599556df698",
+      "bytes": 45734
+    },
+    {
+      "path": "data/22_prefix_sum_scan.json",
+      "kind": "raw_export",
+      "experiment_id": "22_prefix_sum_scan",
+      "sha256": "2a462b4faad621b43a507733e7aa70d0f6731f8f31a52587a3f5ee8b1e4fbf92",
+      "bytes": 17501
+    },
+    {
+      "path": "data/23_histogram_atomic_contention.json",
+      "kind": "raw_export",
+      "experiment_id": "23_histogram_atomic_contention",
+      "sha256": "4547cdfc5cbf5058ca7d89486a27b3b45f8ca740a02cc8f8b89e1067ff66ae74",
+      "bytes": 28395
+    },
+    {
+      "path": "data/24_stream_compaction.json",
+      "kind": "raw_export",
+      "experiment_id": "24_stream_compaction",
+      "sha256": "a92d4123ca3f76362e848deb2cc700c5a1338f913592b3096d4404805695e2f1",
+      "bytes": 57301
+    },
+    {
+      "path": "data/25_spatial_binning_clustered_culling_capstone.json",
+      "kind": "raw_export",
+      "experiment_id": "25_spatial_binning_clustered_culling_capstone",
+      "sha256": "156a12d09c96e71acc285ff2d6827997cacf6dfc2c0eb26a58066b792ac77a22",
+      "bytes": 30473
+    },
+    {
+      "path": "data/26_warp_level_coalescing_alignment.json",
+      "kind": "raw_export",
+      "experiment_id": "26_warp_level_coalescing_alignment",
+      "sha256": "137af0f969ec616a09fc891c7fb24c5fc49a986a01722170ebb4447cdea03ef0",
+      "bytes": 29718
+    },
+    {
+      "path": "data/27_cache_thrashing_random_vs_sequential.json",
+      "kind": "raw_export",
+      "experiment_id": "27_cache_thrashing_random_vs_sequential",
+      "sha256": "79bd517a2aba53cdb2ed5f2614f969c4b4e8d576fea47ebdf7a89cffb52bb432",
+      "bytes": 11271
+    },
+    {
+      "path": "data/28_device_local_vs_host_visible_heap_placement.json",
+      "kind": "raw_export",
+      "experiment_id": "28_device_local_vs_host_visible_heap_placement",
+      "sha256": "e6b88aa212f9a834474e65cfd09493b5952b67faa3ce37d41534afcbcc34fe1e",
+      "bytes": 18780
+    },
+    {
+      "path": "data/29_shared_memory_bank_conflict_study.json",
+      "kind": "raw_export",
+      "experiment_id": "29_shared_memory_bank_conflict_study",
+      "sha256": "2c3cd8aa7afcf17bf1bce0794e0e93b67bdfd245b68ff62e6e64bb4589d136b5",
+      "bytes": 25614
+    },
+    {
+      "path": "data/30_subgroup_reduction_variants.json",
+      "kind": "raw_export",
+      "experiment_id": "30_subgroup_reduction_variants",
+      "sha256": "77725e99a1a4b8fd5bd1d4d263d6e074ed537c6a9e7bc56c85080eab60dd5b2a",
+      "bytes": 12865
+    },
+    {
+      "path": "data/31_subgroup_scan_variants.json",
+      "kind": "raw_export",
+      "experiment_id": "31_subgroup_scan_variants",
+      "sha256": "8d0726126155104129c73f73e48aa3611248bfea0b8f209431395d9d459b7209",
+      "bytes": 20122
+    },
+    {
+      "path": "data/32_subgroup_stream_compaction_variants.json",
+      "kind": "raw_export",
+      "experiment_id": "32_subgroup_stream_compaction_variants",
+      "sha256": "3944981dec6104fcc8ec3321f0a25cf1a7215b0da21b85844f6ef42c117c84af",
+      "bytes": 42411
+    },
+    {
+      "path": "data/33_two_dimensional_locality_transpose_study.json",
+      "kind": "raw_export",
+      "experiment_id": "33_two_dimensional_locality_transpose_study",
+      "sha256": "76c5bbce82a5679aaf972ffd0114e78b8709b200688eb9a7a03eb0b89e05e8ae",
+      "bytes": 13506
+    },
+    {
+      "path": "data/34_radix_sort_gpu.json",
+      "kind": "raw_export",
+      "experiment_id": "34_radix_sort_gpu",
+      "sha256": "2efe04f313dc58282ac897228e8999c640c42ad962615681c7b877103514df7c",
+      "bytes": 35817
+    },
+    {
+      "path": "data/35_occupancy_modeling.json",
+      "kind": "raw_export",
+      "experiment_id": "35_occupancy_modeling",
+      "sha256": "35e1c82894fe390eec59315f6130779555195e0b92d91e00fa86233134b8c36b",
+      "bytes": 17255
+    },
+    {
+      "path": "data/36_bvh_node_layout.json",
+      "kind": "raw_export",
+      "experiment_id": "36_bvh_node_layout",
+      "sha256": "c96d7270059e2b158e469c79d50a17a6ea26a6e464c07b399502add06e00b96c",
+      "bytes": 10789
+    },
+    {
+      "path": "data/37_frame_to_frame_coherence.json",
+      "kind": "raw_export",
+      "experiment_id": "37_frame_to_frame_coherence",
+      "sha256": "b76ffffebf663943c4388101e8681f3a854d1eb4ce2bbace35d626f4b95096dd",
+      "bytes": 18271
+    },
+    {
+      "path": "data/38_frustum_vs_clustered_culling.json",
+      "kind": "raw_export",
+      "experiment_id": "38_frustum_vs_clustered_culling",
+      "sha256": "8badd9880dfb18eae7281ef9302f0e51709eb7955fdaf84032aec8c02b73aff7",
+      "bytes": 43216
+    },
+    {
+      "path": "data/39_tiled_light_assignment.json",
+      "kind": "raw_export",
+      "experiment_id": "39_tiled_light_assignment",
+      "sha256": "2dcbea1b305b882e96be636a619db5ef8859592b27417495e94a7aed90f0535a",
+      "bytes": 93852
+    },
+    {
+      "path": "data/40_persistent_threads_work_queues.json",
+      "kind": "raw_export",
+      "experiment_id": "40_persistent_threads_work_queues",
+      "sha256": "73f58ab222dccf7e23430513e55200123d8158fdbbf7a3a627d300b021abeaa0",
+      "bytes": 44821
+    },
+    {
+      "path": "data/41_subgroup_operations_study.json",
+      "kind": "raw_export",
+      "experiment_id": "41_subgroup_operations_study",
+      "sha256": "bb5e79ee4be4f40cc176b4fd33afdfbb24495363d906a708a4f7c10633535830",
+      "bytes": 18820
+    },
+    {
+      "path": "data/42_async_compute_overlap.json",
+      "kind": "raw_export",
+      "experiment_id": "42_async_compute_overlap",
+      "sha256": "bcab2ee35f7a9d83106d085320b4fa9771771436883c10f24680e9455d799915",
+      "bytes": 14715
+    },
+    {
+      "path": "data/43_ray_friendly_memory_layouts.json",
+      "kind": "raw_export",
+      "experiment_id": "43_ray_friendly_memory_layouts",
+      "sha256": "8aaa2fc8c56b6fbcbb045d7b1f3bb068fb373142d02dca39adb00677e41067ca",
+      "bytes": 14591
+    },
+    {
+      "path": "data/44_gpu_driven_pipeline_blocks.json",
+      "kind": "raw_export",
+      "experiment_id": "44_gpu_driven_pipeline_blocks",
+      "sha256": "3ae05080055a04b0c5e73394f5a5a28abfc9ecefcd9aff917809277e57eb5895",
+      "bytes": 15329
+    },
+    {
+      "path": "data/45_cross_gpu_reproducibility.json",
+      "kind": "raw_export",
+      "experiment_id": "45_cross_gpu_reproducibility",
+      "sha256": "6cc19d732af9c92fd9418cac63bfa7236a3da799aba26707d8424b959eb3d874",
+      "bytes": 21485
+    },
+    {
+      "path": "data/summary.csv",
+      "kind": "all_case_medians",
+      "sha256": "700d47696adf8c9fc3384a11395d41ee125bcfa799e801b420c98f35cb1fde48",
+      "rows": 1041,
+      "bytes": 249771
+    },
+    {
+      "path": "charts/aos_vs_soa_gpu_ms_vs_size.png",
+      "kind": "verified_chart",
+      "experiment_id": "06_aos_vs_soa",
+      "sha256": "f55185b4ed34b2885617e70b38d9d116b2e3244dfafbf856d10c1657c631d23e",
+      "bytes": 61971
+    },
+    {
+      "path": "charts/async_compute_overlap_ms.png",
+      "kind": "verified_chart",
+      "experiment_id": "42_async_compute_overlap",
+      "sha256": "75190df8c59b7bf79b49d94c64cff32a50978ace9febc0693e064f3a74ff8fb7",
+      "bytes": 67627
+    },
+    {
+      "path": "charts/bank_conflict_gpu_ms.png",
+      "kind": "verified_chart",
+      "experiment_id": "29_shared_memory_bank_conflict_study",
+      "sha256": "0612e3833bd21c11e678c942c466f8b7f086c2813362e558588d82ee443a00c1",
+      "bytes": 49022
+    },
+    {
+      "path": "charts/barrier_synchronization_cost_median_gpu_ms.png",
+      "kind": "verified_chart",
+      "experiment_id": "20_barrier_synchronization_cost",
+      "sha256": "088243621521e89295c0628c3ddaf34f5710d04a013da7e3c435ebf4d6912c37",
+      "bytes": 93814
+    },
+    {
+      "path": "charts/coalesced_vs_strided_median_gpu_ms.png",
+      "kind": "verified_chart",
+      "experiment_id": "11_coalesced_vs_strided",
+      "sha256": "ea6c49c0221515e9426e0530607cd270efd84363c59e92856d9bdd780342033f",
+      "bytes": 53340
+    },
+    {
+      "path": "charts/cross_gpu_reproducibility_ms.png",
+      "kind": "verified_chart",
+      "experiment_id": "45_cross_gpu_reproducibility",
+      "sha256": "8c410b83e086171533b20938296ab466966ef635c308a21366cc2b6c5ab3f09b",
+      "bytes": 67144
+    },
+    {
+      "path": "charts/dispatch_basics_time_throughput.png",
+      "kind": "verified_chart",
+      "experiment_id": "01_dispatch_basics",
+      "sha256": "34e83f33fff422f7d46006789d290db75b9be2b744f58e1395680267b3a59267",
+      "bytes": 272025
+    },
+    {
+      "path": "charts/frame_to_frame_coherence_ms.png",
+      "kind": "verified_chart",
+      "experiment_id": "37_frame_to_frame_coherence",
+      "sha256": "43d1f19b083ca60e2a400b3ed03c7afc7ca8402197ae73deb7619cc02558e973",
+      "bytes": 44645
+    },
+    {
+      "path": "charts/gather_access_pattern_median_gpu_ms.png",
+      "kind": "verified_chart",
+      "experiment_id": "12_gather_access_pattern",
+      "sha256": "727b073da09e899f62c07f47b8dc9509e618d7b217b9780b99da96979eef0683",
+      "bytes": 52134
+    },
+    {
+      "path": "charts/heap_placement_gpu_path_ms.png",
+      "kind": "verified_chart",
+      "experiment_id": "28_device_local_vs_host_visible_heap_placement",
+      "sha256": "1c47ffdd0e299197dd4e72ea2c031956d298a838fd636d6a4721c5b48c37ebec",
+      "bytes": 29276
+    },
+    {
+      "path": "charts/histogram_atomic_contention_median_gpu_ms.png",
+      "kind": "verified_chart",
+      "experiment_id": "23_histogram_atomic_contention",
+      "sha256": "bb36b7256ba34812dc79d82e0c46afa5f0935cd917701dd9afcf9220540d9d05",
+      "bytes": 41655
+    },
+    {
+      "path": "charts/local_size_sweep_gpu_ms_vs_local_size.png",
+      "kind": "verified_chart",
+      "experiment_id": "02_local_size_sweep",
+      "sha256": "b6e01e15241fad2c6f8bb2e2198982df9de50e9cfc6f8cda76f412a4e2398331",
+      "bytes": 203864
+    },
+    {
+      "path": "charts/occupancy_modeling_gpu_ms.png",
+      "kind": "verified_chart",
+      "experiment_id": "35_occupancy_modeling",
+      "sha256": "d55ba7a09578bd0a7039655d0961623a3cc9773d06b0969cedeb6b77e569d80a",
+      "bytes": 78856
+    },
+    {
+      "path": "charts/parallel_reduction_median_gpu_ms.png",
+      "kind": "verified_chart",
+      "experiment_id": "21_parallel_reduction",
+      "sha256": "65c229cb0d19e4ea384b20cb49dc3deb3bad5ee0ae4ee6e2c21448dec8f21fb4",
+      "bytes": 68218
+    },
+    {
+      "path": "charts/persistent_threads_work_queues_ms.png",
+      "kind": "verified_chart",
+      "experiment_id": "40_persistent_threads_work_queues",
+      "sha256": "abefc0aa9e3887fee02b62e7802687517501b769d9b6d9b61ca035d97c13a512",
+      "bytes": 95418
+    },
+    {
+      "path": "charts/radix_sort_gpu_ms.png",
+      "kind": "verified_chart",
+      "experiment_id": "34_radix_sort_gpu",
+      "sha256": "42bee95fc05865a138e68efbc5cf615c7b5d92165c3f203aa3c22f33385b191b",
+      "bytes": 72576
+    },
+    {
+      "path": "charts/read_reuse_cache_locality_median_gpu_ms.png",
+      "kind": "verified_chart",
+      "experiment_id": "14_read_reuse_cache_locality",
+      "sha256": "03df498a0c3348dd5495412d90fd26712bf9033c88f20ad352d05257d152bf48",
+      "bytes": 49362
+    },
+    {
+      "path": "charts/register_pressure_proxy_median_gpu_ms.png",
+      "kind": "verified_chart",
+      "experiment_id": "18_register_pressure_proxy",
+      "sha256": "a0925050a3091a37d083366f154716d4e3a5ae5ceb2c410bd0cc760c45bc234e",
+      "bytes": 32452
+    },
+    {
+      "path": "charts/scalar_type_width_sweep_error_vs_fp32.png",
+      "kind": "verified_chart",
+      "experiment_id": "10_scalar_type_width_sweep",
+      "sha256": "f522518d11f99029d86b0cbcd0de1dabfbd353a2a64c1873e9510d89e97d208e",
+      "bytes": 50167
+    },
+    {
+      "path": "charts/shared_memory_tiling_median_gpu_ms.png",
+      "kind": "verified_chart",
+      "experiment_id": "16_shared_memory_tiling",
+      "sha256": "9d589385bd5ce2d402524cebcfd586a6391d852a92f53104a5a8f74a4dc7ce2b",
+      "bytes": 90332
+    },
+    {
+      "path": "charts/std430_std140_packed_layout_footprint.png",
+      "kind": "verified_chart",
+      "experiment_id": "08_std430_std140_packed",
+      "sha256": "3d73a9c242acd41630f186d684c2ca52da7b635e0723255a18a26a8fa662ff9c",
+      "bytes": 53276
+    },
+    {
+      "path": "charts/stream_compaction_median_gpu_ms.png",
+      "kind": "verified_chart",
+      "experiment_id": "24_stream_compaction",
+      "sha256": "e9c8bf418f14c388b19b41414aa532acb74f013132a2e1fd03585b51baa6bfd3",
+      "bytes": 35269
+    },
+    {
+      "path": "charts/subgroup_scan_gpu_ms.png",
+      "kind": "verified_chart",
+      "experiment_id": "31_subgroup_scan_variants",
+      "sha256": "e841b5c2e54faafcc0488e59e05fccf43414aa2e71aab46456eb4c86a16313f2",
+      "bytes": 61870
+    },
+    {
+      "path": "charts/tiled_light_assignment_ms.png",
+      "kind": "verified_chart",
+      "experiment_id": "39_tiled_light_assignment",
+      "sha256": "457d2a41469c8336e9091b801cdc661eb65743a3166a53ad732ee2688ff16e7a",
+      "bytes": 106310
+    },
+    {
+      "path": "charts/transpose_gpu_ms.png",
+      "kind": "verified_chart",
+      "experiment_id": "33_two_dimensional_locality_transpose_study",
+      "sha256": "e82396a15667083b18e827be0b4688f8c9070dddc1cadf37ebf0bb495dcb1ec0",
+      "bytes": 45752
+    },
+    {
+      "path": "charts/warp_level_coalescing_alignment_median_gpu_ms.png",
+      "kind": "verified_chart",
+      "experiment_id": "26_warp_level_coalescing_alignment",
+      "sha256": "5bb7f803ab9d9ae106254557c32ed84739ba59f7e48e655581ae44eb02c06bcc",
+      "bytes": 70019
+    },
+    {
+      "path": "data/reproduce_fp16_packing.py",
+      "kind": "independent_boundary_reproduction",
+      "sha256": "787ab29c315ade5a0611770a919ccb220b982ac6729527dc9db455db6a847294",
+      "bytes": 2072
+    },
+    {
+      "path": "data/reproduce_fp16_packing.txt",
+      "kind": "independent_boundary_reproduction",
+      "sha256": "87bca3ca528feb008acf9a46c7f8b4972245b66c74b2386ee8e31afc9c056217",
+      "bytes": 275
+    }
+  ],
+  "experiments": [
+    {
+      "id": "01_dispatch_basics",
+      "row_count": 1040,
+      "raw_sha256": "ee10b6ecdc9a0637438c55f633ca5b9bde43e87062b3eec46fb415a8dd792552",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "a6fe53965b9a2fa94925a89ec2e10910d9a19047f5a66ae0fe48951bea1d33e0",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "02_local_size_sweep",
+      "row_count": 540,
+      "raw_sha256": "9e0ef84ecb976e90441a1073871d12c09e15cd7cb1485c0b551640fccc53c7de",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "a6fe53965b9a2fa94925a89ec2e10910d9a19047f5a66ae0fe48951bea1d33e0",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "03_memory_copy_baseline",
+      "row_count": 75,
+      "raw_sha256": "157ed88666acbe1ef944da59f92569a92df1bc01090aa9bdc9a8aa5a255a4dd4",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "a6fe53965b9a2fa94925a89ec2e10910d9a19047f5a66ae0fe48951bea1d33e0",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "04_sequential_indexing",
+      "row_count": 520,
+      "raw_sha256": "212d3fa2a9abe58b924e8640bcb9b527a00eb502faea944f962bbf55dea02730",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "a6fe53965b9a2fa94925a89ec2e10910d9a19047f5a66ae0fe48951bea1d33e0",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "05_global_id_mapping_variants",
+      "row_count": 1560,
+      "raw_sha256": "8a3ab37759432b2aacbc6e95ee09af2c2d2485dbb0ede104e1ba425d0eeb22ab",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "a6fe53965b9a2fa94925a89ec2e10910d9a19047f5a66ae0fe48951bea1d33e0",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "06_aos_vs_soa",
+      "row_count": 30,
+      "raw_sha256": "64d975168597372b6f48221fac053e32d1317433fd528ce4f42993a2a7720862",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "a6fe53965b9a2fa94925a89ec2e10910d9a19047f5a66ae0fe48951bea1d33e0",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "07_aosoa_blocked_layout",
+      "row_count": 60,
+      "raw_sha256": "f25905e88aacb38d993e7ed91dabeaa1bafe60e594a7d8fa4dc85dd3575aa201",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "a6fe53965b9a2fa94925a89ec2e10910d9a19047f5a66ae0fe48951bea1d33e0",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "08_std430_std140_packed",
+      "row_count": 75,
+      "raw_sha256": "9e0020f986e2d3398c5eef30728d57ef1f3c3825b57e5d66ae1b398657c6f518",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "a6fe53965b9a2fa94925a89ec2e10910d9a19047f5a66ae0fe48951bea1d33e0",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "09_vec3_vec4_padding_costs",
+      "row_count": 75,
+      "raw_sha256": "3462fb62e066e2b95e23c153c60860d5c09290033b02cad5989ae9cf76536501",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "a6fe53965b9a2fa94925a89ec2e10910d9a19047f5a66ae0fe48951bea1d33e0",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "10_scalar_type_width_sweep",
+      "row_count": 50,
+      "raw_sha256": "da3e62fac8f29f093002a89d932eafb82a7971da33b2c9ff9bce79ee392e508c",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "a6fe53965b9a2fa94925a89ec2e10910d9a19047f5a66ae0fe48951bea1d33e0",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "11_coalesced_vs_strided",
+      "row_count": 35,
+      "raw_sha256": "49f444121564c52cd645cfcf645a0dade1d988ae4ef93aded1038f1dd188bb6c",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "a6fe53965b9a2fa94925a89ec2e10910d9a19047f5a66ae0fe48951bea1d33e0",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "12_gather_access_pattern",
+      "row_count": 20,
+      "raw_sha256": "4a905a0a20a628afc0ef241921e8f055dde3e2668e7a51a02478ccb80d6aab21",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "a6fe53965b9a2fa94925a89ec2e10910d9a19047f5a66ae0fe48951bea1d33e0",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "13_scatter_access_pattern",
+      "row_count": 15,
+      "raw_sha256": "e1c93e21b71259eb15d0b66f197fc3dd62774dfde4d12d3e20236ff2001d7441",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "a6fe53965b9a2fa94925a89ec2e10910d9a19047f5a66ae0fe48951bea1d33e0",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "14_read_reuse_cache_locality",
+      "row_count": 25,
+      "raw_sha256": "fdc5d35e57c894a4ed5e4a511dde5ef0d6334f01abb7274d801ebe5d507d0d5a",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "a6fe53965b9a2fa94925a89ec2e10910d9a19047f5a66ae0fe48951bea1d33e0",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "15_bandwidth_saturation_sweep",
+      "row_count": 75,
+      "raw_sha256": "f0d11f3d9222b2f07db66f1231df267cefc5f8b0642fb5981b7fa1bfdada45bc",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "a6fe53965b9a2fa94925a89ec2e10910d9a19047f5a66ae0fe48951bea1d33e0",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "16_shared_memory_tiling",
+      "row_count": 40,
+      "raw_sha256": "7c707edf400ef6094920065ea810473bf2d369deb8869f4d6805adf15310b777",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "a6fe53965b9a2fa94925a89ec2e10910d9a19047f5a66ae0fe48951bea1d33e0",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "17_tile_size_sweep",
+      "row_count": 40,
+      "raw_sha256": "40a52115316e6ae47f41b000e9751a0e96a20369fd287333b6c2efc7b36acab7",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "2cbc875cf13fc11c97c8966bb219fada5c91c6edb88a7ce3167951dddc230f4e",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "18_register_pressure_proxy",
+      "row_count": 20,
+      "raw_sha256": "a1e20671d0042f54e65ef85c7f2d621d393d6ae949d5893781c217989e5c8ebd",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "bddd5f02e35e7ffaeaeec7d043439dbbc5833a48037e3bf618f036faf25145bd",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "19_branch_divergence",
+      "row_count": 30,
+      "raw_sha256": "28afd4285018bfd065a45ed5092c20b2923be3f1a8318a3fd5afc44e783f95d6",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "a1aec7e8d46f82147af64397372fb0295f91ca4281040521934412e29eeda3ed",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "20_barrier_synchronization_cost",
+      "row_count": 50,
+      "raw_sha256": "be0150862ce0f3e3016430e1ba50ba4e3d0c44d71c00c8760bf902740914f07a",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "9111865ba4e15f7287193ddc46322672044925348b4c2eca8bbac2caedb49a36",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "21_parallel_reduction",
+      "row_count": 60,
+      "raw_sha256": "6f672a89347b5d6617fe044b1fd981c450632af2741d54bd74e50599556df698",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "22_prefix_sum_scan",
+      "row_count": 20,
+      "raw_sha256": "2a462b4faad621b43a507733e7aa70d0f6731f8f31a52587a3f5ee8b1e4fbf92",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "23_histogram_atomic_contention",
+      "row_count": 30,
+      "raw_sha256": "4547cdfc5cbf5058ca7d89486a27b3b45f8ca740a02cc8f8b89e1067ff66ae74",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "24_stream_compaction",
+      "row_count": 50,
+      "raw_sha256": "a92d4123ca3f76362e848deb2cc700c5a1338f913592b3096d4404805695e2f1",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "25_spatial_binning_clustered_culling_capstone",
+      "row_count": 30,
+      "raw_sha256": "156a12d09c96e71acc285ff2d6827997cacf6dfc2c0eb26a58066b792ac77a22",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "26_warp_level_coalescing_alignment",
+      "row_count": 30,
+      "raw_sha256": "137af0f969ec616a09fc891c7fb24c5fc49a986a01722170ebb4447cdea03ef0",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "27_cache_thrashing_random_vs_sequential",
+      "row_count": 15,
+      "raw_sha256": "79bd517a2aba53cdb2ed5f2614f969c4b4e8d576fea47ebdf7a89cffb52bb432",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "28_device_local_vs_host_visible_heap_placement",
+      "row_count": 10,
+      "raw_sha256": "e6b88aa212f9a834474e65cfd09493b5952b67faa3ce37d41534afcbcc34fe1e",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "29_shared_memory_bank_conflict_study",
+      "row_count": 35,
+      "raw_sha256": "2c3cd8aa7afcf17bf1bce0794e0e93b67bdfd245b68ff62e6e64bb4589d136b5",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "30_subgroup_reduction_variants",
+      "row_count": 20,
+      "raw_sha256": "77725e99a1a4b8fd5bd1d4d263d6e074ed537c6a9e7bc56c85080eab60dd5b2a",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "31_subgroup_scan_variants",
+      "row_count": 30,
+      "raw_sha256": "8d0726126155104129c73f73e48aa3611248bfea0b8f209431395d9d459b7209",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "32_subgroup_stream_compaction_variants",
+      "row_count": 50,
+      "raw_sha256": "3944981dec6104fcc8ec3321f0a25cf1a7215b0da21b85844f6ef42c117c84af",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "33_two_dimensional_locality_transpose_study",
+      "row_count": 20,
+      "raw_sha256": "76c5bbce82a5679aaf972ffd0114e78b8709b200688eb9a7a03eb0b89e05e8ae",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "34_radix_sort_gpu",
+      "row_count": 50,
+      "raw_sha256": "2efe04f313dc58282ac897228e8999c640c42ad962615681c7b877103514df7c",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "35_occupancy_modeling",
+      "row_count": 30,
+      "raw_sha256": "35e1c82894fe390eec59315f6130779555195e0b92d91e00fa86233134b8c36b",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "36_bvh_node_layout",
+      "row_count": 15,
+      "raw_sha256": "c96d7270059e2b158e469c79d50a17a6ea26a6e464c07b399502add06e00b96c",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "37_frame_to_frame_coherence",
+      "row_count": 15,
+      "raw_sha256": "b76ffffebf663943c4388101e8681f3a854d1eb4ce2bbace35d626f4b95096dd",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "38_frustum_vs_clustered_culling",
+      "row_count": 60,
+      "raw_sha256": "8badd9880dfb18eae7281ef9302f0e51709eb7955fdaf84032aec8c02b73aff7",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "39_tiled_light_assignment",
+      "row_count": 90,
+      "raw_sha256": "2dcbea1b305b882e96be636a619db5ef8859592b27417495e94a7aed90f0535a",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "40_persistent_threads_work_queues",
+      "row_count": 60,
+      "raw_sha256": "73f58ab222dccf7e23430513e55200123d8158fdbbf7a3a627d300b021abeaa0",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "41_subgroup_operations_study",
+      "row_count": 20,
+      "raw_sha256": "bb5e79ee4be4f40cc176b4fd33afdfbb24495363d906a708a4f7c10633535830",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "42_async_compute_overlap",
+      "row_count": 20,
+      "raw_sha256": "bcab2ee35f7a9d83106d085320b4fa9771771436883c10f24680e9455d799915",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "43_ray_friendly_memory_layouts",
+      "row_count": 20,
+      "raw_sha256": "8aaa2fc8c56b6fbcbb045d7b1f3bb068fb373142d02dca39adb00677e41067ca",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "44_gpu_driven_pipeline_blocks",
+      "row_count": 20,
+      "raw_sha256": "3ae05080055a04b0c5e73394f5a5a28abfc9ecefcd9aff917809277e57eb5895",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    },
+    {
+      "id": "45_cross_gpu_reproducibility",
+      "row_count": 30,
+      "raw_sha256": "6cc19d732af9c92fd9418cac63bfa7236a3da799aba26707d8424b959eb3d874",
+      "collection_provenance": {
+        "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+        "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+        "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+        "working_tree_dirty": true,
+        "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+        "shader_bundle_file_count": 100
+      }
+    }
+  ],
+  "experiment_count": 45,
+  "timed_row_count": 5205,
+  "case_count": 1041
+}

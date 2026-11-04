@@ -2,11 +2,17 @@
 layout: default
 ---
 
-<article class="post">
+<article class="post page-shell">
+  <div class="post-kicker">
+    <a href="{{ '/blog/' | relative_url }}" class="text-link">&larr; All articles</a>
+  </div>
   <header class="post-header">
     <h1 class="post-title">{{ page.title }}</h1>
     <div class="post-meta">
       <time datetime="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date: "%B %d, %Y" }}</time>
+      {% if page.last_modified_at %}
+        <span class="post-updated">Updated <time datetime="{{ page.last_modified_at | date: '%Y-%m-%d' }}">{{ page.last_modified_at | date: "%B %d, %Y" }}</time></span>
+      {% endif %}
       {% if page.tags %}
         <span class="post-tags">
           {% for tag in page.tags %}
@@ -21,7 +27,7 @@ layout: default
               {% assign tag_label = 'XR' %}
             {% endif %}
             {% if tag == 'best-practices' %}
-              {% assign tag_label = 'Best Practices' %}
+              {% assign tag_label = 'Best practices' %}
             {% endif %}
             <span class="tag">{{ tag_label }}</span>
           {% endfor %}
@@ -30,22 +36,31 @@ layout: default
     </div>
   </header>
 
+  {% if page.cover_image %}
+  <figure class="post-cover">
+    <img src="{{ page.cover_image | relative_url }}" alt="{{ page.cover_alt }}" width="1600" height="900" fetchpriority="high">
+    {% if page.cover_caption %}<figcaption>{{ page.cover_caption }}</figcaption>{% endif %}
+  </figure>
+  {% endif %}
+
   <div class="post-content">
     {{ content }}
   </div>
 
   <footer class="post-footer">
-    <div class="post-navigation">
+    <nav class="post-navigation" aria-label="More writing">
       {% if page.previous %}
         <a href="{{ page.previous.url | relative_url }}" class="prev-post">
-          &larr; {{ page.previous.title }}
+          <span class="section-kicker">&larr; Previous article</span>
+          <span>{{ page.previous.title }}</span>
         </a>
       {% endif %}
       {% if page.next %}
         <a href="{{ page.next.url | relative_url }}" class="next-post">
-          {{ page.next.title }} &rarr;
+          <span class="section-kicker">Next article &rarr;</span>
+          <span>{{ page.next.title }}</span>
         </a>
       {% endif %}
-    </div>
+    </nav>
   </footer>
 </article>

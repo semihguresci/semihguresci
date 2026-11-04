@@ -1,27 +1,23 @@
 ---
-title: "What Experiment 07 Teaches About GPU Memory: AoSoA and Blocked Layouts"
+title: "AoSoA and blocked layouts: measuring the tradeoffs"
 date: 2026-05-21
+last_modified_at: 2026-10-23
 tags: [gpu, memory, benchmark, vulkan]
+excerpt: "A comparison of AoS, SoA, and blocked AoSoA layouts, including the performance and integration tradeoffs."
 ---
 
-Experiment 06 gave us the clean result: for field-wise GPU work, SoA beats AoS
-because neighboring threads read neighboring values from the same field.
-
-Experiment 07 asks the more practical follow-up question:
-
-What if full SoA is too intrusive?
+Experiment 06 found that SoA was faster than AoS for its field-wise GPU
+workload. Experiment 07 adds a blocked Array of Structures of Arrays (AoSoA)
+layout to the comparison. Each block groups a small set of elements while
+storing each field contiguously within that group.
 
 Repository: [semihguresci/gpu-memory-access-benchmark](https://github.com/semihguresci/gpu-memory-access-benchmark)
 
-That is where AoSoA, or Array of Structures of Arrays, comes in. It is a hybrid
-layout. It tries to keep some of the object-like grouping of AoS while
-recovering some of the field-contiguous access pattern of SoA. The experiment
-plan describes this directly: Experiment 07 evaluates blocked record layouts
-that sit between pure AoS and pure SoA. Its main question is whether AoSoA can
-recover some of SoA's access efficiency without fully splitting every field into
-its own array.
+The plan evaluates whether blocked storage can recover some of SoA's access
+efficiency while keeping records grouped. The experiment measures whether that
+benefit justifies the additional indexing and integration costs.
 
-## The Problem With The Two Extremes
+## The layouts
 
 In an AoS layout, each particle is stored as one full record:
 
@@ -44,7 +40,7 @@ Memory looks roughly like this:
 x0 y0 z0 vx0 vy0 vz0 | x1 y1 z1 vx1 vy1 vz1 | x2 y2 z2 ...
 ```
 
-That is convenient for CPU-style object thinking. Each particle is one thing.
+Each particle and all of its fields are stored together.
 
 In a SoA layout, every field gets its own array:
 
@@ -65,19 +61,16 @@ y0 y1 y2 y3 ...
 z0 z1 z2 z3 ...
 ```
 
-That is better for many GPU kernels because neighboring GPU lanes often read
-the same field from neighboring elements. The project README explains the
-underlying memory idea: neighboring lanes reading neighboring addresses allow
-requests to be merged more efficiently, while strided or misaligned access
-causes the hardware to move more bytes for the same useful work.
+For field-wise GPU kernels, neighboring lanes can read consecutive values from
+the same array. As the project README explains, these requests can be combined
+more efficiently. Strided or misaligned accesses can require more bytes to be
+moved for the same useful work.
 
-But SoA can be painful in real code. It may require changing data ownership,
-CPU-side APIs, serialization, update systems, debugging tools, and shader
-interfaces.
+Adopting SoA can also require changes to data ownership, CPU APIs,
+serialization, update systems, debugging tools, and shader interfaces. AoSoA
+offers another way to organize data when those changes are costly.
 
-Experiment 07 is interesting because it studies the compromise.
-
-## What AoSoA Is Trying To Do
+## How blocked storage works
 
 AoSoA groups elements into small blocks. Inside each block, fields are split
 like SoA. Across blocks, the data is still grouped into chunks.
@@ -112,15 +105,11 @@ block 1:
   ...
 ```
 
-The exact block size depends on the implementation, but the purpose is the
-same: keep field values close together for a group of elements, without forcing
-the entire application into a fully separate-array representation.
+The block size depends on the implementation. Within each block, values from
+the same field stay close together; the application can still work with groups
+of elements rather than separate arrays spanning the entire dataset.
 
-That makes AoSoA an engineering compromise. It is not as simple as AoS, and it
-is not as pure as SoA. It exists for cases where full SoA is too disruptive but
-plain AoS leaves too much GPU memory performance on the table.
-
-## What Experiment 07 Measured
+## Method
 
 Experiment 07 compares three layouts:
 
@@ -136,25 +125,20 @@ fully split storage for SoA. The plan also keeps the workload size, timing path,
 and correctness rules consistent across layouts, so the comparison is about
 layout rather than a different algorithm.
 
-The outputs are:
+The experiment reports:
 
 - median GPU time by layout
 - relative speedup vs AoS
 - practical guidance on whether blocked layouts justify their complexity
 
-That last output is important. Experiment 07 is not only asking which variant
-is fastest. It is asking whether the hybrid layout is worth the extra design
-complexity.
+## Results
 
-## The Result
-
-The refreshed run completed successfully. The report says the latest
-`full_refresh_20260405` collection passed 60/60 correctness rows, the test
-suite passed 37/37, GPU timestamps were supported, and the measured GPU was an
+The report's `full_refresh_20260405` collection passed 60/60 correctness rows,
+and the test suite passed 37/37. GPU timestamps were supported, and the
+measured GPU was an
 NVIDIA GeForce RTX 2080 SUPER running Vulkan 1.4.325.
 
-At the largest tested size, `problem_size=2000000`, the fastest layout was
-still:
+At the largest tested size, `problem_size=2000000`, SoA was fastest:
 
 | Metric | Value |
 | --- | ---: |
@@ -163,25 +147,14 @@ still:
 | Median GB/s | `21.218` |
 | Median throughput | `265,226,099.946` |
 
-The report also says the fastest and slowest median GPU-time cases in the focus
-set were separated by about `1414.79%`, so layout choice produced a large
-spread on this GPU.
+The report also records about `1414.79%` separation between the fastest and
+slowest median GPU-time cases in the focus set. On this GPU, blocked storage
+did not close the gap to SoA at the largest tested size.
 
-The important point is not just that SoA won. The important point is that AoSoA
-did not automatically erase the gap.
+## Integration tradeoffs
 
-## Compromise Layouts Must Earn Their Complexity
-
-AoSoA sounds attractive because it promises a middle path. It can preserve some
-locality and grouping while improving field-wise access. But Experiment 07
-reminds us that a compromise layout is still a compromise.
-
-If the kernel is strongly field-oriented, full SoA may still be the cleanest
-match for the GPU memory system. Neighboring threads want neighboring values
-from the same field. SoA gives them exactly that.
-
-AoSoA can help when the rest of the program cannot tolerate full SoA. For
-example, it may be useful when:
+SoA directly supports contiguous field access. AoSoA can be useful when the
+surrounding system benefits from grouping, for example when:
 
 - CPU-side systems still want grouped records
 - data is processed in fixed-size chunks
@@ -189,38 +162,11 @@ example, it may be useful when:
 - only part of the codebase is GPU-facing
 - full SoA would make APIs or tooling too awkward
 
-But AoSoA is not free. It introduces block math, indexing complexity, and layout
-decisions. You now have to choose block size, handle tails, map logical indices
-to block-local indices, and keep CPU and GPU code in agreement.
-
-That complexity is worth it only if the measured result justifies it.
-
-Experiment 07's own interpretation says AoSoA should be read as a tradeoff
-study rather than a binary winner-take-all test. If the blocked layout wins, it
-may be the best engineering choice when full SoA is intrusive.
-
-In this run, however, the fastest result at the largest tested size came from
-SoA.
-
-## How To Think About AoSoA In Real Projects
-
-The practical design question is not:
-
-Is AoSoA faster than AoS?
-
-The better question is:
-
-Is AoSoA close enough to SoA to justify avoiding a full SoA rewrite?
-
-That is a very different question.
-
-A full SoA layout is often the best answer for a pure GPU data path. But many
-real systems are not pure GPU data paths. They have CPU simulation, asset
-loading, editor tooling, debug views, serialization formats, and mixed
-read/write ownership. In those systems, AoSoA may be valuable even if it does
-not beat SoA.
-
-The tradeoff looks like this:
+Blocked storage introduces a block-size choice, tail handling, and extra index
+calculations. Its CPU and shader representations must also agree. The
+experiment's interpretation treats this as a tradeoff study: an acceptable
+performance gap to SoA may be worthwhile if it avoids a costly conversion of
+CPU simulation, asset loading, editor tools, or serialization code.
 
 | Layout | Strength | Weakness |
 | --- | --- | --- |
@@ -228,28 +174,5 @@ The tradeoff looks like this:
 | SoA | Best match for contiguous field access | Can be intrusive to integrate |
 | AoSoA | Middle ground between grouping and field locality | More complex indexing and tuning |
 
-Experiment 07 teaches that AoSoA should be treated as a design tool, not a
-magic optimization.
-
-## Conclusion
-
-Experiment 07 teaches a more nuanced version of the AoS vs SoA lesson.
-
-Experiment 06 showed that SoA is the right default for field-wise GPU kernels.
-Experiment 07 asks whether a blocked hybrid layout can offer a practical
-compromise. The answer is: maybe, but measure it.
-
-On the tested RTX 2080 SUPER run, full SoA was still the fastest layout at the
-largest tested problem size, reaching `7.540736 ms` median GPU time for
-2,000,000 elements. The result also showed a large performance spread across
-the focus set, which means layout remained a major performance factor.
-
-The engineering rule is:
-
-Use SoA when the GPU data path can support it. Use AoSoA when full SoA is too
-disruptive, but only after benchmarking the blocked layout against both AoS and
-SoA.
-
-AoSoA is not the winner by default. Its value is that it gives you another point
-in the design space: less rigid than full SoA, more GPU-friendly than plain AoS,
-and useful when architecture constraints matter as much as raw speed.
+Use the measured difference to assess that tradeoff. Compare the chosen AoSoA
+block size with both AoS and SoA for the actual workload before adopting it.

@@ -14,7 +14,8 @@ layout: null
   {% for post in site.posts %}
   <url>
     <loc>{{ site.url }}{{ post.url }}</loc>
-    <lastmod>{{ post.date | date: "%Y-%m-%d" }}</lastmod>
+    <lastmod>{% if post.last_modified_at %}{{ post.last_modified_at | date: "%Y-%m-%d" }}{% else %}{{ post.date | date: "%Y-%m-%d" }}{% endif %}</lastmod>
   </url>
   {% endfor %}
+  <url><loc>{{ site.url }}/cv/</loc></url>
 </urlset>

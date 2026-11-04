@@ -1,0 +1,194 @@
+{
+  "metadata": {
+    "command_line": [
+      "F:\\Projects\\gpu-memory-layout-playground\\build-tests-vs\\Release\\gpu_memory_layout_experiments.exe",
+      "--experiment",
+      "28_device_local_vs_host_visible_heap_placement",
+      "--iterations",
+      "5",
+      "--warmup",
+      "2",
+      "--size",
+      "32M",
+      "--output",
+      "F:\\Projects\\gpu-memory-layout-playground\\experiments\\28_device_local_vs_host_visible_heap_placement\\results\\tables\\benchmark_results.json"
+    ],
+    "driver_version": "2559967232",
+    "exported_at_utc": "2026-10-23T16:09:07Z",
+    "generator": "gpu_memory_layout_experiments",
+    "gpu_name": "NVIDIA GeForce RTX 2080 SUPER",
+    "gpu_timestamps_supported": true,
+    "measurement_revision": "2026-10-23-integrity-fixes",
+    "result_count": 2,
+    "row_count": 10,
+    "shader_binary_directory": "F:/Projects/gpu-memory-layout-playground/build-tests-vs/shaders",
+    "timed_iterations": 5,
+    "validation_enabled": false,
+    "vulkan_api_version": "1.4.341",
+    "warmup_iterations": 2,
+    "provenance": {
+      "binary_sha256": "9f1a274710e4738bd6f19a28ba313d4908425401cbdcea6584fb4650b55dc428",
+      "source_tree_sha256": "41c28e1d7d6d6a7ced367cc052be919dee4fe7e800db22ddb38a9b7d6f60f228",
+      "git_revision": "262350e79e975b57082b15b324a8365dd8564897",
+      "working_tree_dirty": true,
+      "shader_bundle_sha256": "b6f63cb7f97754ea9338f453d9e815662bf3f3672a18d42659e0d1f1acb70da6",
+      "shader_bundle_file_count": 100
+    }
+  },
+  "results": [
+    {
+      "average_ms": 0.7297984,
+      "experiment": "28_device_local_vs_host_visible_heap_placement_host_visible_direct_elements_1398016",
+      "max_ms": 1.146784,
+      "median_ms": 0.51776,
+      "min_ms": 0.501632,
+      "p95_ms": 1.1131008,
+      "sample_count": 5
+    },
+    {
+      "average_ms": 2.027424,
+      "experiment": "28_device_local_vs_host_visible_heap_placement_device_local_staged_elements_1398016",
+      "max_ms": 2.173824,
+      "median_ms": 2.166528,
+      "min_ms": 1.7916159999999999,
+      "p95_ms": 2.1723648,
+      "sample_count": 5
+    }
+  ],
+  "rows": [
+    {
+      "correctness_pass": true,
+      "dispatch_count": 1,
+      "end_to_end_ms": 262.8391,
+      "experiment_id": "28_device_local_vs_host_visible_heap_placement",
+      "gbps": 11.431412311114018,
+      "gpu_ms": 0.978368,
+      "iteration": 0,
+      "notes": "host_source_memory_type_index=3;host_source_heap_index=1;host_source_memory_property_flags=6;host_destination_memory_type_index=3;host_destination_heap_index=1;host_destination_memory_property_flags=6;staging_source_memory_type_index=3;staging_source_heap_index=1;staging_source_memory_property_flags=6;staging_destination_memory_type_index=3;staging_destination_heap_index=1;staging_destination_memory_property_flags=6;device_source_memory_type_index=1;device_source_heap_index=0;device_source_memory_property_flags=1;device_destination_memory_type_index=1;device_destination_heap_index=0;device_destination_memory_property_flags=1;placement=host_visible_direct;logical_elements=1398016;local_size_x=256;scratch_size_bytes=33554432;live_buffer_count=6;active_buffer_count=2;buffer_span_bytes=5592064;live_payload_bytes=33552384;active_payload_bytes=11184128;allocated_memory_bytes=33552384;scratch_budget_scope=buffer_payload_excludes_allocation_padding;physical_residency_measured=false;gpu_time_scope=sum_of_upload_kernel_readback_timestamps;end_to_end_scope=harness_wall_clock_includes_cpu_fill_validation;upload_ms=0.000000;dispatch_ms=0.978368;readback_ms=0.000000;payload_bytes_per_element=8;gbps_basis=useful_kernel_payload_over_gpu_path_time",
+      "problem_size": 1398016,
+      "throughput": 1428926538.8892522,
+      "variant": "host_visible_direct"
+    },
+    {
+      "correctness_pass": true,
+      "dispatch_count": 1,
+      "end_to_end_ms": 270.8765,
+      "experiment_id": "28_device_local_vs_host_visible_heap_placement",
+      "gbps": 22.29548354171983,
+      "gpu_ms": 0.501632,
+      "iteration": 1,
+      "notes": "host_source_memory_type_index=3;host_source_heap_index=1;host_source_memory_property_flags=6;host_destination_memory_type_index=3;host_destination_heap_index=1;host_destination_memory_property_flags=6;staging_source_memory_type_index=3;staging_source_heap_index=1;staging_source_memory_property_flags=6;staging_destination_memory_type_index=3;staging_destination_heap_index=1;staging_destination_memory_property_flags=6;device_source_memory_type_index=1;device_source_heap_index=0;device_source_memory_property_flags=1;device_destination_memory_type_index=1;device_destination_heap_index=0;device_destination_memory_property_flags=1;placement=host_visible_direct;logical_elements=1398016;local_size_x=256;scratch_size_bytes=33554432;live_buffer_count=6;active_buffer_count=2;buffer_span_bytes=5592064;live_payload_bytes=33552384;active_payload_bytes=11184128;allocated_memory_bytes=33552384;scratch_budget_scope=buffer_payload_excludes_allocation_padding;physical_residency_measured=false;gpu_time_scope=sum_of_upload_kernel_readback_timestamps;end_to_end_scope=harness_wall_clock_includes_cpu_fill_validation;upload_ms=0.000000;dispatch_ms=0.501632;readback_ms=0.000000;payload_bytes_per_element=8;gbps_basis=useful_kernel_payload_over_gpu_path_time",
+      "problem_size": 1398016,
+      "throughput": 2786935442.7149787,
+      "variant": "host_visible_direct"
+    },
+    {
+      "correctness_pass": true,
+      "dispatch_count": 1,
+      "end_to_end_ms": 268.0356,
+      "experiment_id": "28_device_local_vs_host_visible_heap_placement",
+      "gbps": 21.600988875154513,
+      "gpu_ms": 0.51776,
+      "iteration": 2,
+      "notes": "host_source_memory_type_index=3;host_source_heap_index=1;host_source_memory_property_flags=6;host_destination_memory_type_index=3;host_destination_heap_index=1;host_destination_memory_property_flags=6;staging_source_memory_type_index=3;staging_source_heap_index=1;staging_source_memory_property_flags=6;staging_destination_memory_type_index=3;staging_destination_heap_index=1;staging_destination_memory_property_flags=6;device_source_memory_type_index=1;device_source_heap_index=0;device_source_memory_property_flags=1;device_destination_memory_type_index=1;device_destination_heap_index=0;device_destination_memory_property_flags=1;placement=host_visible_direct;logical_elements=1398016;local_size_x=256;scratch_size_bytes=33554432;live_buffer_count=6;active_buffer_count=2;buffer_span_bytes=5592064;live_payload_bytes=33552384;active_payload_bytes=11184128;allocated_memory_bytes=33552384;scratch_budget_scope=buffer_payload_excludes_allocation_padding;physical_residency_measured=false;gpu_time_scope=sum_of_upload_kernel_readback_timestamps;end_to_end_scope=harness_wall_clock_includes_cpu_fill_validation;upload_ms=0.000000;dispatch_ms=0.517760;readback_ms=0.000000;payload_bytes_per_element=8;gbps_basis=useful_kernel_payload_over_gpu_path_time",
+      "problem_size": 1398016,
+      "throughput": 2700123609.394314,
+      "variant": "host_visible_direct"
+    },
+    {
+      "correctness_pass": true,
+      "dispatch_count": 1,
+      "end_to_end_ms": 269.8002,
+      "experiment_id": "28_device_local_vs_host_visible_heap_placement",
+      "gbps": 22.171022583100736,
+      "gpu_ms": 0.504448,
+      "iteration": 3,
+      "notes": "host_source_memory_type_index=3;host_source_heap_index=1;host_source_memory_property_flags=6;host_destination_memory_type_index=3;host_destination_heap_index=1;host_destination_memory_property_flags=6;staging_source_memory_type_index=3;staging_source_heap_index=1;staging_source_memory_property_flags=6;staging_destination_memory_type_index=3;staging_destination_heap_index=1;staging_destination_memory_property_flags=6;device_source_memory_type_index=1;device_source_heap_index=0;device_source_memory_property_flags=1;device_destination_memory_type_index=1;device_destination_heap_index=0;device_destination_memory_property_flags=1;placement=host_visible_direct;logical_elements=1398016;local_size_x=256;scratch_size_bytes=33554432;live_buffer_count=6;active_buffer_count=2;buffer_span_bytes=5592064;live_payload_bytes=33552384;active_payload_bytes=11184128;allocated_memory_bytes=33552384;scratch_budget_scope=buffer_payload_excludes_allocation_padding;physical_residency_measured=false;gpu_time_scope=sum_of_upload_kernel_readback_timestamps;end_to_end_scope=harness_wall_clock_includes_cpu_fill_validation;upload_ms=0.000000;dispatch_ms=0.504448;readback_ms=0.000000;payload_bytes_per_element=8;gbps_basis=useful_kernel_payload_over_gpu_path_time",
+      "problem_size": 1398016,
+      "throughput": 2771377822.887592,
+      "variant": "host_visible_direct"
+    },
+    {
+      "correctness_pass": true,
+      "dispatch_count": 1,
+      "end_to_end_ms": 273.0285,
+      "experiment_id": "28_device_local_vs_host_visible_heap_placement",
+      "gbps": 9.752602059324163,
+      "gpu_ms": 1.146784,
+      "iteration": 4,
+      "notes": "host_source_memory_type_index=3;host_source_heap_index=1;host_source_memory_property_flags=6;host_destination_memory_type_index=3;host_destination_heap_index=1;host_destination_memory_property_flags=6;staging_source_memory_type_index=3;staging_source_heap_index=1;staging_source_memory_property_flags=6;staging_destination_memory_type_index=3;staging_destination_heap_index=1;staging_destination_memory_property_flags=6;device_source_memory_type_index=1;device_source_heap_index=0;device_source_memory_property_flags=1;device_destination_memory_type_index=1;device_destination_heap_index=0;device_destination_memory_property_flags=1;placement=host_visible_direct;logical_elements=1398016;local_size_x=256;scratch_size_bytes=33554432;live_buffer_count=6;active_buffer_count=2;buffer_span_bytes=5592064;live_payload_bytes=33552384;active_payload_bytes=11184128;allocated_memory_bytes=33552384;scratch_budget_scope=buffer_payload_excludes_allocation_padding;physical_residency_measured=false;gpu_time_scope=sum_of_upload_kernel_readback_timestamps;end_to_end_scope=harness_wall_clock_includes_cpu_fill_validation;upload_ms=0.000000;dispatch_ms=1.146784;readback_ms=0.000000;payload_bytes_per_element=8;gbps_basis=useful_kernel_payload_over_gpu_path_time",
+      "problem_size": 1398016,
+      "throughput": 1219075257.4155202,
+      "variant": "host_visible_direct"
+    },
+    {
+      "correctness_pass": true,
+      "dispatch_count": 1,
+      "end_to_end_ms": 299.6697,
+      "experiment_id": "28_device_local_vs_host_visible_heap_placement",
+      "gbps": 5.162235613848517,
+      "gpu_ms": 2.166528,
+      "iteration": 0,
+      "notes": "host_source_memory_type_index=3;host_source_heap_index=1;host_source_memory_property_flags=6;host_destination_memory_type_index=3;host_destination_heap_index=1;host_destination_memory_property_flags=6;staging_source_memory_type_index=3;staging_source_heap_index=1;staging_source_memory_property_flags=6;staging_destination_memory_type_index=3;staging_destination_heap_index=1;staging_destination_memory_property_flags=6;device_source_memory_type_index=1;device_source_heap_index=0;device_source_memory_property_flags=1;device_destination_memory_type_index=1;device_destination_heap_index=0;device_destination_memory_property_flags=1;placement=device_local_staged;logical_elements=1398016;local_size_x=256;scratch_size_bytes=33554432;live_buffer_count=6;active_buffer_count=4;buffer_span_bytes=5592064;live_payload_bytes=33552384;active_payload_bytes=22368256;allocated_memory_bytes=33552384;scratch_budget_scope=buffer_payload_excludes_allocation_padding;physical_residency_measured=false;gpu_time_scope=sum_of_upload_kernel_readback_timestamps;end_to_end_scope=harness_wall_clock_includes_cpu_fill_validation;upload_ms=1.072096;dispatch_ms=0.026688;readback_ms=1.067744;payload_bytes_per_element=8;gbps_basis=useful_kernel_payload_over_gpu_path_time",
+      "problem_size": 1398016,
+      "throughput": 645279451.7310647,
+      "variant": "device_local_staged"
+    },
+    {
+      "correctness_pass": true,
+      "dispatch_count": 1,
+      "end_to_end_ms": 272.7126,
+      "experiment_id": "28_device_local_vs_host_visible_heap_placement",
+      "gbps": 5.144909615497851,
+      "gpu_ms": 2.173824,
+      "iteration": 1,
+      "notes": "host_source_memory_type_index=3;host_source_heap_index=1;host_source_memory_property_flags=6;host_destination_memory_type_index=3;host_destination_heap_index=1;host_destination_memory_property_flags=6;staging_source_memory_type_index=3;staging_source_heap_index=1;staging_source_memory_property_flags=6;staging_destination_memory_type_index=3;staging_destination_heap_index=1;staging_destination_memory_property_flags=6;device_source_memory_type_index=1;device_source_heap_index=0;device_source_memory_property_flags=1;device_destination_memory_type_index=1;device_destination_heap_index=0;device_destination_memory_property_flags=1;placement=device_local_staged;logical_elements=1398016;local_size_x=256;scratch_size_bytes=33554432;live_buffer_count=6;active_buffer_count=4;buffer_span_bytes=5592064;live_payload_bytes=33552384;active_payload_bytes=22368256;allocated_memory_bytes=33552384;scratch_budget_scope=buffer_payload_excludes_allocation_padding;physical_residency_measured=false;gpu_time_scope=sum_of_upload_kernel_readback_timestamps;end_to_end_scope=harness_wall_clock_includes_cpu_fill_validation;upload_ms=1.078912;dispatch_ms=0.026688;readback_ms=1.068224;payload_bytes_per_element=8;gbps_basis=useful_kernel_payload_over_gpu_path_time",
+      "problem_size": 1398016,
+      "throughput": 643113701.9372313,
+      "variant": "device_local_staged"
+    },
+    {
+      "correctness_pass": true,
+      "dispatch_count": 1,
+      "end_to_end_ms": 251.602,
+      "experiment_id": "28_device_local_vs_host_visible_heap_placement",
+      "gbps": 6.2424805315424745,
+      "gpu_ms": 1.7916159999999999,
+      "iteration": 2,
+      "notes": "host_source_memory_type_index=3;host_source_heap_index=1;host_source_memory_property_flags=6;host_destination_memory_type_index=3;host_destination_heap_index=1;host_destination_memory_property_flags=6;staging_source_memory_type_index=3;staging_source_heap_index=1;staging_source_memory_property_flags=6;staging_destination_memory_type_index=3;staging_destination_heap_index=1;staging_destination_memory_property_flags=6;device_source_memory_type_index=1;device_source_heap_index=0;device_source_memory_property_flags=1;device_destination_memory_type_index=1;device_destination_heap_index=0;device_destination_memory_property_flags=1;placement=device_local_staged;logical_elements=1398016;local_size_x=256;scratch_size_bytes=33554432;live_buffer_count=6;active_buffer_count=4;buffer_span_bytes=5592064;live_payload_bytes=33552384;active_payload_bytes=22368256;allocated_memory_bytes=33552384;scratch_budget_scope=buffer_payload_excludes_allocation_padding;physical_residency_measured=false;gpu_time_scope=sum_of_upload_kernel_readback_timestamps;end_to_end_scope=harness_wall_clock_includes_cpu_fill_validation;upload_ms=0.692160;dispatch_ms=0.025952;readback_ms=1.073504;payload_bytes_per_element=8;gbps_basis=useful_kernel_payload_over_gpu_path_time",
+      "problem_size": 1398016,
+      "throughput": 780310066.4428092,
+      "variant": "device_local_staged"
+    },
+    {
+      "correctness_pass": true,
+      "dispatch_count": 1,
+      "end_to_end_ms": 256.2559,
+      "experiment_id": "28_device_local_vs_host_visible_heap_placement",
+      "gbps": 6.082879370659798,
+      "gpu_ms": 1.8386239999999998,
+      "iteration": 3,
+      "notes": "host_source_memory_type_index=3;host_source_heap_index=1;host_source_memory_property_flags=6;host_destination_memory_type_index=3;host_destination_heap_index=1;host_destination_memory_property_flags=6;staging_source_memory_type_index=3;staging_source_heap_index=1;staging_source_memory_property_flags=6;staging_destination_memory_type_index=3;staging_destination_heap_index=1;staging_destination_memory_property_flags=6;device_source_memory_type_index=1;device_source_heap_index=0;device_source_memory_property_flags=1;device_destination_memory_type_index=1;device_destination_heap_index=0;device_destination_memory_property_flags=1;placement=device_local_staged;logical_elements=1398016;local_size_x=256;scratch_size_bytes=33554432;live_buffer_count=6;active_buffer_count=4;buffer_span_bytes=5592064;live_payload_bytes=33552384;active_payload_bytes=22368256;allocated_memory_bytes=33552384;scratch_budget_scope=buffer_payload_excludes_allocation_padding;physical_residency_measured=false;gpu_time_scope=sum_of_upload_kernel_readback_timestamps;end_to_end_scope=harness_wall_clock_includes_cpu_fill_validation;upload_ms=0.918496;dispatch_ms=0.025824;readback_ms=0.894304;payload_bytes_per_element=8;gbps_basis=useful_kernel_payload_over_gpu_path_time",
+      "problem_size": 1398016,
+      "throughput": 760359921.3324748,
+      "variant": "device_local_staged"
+    },
+    {
+      "correctness_pass": true,
+      "dispatch_count": 1,
+      "end_to_end_ms": 252.1705,
+      "experiment_id": "28_device_local_vs_host_visible_heap_placement",
+      "gbps": 5.162235613848517,
+      "gpu_ms": 2.166528,
+      "iteration": 4,
+      "notes": "host_source_memory_type_index=3;host_source_heap_index=1;host_source_memory_property_flags=6;host_destination_memory_type_index=3;host_destination_heap_index=1;host_destination_memory_property_flags=6;staging_source_memory_type_index=3;staging_source_heap_index=1;staging_source_memory_property_flags=6;staging_destination_memory_type_index=3;staging_destination_heap_index=1;staging_destination_memory_property_flags=6;device_source_memory_type_index=1;device_source_heap_index=0;device_source_memory_property_flags=1;device_destination_memory_type_index=1;device_destination_heap_index=0;device_destination_memory_property_flags=1;placement=device_local_staged;logical_elements=1398016;local_size_x=256;scratch_size_bytes=33554432;live_buffer_count=6;active_buffer_count=4;buffer_span_bytes=5592064;live_payload_bytes=33552384;active_payload_bytes=22368256;allocated_memory_bytes=33552384;scratch_budget_scope=buffer_payload_excludes_allocation_padding;physical_residency_measured=false;gpu_time_scope=sum_of_upload_kernel_readback_timestamps;end_to_end_scope=harness_wall_clock_includes_cpu_fill_validation;upload_ms=1.072128;dispatch_ms=0.025824;readback_ms=1.068576;payload_bytes_per_element=8;gbps_basis=useful_kernel_payload_over_gpu_path_time",
+      "problem_size": 1398016,
+      "throughput": 645279451.7310647,
+      "variant": "device_local_staged"
+    }
+  ],
+  "schema": {
+    "name": "gpu_memory_layout_results",
+    "version": "1.2.0"
+  }
+}

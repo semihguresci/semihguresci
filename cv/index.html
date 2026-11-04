@@ -1,0 +1,115 @@
+---
+layout: default
+title: CV
+description: Semih Güreşçi — GPU rendering and performance engineer. Experience, technical expertise, and selected projects.
+permalink: /cv/
+---
+
+<link rel="stylesheet" href="{{ '/assets/css/cv.css' | relative_url }}?v=20261023-cv5" />
+
+<div class="cv-page">
+  <div class="cv-toolbar">
+    <a class="cv-back" href="{{ '/' | relative_url }}#projects"><span aria-hidden="true">↖</span> Back to projects</a>
+    <a class="cv-download" href="{{ '/assets/cv/SemihGuresciCV.pdf' | relative_url }}" download>Download PDF <span aria-hidden="true">↓</span></a>
+  </div>
+
+  <article class="cv-sheet" aria-labelledby="cv-name">
+    <header class="cv-header">
+      <div class="cv-heading-row">
+        <div>
+          <p class="cv-kicker">Curriculum vitae</p>
+          <h1 id="cv-name">{{ site.author_name }}</h1>
+          <p class="cv-role">GPU Rendering &amp; Performance Engineer</p>
+        </div>
+        <svg class="cv-mark" width="40" height="40" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M10 4H4v24h6M22 4h6v24h-6" stroke="currentColor" stroke-width="2"/><path d="m19 10-6 12" stroke="currentColor" stroke-width="2"/></svg>
+      </div>
+      <div class="cv-contact" aria-label="Contact details">
+        <span>Luxembourg</span>
+        <a href="mailto:{{ site.email }}">{{ site.email }}</a>
+        <a href="{{ site.social_github }}" target="_blank" rel="noopener">github.com/semihguresci</a>
+        <a href="{{ site.social_linkedin }}" target="_blank" rel="noopener">linkedin.com/in/semihguresci</a>
+      </div>
+      <p class="cv-summary">I build real-time rendering systems in C++ and Vulkan. My experience spans more than 10 years in graphics, simulation, and XR, with a focus on mobile GPU performance.</p>
+    </header>
+
+    <div class="cv-columns">
+      <section class="cv-experience" aria-labelledby="cv-experience-heading">
+        <h2 class="cv-section-title" id="cv-experience-heading">Experience</h2>
+
+        <article class="cv-job">
+          <p class="cv-date">2022 — Present</p>
+          <h3>Computer Graphics Engineer</h3>
+          <p class="cv-company">Arspectra Sàrl <span>Luxembourg</span></p>
+          <p>Designed and optimized Vulkan rendering pipelines for mobile XR.</p>
+          <ul class="cv-job-details">
+            <li>Used Vulkan multiview to remove redundant per-eye draw calls, improving Adreno GPU performance by <strong>35%</strong>.</li>
+            <li>Reduced global memory bandwidth usage by <strong>30%</strong> with tile-based rendering, using Vulkan render passes and subpasses to reuse on-chip memory.</li>
+            <li>Reduced sparse-volume rendering time by <strong>50%</strong> with compute-driven volume path tracing, octree acceleration, and empty-space skipping.</li>
+            <li>Designed GPU memory and synchronization strategies with VMA and pipeline barriers. Used RenderDoc and Nsight to identify bottlenecks.</li>
+          </ul>
+        </article>
+
+        <article class="cv-job">
+          <p class="cv-date">2020 — 2021</p>
+          <h3>Technical Lead, Mobile Graphics</h3>
+          <p class="cv-company">Roar Games Studio <span>Ankara</span></p>
+          <p>Led a team of around 10 developers, artists, and designers on 40+ mobile game prototypes. Defined rendering approaches, performance budgets, and CPU/GPU optimization strategies.</p>
+        </article>
+
+        <article class="cv-job">
+          <p class="cv-date">2016 — 2020</p>
+          <h3>Senior Game Developer</h3>
+          <p class="cv-company">SimBT <span>Ankara</span></p>
+          <p>Built rendering and interaction systems for VR/AR training and geographic visualization, integrating physics, networking, and internal tools.</p>
+        </article>
+
+        <article class="cv-job">
+          <p class="cv-date">2015 — 2016</p>
+          <h3>Game Developer, VR Systems</h3>
+          <p class="cv-company">A Information Technologies <span>Ankara</span></p>
+          <p>Developed VR simulations with Kinect and IMU motion tracking.</p>
+        </article>
+      </section>
+
+      <aside class="cv-sidebar" aria-label="Technical expertise and selected projects">
+        <section class="cv-skills" aria-labelledby="cv-skills-heading">
+          <h2 class="cv-section-title" id="cv-skills-heading">Technical expertise</h2>
+          <div class="cv-skill-group">
+            <h3>Rendering &amp; GPU systems</h3>
+            <p>Vulkan, OpenGL, OpenXR, PBR, compute shaders, and render graphs. GPU culling, cache-aware layouts, resource lifetime, and synchronization.</p>
+          </div>
+          <div class="cv-skill-group">
+            <h3>Profiling</h3>
+            <p>RenderDoc, Nsight Graphics, and Nsight Compute.</p>
+          </div>
+          <div class="cv-skill-group">
+            <h3>Development</h3>
+            <p>C++17/20/23, C, GLSL, Python, CMake, and Git.<br>Android/Adreno, Linux, and Windows.</p>
+          </div>
+        </section>
+
+        <section class="cv-projects" aria-labelledby="cv-projects-heading">
+          <h2 class="cv-section-title" id="cv-projects-heading">Projects</h2>
+          <article class="cv-project">
+            <h3><a href="https://github.com/semihguresci/VulkanSceneRenderer" target="_blank" rel="noopener">Vulkan Scene Renderer <span aria-hidden="true">↗</span></a></h3>
+            <p>A C++23 and Vulkan 1.4 renderer with forward and deferred paths, GPU-driven visibility, and layered PBR. Supports glTF, BIM, and USD scene inspection.</p>
+          </article>
+          <article class="cv-project">
+            <h3><a href="https://github.com/semihguresci/gpu-memory-access-benchmark" target="_blank" rel="noopener">GPU Memory Benchmarks <span aria-hidden="true">↗</span></a></h3>
+            <p>45 Vulkan compute experiments exploring data layout, coalesced access, cache locality, and bandwidth, from AoS/SoA to BVH layouts and GPU-driven workloads.</p>
+          </article>
+          <article class="cv-project">
+            <h3><a href="https://github.com/semihguresci/vk-profiling-benchmark" target="_blank" rel="noopener">Vulkan Profiling Benchmark <span aria-hidden="true">↗</span></a></h3>
+            <p>A Vulkan benchmark with triangle rendering, million-triangle raster stress, and compute-copy workloads. Includes CPU/GPU timing, JSON output, Docker and local runners, and Nsight capture scripts.</p>
+          </article>
+        </section>
+
+      </aside>
+    </div>
+
+    <footer class="cv-footer">
+      <span>Rendering architecture / GPU performance / Mobile XR</span>
+      <a href="{{ site.url }}">semihguresci.com</a>
+    </footer>
+  </article>
+</div>

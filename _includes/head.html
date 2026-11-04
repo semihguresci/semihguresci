@@ -1,6 +1,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#101317" />
+  <meta name="color-scheme" content="dark light" />
+  <script>try { var preferredTheme = localStorage.getItem('site-theme'); if (preferredTheme === 'light' || preferredTheme === 'dark') document.documentElement.dataset.theme = preferredTheme; } catch (error) { /* Use the default theme when storage is unavailable. */ }</script>
+  <link rel="preload" href="{{ '/assets/fonts/manrope-latin.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin />
   <title>{% if page.title %}{{ page.title }} | {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
   <meta name="description" content="{% if page.description %}{{ page.description | strip_html | strip_newlines | truncate: 160 }}{% else %}{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}{% endif %}" />
   <meta name="author" content="{{ site.author_name }}" />
@@ -18,7 +22,7 @@
   <meta name="twitter:title" content="{% if page.title %}{{ page.title }} | {{ site.title }}{% else %}{{ site.title }}{% endif %}" />
   <meta name="twitter:description" content="{% if page.description %}{{ page.description | strip_html | strip_newlines | truncate: 160 }}{% else %}{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}{% endif %}" />
   <meta name="twitter:image" content="{% if page.og_image %}{{ site.url }}{{ page.og_image }}{% else %}{{ site.url }}{{ site.seo_image }}{% endif %}" />
-  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}" />
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}?v=20261104-volume2" />
   {% if page.layout == 'post' %}
   <script type="application/ld+json">
     {
@@ -27,7 +31,7 @@
       "headline": "{{ page.title | replace: '"', '\"' }}",
       "description": "{% if page.description %}{{ page.description | strip_html | strip_newlines | truncate: 160 | replace: '"', '\"' }}{% else %}{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 | replace: '"', '\"' }}{% else %}{{ site.description | replace: '"', '\"' }}{% endif %}{% endif %}",
       "datePublished": "{{ page.date | date: "%Y-%m-%d" }}",
-      "dateModified": "{{ page.date | date: "%Y-%m-%d" }}",
+      "dateModified": "{% if page.last_modified_at %}{{ page.last_modified_at | date: "%Y-%m-%d" }}{% else %}{{ page.date | date: "%Y-%m-%d" }}{% endif %}",
       "mainEntityOfPage": "{{ site.url }}{{ page.url }}",
       "author": {
         "@type": "Person",

@@ -1,49 +1,9 @@
+<a class="skip-link" href="#main-content">Skip to content</a>
 <header class="topbar">
   <div class="container topbar-inner">
-    <a class="brand" href="{{ '/' | relative_url }}#home">{{ site.title }}</a>
-    <nav class="nav" aria-label="Primary navigation">
-      <a href="{{ '/' | relative_url }}#about">About</a>
-      <a href="{{ '/' | relative_url }}#expertise">Expertise</a>
-      <a href="{{ '/' | relative_url }}#projects">Projects</a>
-      <a href="{{ '/blog/' | relative_url }}">Blog</a>
-      <a href="{{ '/' | relative_url }}#experience">Experience</a>
-      <a href="{{ '/' | relative_url }}#contact">Contact</a>
-    </nav>
-    <div class="topbar-actions">
-      <button class="theme-toggle" id="theme-toggle" aria-label="Switch to dark theme">
-        <span class="theme-toggle-icon icon-moon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
-          </svg>
-        </span>
-        <span class="theme-toggle-icon icon-sun" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8"></circle>
-            <path d="M12 2v2.2M12 19.8V22M4.93 4.93l1.56 1.56M17.5 17.5l1.57 1.57M2 12h2.2M19.8 12H22M4.93 19.07l1.56-1.56M17.5 6.5l1.57-1.57" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
-          </svg>
-        </span>
-        <span class="theme-toggle-text">Dark</span>
-      </button>
-      <button class="nav-toggle" id="nav-toggle" aria-controls="mobile-nav" aria-expanded="false" aria-label="Open navigation menu">
-        <span class="nav-toggle-icon icon-menu" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
-          </svg>
-        </span>
-        <span class="nav-toggle-icon icon-close" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none">
-            <path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
-          </svg>
-        </span>
-      </button>
-    </div>
+    <a class="brand" href="{{ '/' | relative_url }}#home" aria-label="Semih Güreşçi — home"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M10 4H4v24h6M22 4h6v24h-6" stroke="currentColor" stroke-width="2"/><path d="m19 10-6 12" stroke="currentColor" stroke-width="2"/></svg></span><span>Semih Güreşçi<span class="brand-period">.</span></span></a>
+    <nav class="nav" aria-label="Primary navigation"><a href="{{ '/' | relative_url }}#projects" data-section="projects">Projects</a><a href="{{ '/' | relative_url }}#experience" data-section="experience">Experience</a><a href="{{ '/' | relative_url }}#about" data-section="about">About</a><a href="{{ '/blog/' | relative_url }}">Writing</a><a href="{{ '/cv/' | relative_url }}"{% if page.url == '/cv/' %} aria-current="page"{% endif %}>CV</a></nav>
+    <div class="topbar-actions"><button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to light theme"><svg class="icon-sun" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.4 1.4m11.2 11.2L19 19M5 19l1.4-1.4M17.6 6.4 19 5"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.5 13A8.5 8.5 0 0 1 11 3.5 8.5 8.5 0 1 0 20.5 13Z"/></svg></button><a class="header-contact" href="{{ '/' | relative_url }}#contact">Contact <span aria-hidden="true">↗</span></a><button class="nav-toggle" id="nav-toggle" type="button" aria-controls="mobile-nav" aria-expanded="false" aria-label="Open navigation menu"><span></span><span></span></button></div>
   </div>
-  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation" aria-hidden="true">
-    <a href="{{ '/' | relative_url }}#about">About</a>
-    <a href="{{ '/' | relative_url }}#expertise">Expertise</a>
-    <a href="{{ '/' | relative_url }}#projects">Projects</a>
-    <a href="{{ '/blog/' | relative_url }}">Blog</a>
-    <a href="{{ '/' | relative_url }}#experience">Experience</a>
-    <a href="{{ '/' | relative_url }}#contact">Contact</a>
-  </nav>
+  <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile navigation" aria-hidden="true"><a href="{{ '/' | relative_url }}#projects">Projects <span aria-hidden="true">↗</span></a><a href="{{ '/' | relative_url }}#experience">Experience <span aria-hidden="true">↗</span></a><a href="{{ '/' | relative_url }}#about">About <span aria-hidden="true">↗</span></a><a href="{{ '/blog/' | relative_url }}">Writing <span aria-hidden="true">↗</span></a><a href="{{ '/cv/' | relative_url }}"{% if page.url == '/cv/' %} aria-current="page"{% endif %}>CV <span aria-hidden="true">↗</span></a><a href="{{ '/' | relative_url }}#contact">Contact <span aria-hidden="true">↗</span></a></nav>
 </header>
