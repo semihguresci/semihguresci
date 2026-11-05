@@ -949,7 +949,9 @@ def build_preview(source_root: Path, output_root: Path) -> None:
         source_path = source_root / relative_path
         if source_path.exists():
             extra_html = render_page(engine, source_path, {"url": page_url})
-            if relative_path.endswith(".html"):
+            if relative_path == "404.html":
+                write_output(output_root / relative_path, extra_html)
+            elif relative_path.endswith(".html"):
                 write_output(output_root / Path(relative_path).stem / "index.html", extra_html)
             else:
                 write_output(output_root / relative_path, extra_html)

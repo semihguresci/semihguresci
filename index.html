@@ -1,104 +1,423 @@
 ---
 layout: default
+title: GPU rendering & performance engineer
+description: Semih Güreşçi, GPU rendering and performance engineer. A live WebGPU volume-lighting background, measured results from Vulkan rendering work, selected projects, and writing.
 ---
 
-<section class="hero" aria-labelledby="hero-title">
-  <div class="container hero-grid">
-    <div class="hero-copy">
-      <p class="section-kicker hero-kicker"><span class="status-dot" aria-hidden="true"></span> GPU rendering &amp; performance engineer</p>
-      <h1 id="hero-title">Real-time<br><span>rendering.</span></h1>
-      <p class="hero-intro">I’m <strong>Semih Güreşçi.</strong> I build rendering systems for mobile XR and desktop graphics, with C++ and Vulkan at the core.</p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="#projects">View projects <span aria-hidden="true">↗</span></a>
-        <a class="btn btn-secondary" href="{{ site.social_linkedin }}" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span></a>
+<section class="hero" aria-labelledby="hero-title" data-volume data-volume-stage data-state="loading">
+  <div class="container hero__top">
+    <p class="hero__label"><span class="hero__index" aria-hidden="true">01</span>Light through dust</p>
+    <span class="status" data-status aria-live="polite">Starting WebGPU</span>
+  </div>
+
+  <div class="container hero__inner">
+    <div class="hero__copy">
+      <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span>GPU rendering &amp; performance engineer · Luxembourg</p>
+      <h1 id="hero-title">Real-time rendering, tuned against the frame budget.</h1>
+      <p class="lead">I build Vulkan rendering systems for mobile XR and desktop graphics. Every optimization starts with a measured bottleneck and ends with a measured result.</p>
+      <ul class="tags" aria-label="Core technologies">
+        <li>Vulkan 1.4</li>
+        <li>C++23</li>
+        <li>WebGPU</li>
+        <li>GPU timestamps</li>
+        <li>Adreno · tile-based GPUs</li>
+      </ul>
+      <div class="actions">
+        <a class="btn btn--primary" href="#performance">See measured results <span aria-hidden="true">→</span></a>
+        <a class="btn btn--ghost" href="{{ '/cv/' | relative_url }}">Read the CV</a>
+        <a class="btn btn--linkedin" href="{{ site.social_linkedin }}" target="_blank" rel="noopener">LinkedIn profile <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a>
       </div>
-    </div>
-    <div class="scene-viewer" aria-label="Interactive generative graphics study">
-      <div class="scene-toolbar"><span><span class="viewfinder-mark" aria-hidden="true"></span> Light transport</span><span class="scene-index">Volume study</span></div>
-      <div class="scene-stage">
-        <img id="render-fallback" class="render-fallback" src="{{ '/assets/images/dust-volume-fallback.png' | relative_url }}?v=20261104-volume2" width="640" height="560" alt="A warm beam of light scattering through a soft dust volume">
-        <canvas id="render-study" width="640" height="560" role="img" aria-label="A spotlight scattering through a slowly drifting dust volume. Move your pointer to steer the light." aria-describedby="volume-model render-help">A single-scattering volume study with Beer–Lambert attenuation.</canvas>
-        <button class="render-pause" id="render-pause" type="button" aria-label="Pause animation"><span aria-hidden="true">Ⅱ</span></button>
-      </div>
-      <div class="scene-caption"><p>Light through dust.</p><span class="scene-caption-tech" id="volume-model">Single scattering · Beer–Lambert attenuation</span><span class="scene-caption-help" id="render-help">Move your pointer to steer the light.</span></div>
+      <p class="hero__hint" id="demo-hint">The background is a live volume study: dust drifts and boils through the beam while the pointer steers the light.</p>
     </div>
   </div>
+
+  <div class="container hero__dock">
+    <div class="hero__tools">
+      <div class="hud" aria-hidden="true">
+        <div class="hud__panel">
+          <span class="hud__label" data-hud-label>GPU</span>
+          <span class="hud__value"><span data-hud="gpu">—</span><small>ms</small></span>
+          <svg class="spark" viewBox="0 0 180 40" preserveAspectRatio="none" focusable="false">
+            <line class="spark__budget" data-budget x1="0" x2="180" y1="30" y2="30"></line>
+            <polyline class="spark__line" data-spark points=""></polyline>
+          </svg>
+          <p class="hud__meta"><span data-hud="scale">—</span><span data-hud="size">—</span><span data-hud="steps">—</span><span data-hud="accum">—</span></p>
+        </div>
+      </div>
+      <div class="hero__controls">
+        <label class="visually-hidden" for="demo-quality">Render quality</label>
+        <select id="demo-quality" class="select" data-quality disabled>
+          <option value="auto" selected>Auto quality</option>
+          <option value="eco">Eco</option>
+          <option value="balanced">Balanced</option>
+          <option value="ultra">Ultra</option>
+        </select>
+        <button class="icon-btn" type="button" data-pause aria-label="Pause animation" title="Pause animation" disabled>
+          <svg class="icon-pause" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="2" width="3.5" height="12" rx="1"/><rect x="9.5" y="2" width="3.5" height="12" rx="1"/></svg>
+          <svg class="icon-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.5v11l9-5.5z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero__media">
+    <img class="hero__still" data-volume-still src="{{ '/assets/images/dust-volume-fallback.webp' | relative_url }}" width="1600" height="900" alt="" fetchpriority="high" decoding="async" />
+    <canvas class="hero__canvas" data-volume-canvas width="1600" height="900" role="img" tabindex="0" aria-label="Live background: a warm spotlight scatters through dust that drifts and boils." aria-describedby="demo-hint" hidden></canvas>
+  </div>
+  <div class="hero__scrim" aria-hidden="true"></div>
 </section>
 
-<section class="section work-section" id="projects" aria-labelledby="work-title">
+<section class="section" id="performance" aria-labelledby="performance-title">
   <div class="container">
-    <div class="section-heading"><div><p class="section-kicker">01 / Open source</p><h2 class="section-title" id="work-title">Projects</h2></div><a class="btn btn-secondary projects-all-link" href="https://github.com/semihguresci" target="_blank" rel="noopener">More projects on GitHub <span aria-hidden="true">↗</span></a></div>
-    <article class="project-feature">
-      <a class="project-feature-image pipeline-visual" href="{{ '/blog/announcing-vulkan-scene-renderer/' | relative_url }}" aria-label="Read about the Vulkan scene renderer"><div class="visual-heading"><span>Frame pipeline</span><span>Vulkan 1.4</span></div><div class="pipeline-stack" aria-hidden="true"><div class="pipeline-layer"><span>01</span><b>Depth &amp; visibility</b><i>GPU culling / Hi-Z</i></div><div class="pipeline-layer"><span>02</span><b>Raster rendering</b><i>Forward / deferred</i></div><div class="pipeline-layer"><span>03</span><b>Lighting</b><i>PBR / LTC / OIT</i></div><div class="pipeline-layer"><span>04</span><b>Post-processing</b><i>TAA / HDR / output</i></div></div><span class="image-label">Major stages of a frame</span><span class="image-crosshair" aria-hidden="true">↗</span></a>
-      <div class="project-feature-copy"><h3>Vulkan Scene Renderer</h3><p>A scene engine with forward and deferred rendering, GPU-driven visibility, and layered PBR materials.</p><div class="project-tags"><span>C++23 / Slang</span><span>Vulkan 1.4</span><span>glTF / BIM / USD</span></div><div class="project-actions"><a class="text-link" href="{{ '/blog/announcing-vulkan-scene-renderer/' | relative_url }}">Read about the renderer <span aria-hidden="true">↗</span></a><a class="quiet-link" href="https://github.com/semihguresci/VulkanSceneRenderer" target="_blank" rel="noopener">View source <span aria-hidden="true">↗</span></a></div></div>
-    </article>
-    <div class="project-grid">
-      <article class="project-secondary">
-        <a class="memory-visual project-visual" href="{{ '/blog/gpu-memory-access-benchmark-experiment-06-aos-vs-soa/' | relative_url }}" aria-label="Read GPU memory layout experiments">
-          <div class="visual-heading"><span>Memory layout</span><span>AoS / SoA</span></div>
-          <div class="memory-layout"><div class="memory-row"><span>AoS</span><div class="memory-cells aos-cells" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div><div class="memory-row"><span>SoA</span><div class="memory-cells soa-cells" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
-          <span class="visual-caption">Highlighted cells show the same field</span><span class="visual-link" aria-hidden="true">↗</span>
-        </a>
-        <h3>GPU Memory Benchmarks</h3><p>45 Vulkan compute experiments exploring data layout, cache behavior, coalescing, and bandwidth.</p><div class="project-tags"><span>Vulkan</span><span>Compute shaders</span></div><a class="text-link" href="https://github.com/semihguresci/gpu-memory-access-benchmark" target="_blank" rel="noopener" aria-label="View GPU memory benchmarks on GitHub">View on GitHub <span aria-hidden="true">↗</span></a>
+    <header class="section-head reveal">
+      <div class="section-head__title">
+        <p class="eyebrow">01 · Results</p>
+        <h2 id="performance-title">Measured results from rendering work</h2>
+      </div>
+      <p class="section-lead">Each figure is a before-and-after result from the work it describes.</p>
+    </header>
+
+    <div class="metrics reveal">
+      <article class="metric">
+        <p class="metric__value">+35%</p>
+        <h3 class="metric__label">Adreno GPU performance</h3>
+        <p class="metric__text">Vulkan multiview removed redundant per-eye draw calls for mobile XR rendering.</p>
+        <div class="bars" role="img" aria-label="Throughput normalized to baseline: 74 before, 100 after">
+          <div class="bar"><span>Before</span><i style="--value: 74%"></i></div>
+          <div class="bar bar--after"><span>After</span><i style="--value: 100%"></i></div>
+        </div>
       </article>
-      <article class="project-secondary">
-        <a class="benchmark-visual project-visual" href="{{ '/blog/vk-bench-first-look/' | relative_url }}" aria-label="Read vk-bench benchmark results">
-          <div class="visual-heading"><span>GPU timings</span><span>Average · ms</span></div>
-          <div class="benchmark-plot" aria-label="Sample GPU times: triangle 0.0090 milliseconds, million-tris 0.6951 milliseconds, compute-copy 8.3235 milliseconds"><div><span>Triangle</span><i style="--bar: 0.11%"></i><b>0.0090</b></div><div><span>1M triangles</span><i style="--bar: 8.35%"></i><b>0.6951</b></div><div><span>Compute copy</span><i style="--bar: 100%"></i><b>8.3235</b></div></div>
-          <span class="visual-caption">RTX 2080 SUPER · 1080p · 30 sampled frames</span><span class="visual-link" aria-hidden="true">↗</span>
-        </a>
-        <h3>Vulkan Profiling Benchmark</h3><p>Controlled raster and compute workloads with separate CPU/GPU timings, JSON results, and Nsight capture scripts.</p><div class="project-tags"><span>Vulkan</span><span>Docker / local runners</span></div><a class="text-link" href="https://github.com/semihguresci/vk-profiling-benchmark" target="_blank" rel="noopener" aria-label="View the Vulkan profiling benchmark on GitHub">View on GitHub <span aria-hidden="true">↗</span></a>
+      <article class="metric">
+        <p class="metric__value">−30%</p>
+        <h3 class="metric__label">Global memory bandwidth</h3>
+        <p class="metric__text">Tile-based rendering with Vulkan render passes and subpasses kept working data in on-chip memory.</p>
+        <div class="bars" role="img" aria-label="Bandwidth normalized to baseline: 100 before, 70 after">
+          <div class="bar"><span>Before</span><i style="--value: 100%"></i></div>
+          <div class="bar bar--after"><span>After</span><i style="--value: 70%"></i></div>
+        </div>
+      </article>
+      <article class="metric">
+        <p class="metric__value">−50%</p>
+        <h3 class="metric__label">Sparse-volume rendering time</h3>
+        <p class="metric__text">Compute-driven volume path tracing with octree acceleration and empty-space skipping.</p>
+        <div class="bars" role="img" aria-label="Rendering time normalized to baseline: 100 before, 50 after">
+          <div class="bar"><span>Before</span><i style="--value: 100%"></i></div>
+          <div class="bar bar--after"><span>After</span><i style="--value: 50%"></i></div>
+        </div>
+      </article>
+      <article class="metric">
+        <p class="metric__value">45</p>
+        <h3 class="metric__label">Vulkan compute experiments</h3>
+        <p class="metric__text">Layout, coalescing, cache locality, bandwidth, subgroups, and synchronization, written up as a nine-part series.</p>
+        <div class="cells" aria-hidden="true">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
       </article>
     </div>
+    <p class="metrics__note">Bars are normalized to each baseline. They show the reported change, not absolute performance.</p>
   </div>
 </section>
 
-<section class="section experience-section" id="experience" aria-labelledby="experience-title">
-  <div class="container experience-grid">
-    <div class="experience-intro"><p class="section-kicker">02 / Experience</p><h2 class="section-title" id="experience-title">From simulation<br>to mobile XR</h2><a class="text-link" href="{{ '/cv/' | relative_url }}">View CV <span aria-hidden="true">↗</span></a></div>
-    <div class="experience-list">
-      <article class="experience-row"><div class="experience-meta"><span>2022 — PRESENT</span><span class="current-label"><i aria-hidden="true"></i> CURRENT</span></div><h3>Computer Graphics Engineer</h3><p class="experience-company">Arspectra <span>Luxembourg</span></p><p>Built Vulkan pipelines for mobile XR under strict frame-time and memory constraints.</p><dl class="experience-results" aria-label="Selected performance improvements at Arspectra"><div><dt>Multiview stereo</dt><dd><strong>+35%</strong><span>Adreno GPU performance</span></dd></div><div><dt>Tile-based rendering</dt><dd><strong>−30%</strong><span>Global memory bandwidth use</span></dd></div><div><dt>Sparse volumes</dt><dd><strong>−50%</strong><span>Rendering time</span></dd></div></dl></article>
-      <article class="experience-row"><div class="experience-meta"><span>2020 — 2021</span></div><h3>Technical Lead, Mobile Graphics</h3><p class="experience-company">Roar Games Studio <span>Ankara</span></p><p>Led development of 40+ mobile game prototypes, setting rendering approaches and CPU/GPU performance budgets.</p></article>
-      <article class="experience-row"><div class="experience-meta"><span>2016 — 2020</span></div><h3>Senior Game Developer</h3><p class="experience-company">SimBT <span>Ankara</span></p><p>Integrated rendering, physics, networking, and tools for VR training and geographic visualization.</p></article>
-      <article class="experience-row"><div class="experience-meta"><span>2015 — 2016</span></div><h3>Game Developer, VR Systems</h3><p class="experience-company">A Information Technologies <span>Ankara</span></p><p>Integrated Kinect and IMU motion tracking into VR simulations.</p></article>
-    </div>
-  </div>
-</section>
-
-<section class="section about-section" id="about" aria-labelledby="about-title">
+<section class="section" id="work" aria-labelledby="work-title">
   <div class="container">
-    <div class="about-grid">
-      <div class="about-portrait">
-        <img src="{{ '/assets/images/semih-linkedin-profile.jpg' | relative_url }}" alt="Semih Güreşçi" width="400" height="400" loading="lazy">
-        <div><span>SEMIH GÜREŞÇİ</span></div>
+    <header class="section-head reveal">
+      <div class="section-head__title">
+        <p class="eyebrow">02 · Selected work</p>
+        <h2 id="work-title">Renderers, benchmarks, and experiments</h2>
       </div>
-      <div class="about-copy">
-        <p class="section-kicker">03 / About</p>
-        <h2 class="section-title" id="about-title">How I work</h2>
-        <p class="about-lead">I start by finding the bottleneck.</p>
-        <p>I measure where a frame spends its time, then use focused experiments to test a change before bringing it into the renderer.</p>
-        <p>That means looking at the whole pipeline: how data is laid out, when resources are used, and how work moves between the CPU and GPU.</p>
-        <a class="text-link" href="https://www.linkedin.com/in/semihguresci/" target="_blank" rel="noopener">Find me on LinkedIn <span aria-hidden="true">↗</span></a>
-      </div>
-    </div>
-    <div class="expertise-grid" id="expertise">
-      <div class="expertise-label"><span class="section-kicker">Tools I use</span><p>For building, debugging,<br>and measuring graphics.</p></div>
-      <div class="expertise-column"><h3>Graphics APIs</h3><p>Vulkan · OpenGL · OpenXR</p></div>
-      <div class="expertise-column"><h3>Profiling</h3><p>RenderDoc<br>Nsight Graphics · Nsight Compute</p></div>
-      <div class="expertise-column"><h3>Development</h3><p>C++17/20/23 · C · GLSL · Python<br>CMake · Git<br>Android / Adreno · Linux · Windows</p></div>
-    </div>
-  </div>
-</section>
+      <p class="section-lead">Source code, write-ups, and measurements from the projects I build and benchmark.</p>
+    </header>
 
-<section class="section writing-section" id="blogs" aria-labelledby="writing-title">
-  <div class="container"><div class="section-heading"><div><p class="section-kicker">04 / Writing</p><h2 class="section-title" id="writing-title">Rendering notes</h2></div><div class="writing-heading-side"><p class="section-description">Articles on rendering techniques, GPU memory, and the results of my experiments.</p><a class="text-link" href="{{ '/blog/' | relative_url }}">Read all articles <span aria-hidden="true">↗</span></a></div></div>
-    <ol class="writing-list">
-      {% assign featured_posts = site.posts | slice: 0, 3 %}
-      {% for post in featured_posts %}
-      <li class="writing-row"><time class="writing-date" datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: "%b %d, %Y" }}</time><div class="writing-body"><span class="writing-topic">{% assign topic = post.tags | first %}{% if topic == 'gpu' %}GPU performance{% else %}Rendering{% endif %}</span><h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3></div><a class="writing-arrow" href="{{ post.url | relative_url }}" aria-label="Read {{ post.title }}"><span aria-hidden="true">↗</span></a></li>
+    <div class="work reveal">
+      <article class="card card--feature">
+        <div class="card__media">
+          <picture>
+            <source type="image/webp" srcset="{{ '/assets/blog/vulkan-scene-renderer/current/flight-helmet-pbr.webp' | relative_url }}" />
+            <img src="{{ '/assets/blog/vulkan-scene-renderer/current/flight-helmet-pbr.jpg' | relative_url }}" alt="Flight Helmet rendered with physically based materials in the Vulkan Scene Renderer" width="1600" height="900" loading="lazy" decoding="async" />
+          </picture>
+        </div>
+        <div class="card__body">
+          <p class="card__kicker">Renderer · C++23 · Vulkan 1.4</p>
+          <h3>Vulkan Scene Renderer</h3>
+          <p>A C++23 and Vulkan 1.4 scene engine with forward and deferred raster pipelines, GPU-driven visibility, layered PBR, and glTF, BIM, and USD inspection.</p>
+          <ul class="tags" aria-label="Technologies">
+            <li>C++23</li>
+            <li>Vulkan 1.4</li>
+            <li>glTF · BIM · USD</li>
+          </ul>
+          <div class="card__links">
+            <a class="link" href="{{ '/blog/announcing-vulkan-scene-renderer/' | relative_url }}">Read the write-up <span aria-hidden="true">→</span></a>
+            <a class="link link--quiet" href="https://github.com/semihguresci/VulkanSceneRenderer" target="_blank" rel="noopener">Source code <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card__media card__media--chart">
+          <picture>
+            <source type="image/webp" srcset="{{ '/assets/blog/gpu-memory-experiments-2026-10-23/charts/aos_vs_soa_gpu_ms_vs_size.webp' | relative_url }}" />
+            <img src="{{ '/assets/blog/gpu-memory-experiments-2026-10-23/charts/aos_vs_soa_gpu_ms_vs_size.png' | relative_url }}" alt="Line chart of GPU dispatch time against problem size for AoS and SoA layouts. AoS time rises steeply while SoA stays low." width="1800" height="900" loading="lazy" decoding="async" />
+          </picture>
+        </div>
+        <div class="card__body">
+          <p class="card__kicker">Experiments · Vulkan compute</p>
+          <h3>GPU memory experiments</h3>
+          <p>45 Vulkan compute experiments on data layout, coalescing, cache locality, and bandwidth. Experiment 06 compares AoS and SoA dispatch time.</p>
+          <ul class="tags" aria-label="Technologies">
+            <li>Vulkan</li>
+            <li>Compute</li>
+            <li>Memory layout</li>
+          </ul>
+          <div class="card__links">
+            <a class="link" href="{{ '/blog/gpu-memory-experiments-series/' | relative_url }}">Read the series <span aria-hidden="true">→</span></a>
+            <a class="link link--quiet" href="https://github.com/semihguresci/gpu-memory-access-benchmark" target="_blank" rel="noopener">Source code <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a>
+          </div>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card__media">
+          <img src="{{ '/assets/blog/vk-bench-first-look/scene-average-frame-times.svg' | relative_url }}" alt="Average frame times for the vk-bench scene workloads" width="800" height="450" loading="lazy" decoding="async" />
+        </div>
+        <div class="card__body">
+          <p class="card__kicker">Benchmark · Vulkan</p>
+          <h3>Vulkan Profiling Benchmark</h3>
+          <p>Controlled raster and compute workloads with separate CPU and GPU timings, JSON output, and Nsight capture scripts.</p>
+          <ul class="tags" aria-label="Technologies">
+            <li>Vulkan</li>
+            <li>Nsight</li>
+            <li>Docker / local runners</li>
+          </ul>
+          <div class="card__links">
+            <a class="link" href="{{ '/blog/vk-bench-first-look/' | relative_url }}">Read the first look <span aria-hidden="true">→</span></a>
+            <a class="link link--quiet" href="https://github.com/semihguresci/vk-profiling-benchmark" target="_blank" rel="noopener">Source code <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <h3 class="repos-title">All repositories</h3>
+    <ul class="repos reveal">
+      {% for project in site.data.projects %}
+      <li>
+        <a href="{{ project.link }}" target="_blank" rel="noopener">{{ project.title }} <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a>
+        <p>{{ project.description }}</p>
+      </li>
       {% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="section" id="capabilities" aria-labelledby="capabilities-title">
+  <div class="container">
+    <header class="section-head reveal">
+      <div class="section-head__title">
+        <p class="eyebrow">03 · Capabilities</p>
+        <h2 id="capabilities-title">The stack behind the frame</h2>
+      </div>
+    </header>
+    <div class="spec-grid reveal">
+      <article class="spec">
+        <p class="spec__index">01</p>
+        <h3>Rendering</h3>
+        <ul>
+          <li>Vulkan 1.4</li>
+          <li>Render graphs</li>
+          <li>Forward and deferred paths</li>
+          <li>GPU-driven culling</li>
+          <li>PBR, OIT, TAA, HDR</li>
+          <li>Volume rendering</li>
+        </ul>
+      </article>
+      <article class="spec">
+        <p class="spec__index">02</p>
+        <h3>GPU performance</h3>
+        <ul>
+          <li>RenderDoc, Nsight Graphics</li>
+          <li>Nsight Compute</li>
+          <li>GPU timestamps</li>
+          <li>Bandwidth and cache analysis</li>
+          <li>Memory layout</li>
+          <li>Barriers and synchronization</li>
+        </ul>
+      </article>
+      <article class="spec">
+        <p class="spec__index">03</p>
+        <h3>Mobile &amp; XR</h3>
+        <ul>
+          <li>Adreno</li>
+          <li>Tile-based GPUs</li>
+          <li>Render passes and subpasses</li>
+          <li>Multiview stereo</li>
+          <li>OpenXR</li>
+        </ul>
+      </article>
+      <article class="spec">
+        <p class="spec__index">04</p>
+        <h3>Languages &amp; tools</h3>
+        <ul>
+          <li>C++17/20/23, C</li>
+          <li>GLSL, WGSL</li>
+          <li>Python</li>
+          <li>CMake, Git, Docker</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="method" aria-labelledby="method-title">
+  <div class="container">
+    <header class="section-head reveal">
+      <div class="section-head__title">
+        <p class="eyebrow">04 · Behind the background</p>
+        <h2 id="method-title">How the light-through-dust effect runs</h2>
+      </div>
+      <p class="section-lead">A single-scattering volume rendered with WebGPU. Each part of the pipeline is measured, not assumed.</p>
+    </header>
+    <div class="spec-grid reveal">
+      <article class="spec">
+        <p class="spec__index">01</p>
+        <h3>Density</h3>
+        <p>A 64³ noise volume is baked on the GPU at startup. Each density sample is one texture fetch, and a time-varying warp makes the field drift and boil. An analytic ellipsoid keeps the edges soft.</p>
+      </article>
+      <article class="spec">
+        <p class="spec__index">02</p>
+        <h3>Lighting</h3>
+        <p>A spotlight with a soft cone and inverse-square falloff. Each sample marches toward the light to estimate shadowing, and a cool ambient term fills the volume.</p>
+      </article>
+      <article class="spec">
+        <p class="spec__index">03</p>
+        <h3>Sampling</h3>
+        <p>Per-pixel jitter turns banding into fine noise. Each frame blends into a short running average of eight frames, which smooths the noise without smearing the moving dust.</p>
+      </article>
+      <article class="spec">
+        <p class="spec__index">04</p>
+        <h3>Measurement</h3>
+        <p>GPU time comes from timestamp queries where the browser exposes them, and the sparkline plots the last 120 samples against a 10 ms budget. Auto quality lowers the render scale when the average exceeds that budget.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="experience" aria-labelledby="experience-title">
+  <div class="container">
+    <header class="section-head reveal">
+      <div class="section-head__title">
+        <p class="eyebrow">05 · Experience</p>
+        <h2 id="experience-title">From simulation to mobile XR</h2>
+      </div>
+      <a class="link" href="{{ '/cv/' | relative_url }}">Full CV <span aria-hidden="true">→</span></a>
+    </header>
+    <ol class="timeline reveal">
+      <li class="is-current">
+        <div class="timeline__meta">
+          <span>2022 — Present</span>
+          <span class="timeline__state">Current</span>
+        </div>
+        <div class="timeline__body">
+          <h3>Computer Graphics Engineer</h3>
+          <p class="timeline__org">Arspectra <span>Luxembourg</span></p>
+          <p class="timeline__text">Built Vulkan pipelines for mobile XR under strict frame-time and memory constraints.</p>
+          <dl class="chips" aria-label="Selected performance improvements at Arspectra">
+            <div class="chip"><dt>Multiview stereo</dt><dd><strong>+35%</strong><span>Adreno GPU performance</span></dd></div>
+            <div class="chip"><dt>Tile-based rendering</dt><dd><strong>−30%</strong><span>Global memory bandwidth use</span></dd></div>
+            <div class="chip"><dt>Sparse volumes</dt><dd><strong>−50%</strong><span>Rendering time</span></dd></div>
+          </dl>
+        </div>
+      </li>
+      <li>
+        <div class="timeline__meta"><span>2020 — 2021</span></div>
+        <div class="timeline__body">
+          <h3>Technical Lead, Mobile Graphics</h3>
+          <p class="timeline__org">Roar Games Studio <span>Ankara</span></p>
+          <p class="timeline__text">Led development of 40+ mobile game prototypes, setting rendering approaches and CPU/GPU performance budgets.</p>
+        </div>
+      </li>
+      <li>
+        <div class="timeline__meta"><span>2016 — 2020</span></div>
+        <div class="timeline__body">
+          <h3>Senior Game Developer</h3>
+          <p class="timeline__org">SimBT <span>Ankara</span></p>
+          <p class="timeline__text">Integrated rendering, physics, networking, and tools for VR training and geographic visualization.</p>
+        </div>
+      </li>
+      <li>
+        <div class="timeline__meta"><span>2015 — 2016</span></div>
+        <div class="timeline__body">
+          <h3>Game Developer, VR Systems</h3>
+          <p class="timeline__org">A Information Technologies <span>Ankara</span></p>
+          <p class="timeline__text">Integrated Kinect and IMU motion tracking into VR simulations.</p>
+        </div>
+      </li>
     </ol>
   </div>
 </section>
 
-<section class="contact-section" id="contact" aria-labelledby="contact-title"><div class="container"><p class="section-kicker">05 / Contact</p><div class="contact-heading"><h2 id="contact-title">Get in touch</h2><a class="contact-orbit" href="mailto:semih.guresci@gmail.com" aria-label="Email Semih Güreşçi"><span aria-hidden="true">↗</span></a></div><div class="contact-bottom"><a class="contact-email" href="mailto:semih.guresci@gmail.com">semih.guresci@gmail.com</a><p>Contact me about rendering,<br>GPU performance, or a project you have in mind.</p></div></div></section>
+<section class="section" id="writing" aria-labelledby="writing-title">
+  <div class="container">
+    <header class="section-head reveal">
+      <div class="section-head__title">
+        <p class="eyebrow">06 · Writing</p>
+        <h2 id="writing-title">Rendering notes</h2>
+      </div>
+      <a class="link" href="{{ '/blog/' | relative_url }}">All articles <span aria-hidden="true">→</span></a>
+    </header>
+    <div class="posts reveal">
+      {% assign featured_posts = site.posts | slice: 0, 3 %}
+      {% for post in featured_posts %}
+      {% assign topic = post.tags | first %}
+      <article class="post-card">
+        <p class="post-card__meta">
+          <time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: "%b %d, %Y" }}</time>
+          {% if topic == 'gpu' %}<span>GPU performance</span>{% else %}<span>Rendering</span>{% endif %}
+        </p>
+        <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+        <p>{{ post.excerpt | strip_html | truncate: 150 }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section" id="about" aria-labelledby="about-title">
+  <div class="container about">
+    <figure class="portrait reveal">
+      <picture>
+        <source type="image/webp" srcset="{{ '/assets/images/semih-linkedin-profile.webp' | relative_url }}" />
+        <img src="{{ '/assets/images/semih-linkedin-profile.jpg' | relative_url }}" alt="Portrait of Semih Güreşçi" width="400" height="400" loading="lazy" decoding="async" />
+      </picture>
+    </figure>
+    <div class="about__copy reveal">
+      <p class="eyebrow">07 · About</p>
+      <h2 id="about-title">How I work</h2>
+      <p class="about__lead">I start by finding the bottleneck.</p>
+      <p>I measure where a frame spends its time, then run focused experiments to test a change before it reaches the renderer.</p>
+      <p>That means looking at the whole pipeline: how data is laid out, when resources are used, and how work moves between the CPU and GPU.</p>
+      <a class="btn btn--linkedin btn--small" href="{{ site.social_linkedin }}" target="_blank" rel="noopener">View LinkedIn profile <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="section section--contact" id="contact" aria-labelledby="contact-title">
+  <div class="container">
+    <div class="contact reveal">
+      <div class="contact__copy">
+        <p class="eyebrow">08 · Contact</p>
+        <h2 id="contact-title">Get in touch</h2>
+        <a class="contact__email" href="mailto:{{ site.email }}">{{ site.email }}</a>
+        <p class="contact__text">Contact me about rendering, GPU performance, or a project you have in mind.</p>
+      </div>
+      <div class="contact__actions">
+        <a class="btn btn--primary" href="mailto:{{ site.email }}">Send an email <span aria-hidden="true">→</span></a>
+        <a class="btn btn--linkedin" href="{{ site.social_linkedin }}" target="_blank" rel="noopener">Connect on LinkedIn <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a>
+        <a class="btn btn--ghost" href="{{ '/assets/cv/SemihGuresciCV.pdf' | relative_url }}" download>Download CV (PDF)</a>
+        <a class="btn btn--ghost" href="{{ site.social_github }}" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a>
+      </div>
+    </div>
+  </div>
+</section>

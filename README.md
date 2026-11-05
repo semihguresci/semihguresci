@@ -1,6 +1,6 @@
 # Semih Güreşçi — personal portfolio
 
-A static portfolio with an original, interactive GPU study, engineering projects, writing, and a dedicated CV page. The frontend uses HTML, CSS, and JavaScript without a framework or runtime dependencies.
+A static portfolio for GPU rendering and performance work: a live WebGPU volume-lighting background, measured results, selected projects, writing, and a CV page. The site uses HTML, CSS, and JavaScript without a framework or runtime dependencies.
 
 ## Local review
 
@@ -10,61 +10,72 @@ From the project directory in PowerShell:
 ./serve-local.ps1
 ```
 
-Open **http://127.0.0.1:4000**. This builds the source into `.preview/` and serves it locally. After editing, rebuild with `./serve-local.ps1 -BuildOnly`, then refresh the page. The server can continue running while the files are rebuilt.
+Open **http://127.0.0.1:4000**. The script builds the source into `.preview/` and serves it locally. After editing, rebuild with `./serve-local.ps1 -BuildOnly`, then refresh the page.
 
 ## Static build
 
-The existing Python template and Markdown renderer is also the static build tool. It uses the Python standard library; Jekyll, Ruby, npm packages, and a backend are not required.
+The Python template and Markdown renderer in `tools/preview_site.py` is also the static build tool. It uses the Python standard library only; Jekyll, Ruby, npm packages, and a backend are not required.
 
 ```powershell
 python -B tools/preview_site.py --source . --output dist
 ```
 
-`dist/` contains the complete site, including `.nojekyll`, assets, articles, the CV, and the existing custom domain file. It can be served on GitHub Pages or another static host. Building locally does not publish anything. The templates remain compatible with the existing Jekyll authoring structure.
+`dist/` contains the complete site, including `.nojekyll`, assets, articles, the CV, the 404 page, and the custom domain file. It can be served on GitHub Pages or another static host. Building locally does not publish anything. The templates stay within the Liquid subset that the builder supports, and they remain compatible with the Jekyll structure.
 
-## Content and design
+## Structure
 
-- `index.html`: homepage content and project diagrams.
-- `_posts/`: existing Markdown articles; their URLs are preserved.
-- `_includes/` and `_layouts/`: shared page structure, navigation, metadata, and article layout.
-- `cv/index.html` and `assets/css/cv.css`: the CV page with technical experience, skills, and projects. **Download PDF** provides the original supplied CV.
-- `assets/cv/SemihGuresciCV.pdf`: original supplied one-page CV, available through the download links. Web copy selectively summarizes the rendering and performance work.
-- `assets/css/style.css`: typography, colors, light/dark themes, responsive layouts, reduced-motion support.
-- `assets/js/site.js`: navigation and theme controls.
-- `assets/js/render-study.js`: volume integration, WGSL/WebGPU and GLSL/WebGL2 renderers, and animation lifecycle.
+- `index.html`: the home page. The hero background is the live WebGPU study. The page continues with results, selected work, capabilities, the method, experience, writing, about, and contact.
+- `cv/index.html`: the CV page. **Download PDF** serves `assets/cv/SemihGuresciCV.pdf`, the original supplied CV.
+- `blog/index.html` and `_posts/`: the writing index and the articles. Article URLs are preserved.
+- `_layouts/` and `_includes/`: the page shell, navigation, metadata, and article layout.
+- `_data/projects.yml`: the repository list on the home page.
+- `404.html`: the not-found page (noindex).
+- `assets/css/style.css`: the design system, responsive layouts, and reduced-motion support.
+- `assets/js/site.js`: navigation, section highlighting, reveal animations, and the article progress bar.
+- `assets/js/light-volume.js`: the WebGPU background and its shared `MODEL` parameters.
+- `tools/`: the static builder, the reference renderer, the image generator, and the model checks.
 
-The hero is a light-through-dust volume study. A warm spotlight illuminates a slowly drifting, bounded analytic density field. The camera ray marches through the volume and integrates single-scattered light, including attenuation toward the camera and the light. Pointer movement steers the spotlight; Pause/Play is the only control. WebGPU is preferred, with the same model in WebGL2 and a precomputed CPU render when neither backend is available.
+## WebGPU background
 
-### Volume-study model
+The hero background is a single-scattering volume lit by a spotlight. It is rendered full-bleed behind the copy and runs on WebGPU only. When WebGPU is unavailable or the device is lost, the page keeps the static render from `assets/images/dust-volume-fallback.webp`.
 
-Distances are normalized scene units and radiance is relative. Density is a prescribed smooth field, not a fluid or particle simulation. The model uses absorption `sigmaA = 0.12`, scattering `sigmaS = 0.78`, and Henyey–Greenstein asymmetry `g = 0.35`. Extinction is `sigmaT = sigmaA + sigmaS`. Each midpoint sample treats density and incident illumination as constant over its segment:
+Each frame does the following:
+
+1. **Density:** a 64³ value-noise volume is baked by a compute pass at startup. Each density sample is one trilinear fetch. The field drifts across the frame, and a time-varying warp makes the dust boil, so the structure keeps changing. An analytic ellipsoid envelope keeps the edges soft.
+2. **Trace:** each pixel takes one jittered estimate. Each sample marches toward the spotlight to estimate shadowing. A cool ambient term adds fill, and a stylized lamp glare marks the source.
+3. **Accumulation:** the estimate is blended into a running average of eight frames. That smooths the jitter without smearing the moving dust. The average restarts when the light moves.
+4. **Present:** an ACES tone map, a small glow around bright regions, a vignette, and triangular dither before the sRGB encode.
+
+The HUD reports GPU time from timestamp queries when the browser exposes them, and it plots the last 120 samples against a 10 ms budget. In Auto quality, the render scale adjusts to hold that budget. Eco, Balanced, and Ultra fix the scale and sample counts.
+
+Controls: pointer movement steers the light, and the arrow keys do the same when the background has focus. Space pauses, and the pause button does the same. Reduced motion starts paused. The animation also pauses when the hero leaves the viewport or when the tab is hidden.
+
+### Volume model
+
+Distances are normalized scene units, and radiance is relative. Density is a prescribed field, not a fluid or particle simulation. Multiple scattering is omitted. The parameters live in the `MODEL` object at the top of `assets/js/light-volume.js`:
 
 ```text
+density(p, t) = envelope(p) * (floor + gain * smoothstep(low, high, noise(q)))
+q = p / extent + 0.5 + drift * t / extent + warpAmount * warp(t)
 Tsegment = exp(-sigmaT * density * stepLength)
-L += Tview * incomingLight * phaseHG(mu) * (sigmaS / sigmaT) * (1 - Tsegment)
+L += Tview * (sigmaS / sigmaT) * (1 - Tsegment) * (incident * phaseHG(mu) + ambient)
 Tview *= Tsegment
 ```
 
-The spotlight has inverse-square falloff and a soft angular profile. A second march estimates attenuation between each scattering sample and the light. The phase-function cosine compares the incoming and outgoing photon propagation directions. The implementation follows [Beer–Lambert transmittance](https://www.pbr-book.org/4ed/Volume_Scattering/Transmittance) and [Henyey–Greenstein scattering](https://www.pbr-book.org/4ed/Volume_Scattering/Phase_Functions).
+`warp(t)` is a smooth set of sine offsets in the three axes, so the dust boils as well as drifting. `sigmaT = sigmaA + sigmaS`. The segment transmittance is analytic. The in-scattered light is sampled at the jittered point. The spotlight has inverse-square falloff and a soft cone. The Henyey–Greenstein phase uses `g = 0.30`. The references are [Beer–Lambert transmittance](https://www.pbr-book.org/4ed/Volume_Scattering/Transmittance) and [Henyey–Greenstein scattering](https://www.pbr-book.org/4ed/Volume_Scattering/Phase_Functions).
 
-The live render uses 64 camera steps and 6 light steps. Finite midpoint quadrature and the single-scattering approximation are intentional; multiple scattering is omitted. The density support bounds the integration domain. No hierarchy, hardware benchmark, or empty-space-skipping speedup is claimed. The display targets 30 fps, with DPR at most 1.25, a 760-pixel long-edge limit, and a 300,000-pixel budget. Automatic motion pauses offscreen, in hidden tabs, and initially when reduced motion is requested.
+Because the same `MODEL` object feeds both the WGSL shaders and the Python reference, editing a parameter there and regenerating the fallback keeps the static image in step with the live background.
 
-`python -B tools/validate_volume_study.py` checks the actual WGSL and GLSL scalar helper arithmetic against homogeneous analytical slabs, vacuum and pure-absorption limits, phase-function normalization and direction, and known heterogeneous quadrature convergence. These are CPU equation checks, not a claim of full GPU image equivalence.
+## Tools
 
-`python -B tools/render_dust_reference.py` generates `assets/images/dust-volume-fallback.png` from the renderer's `MODEL` parameters at the neutral light position and time zero. It uses higher sample counts for a deterministic CPU reference; `--match-gpu` uses the live sample counts instead. The PNG records the LF-normalized renderer source hash. NumPy and Pillow are needed only to regenerate this development asset.
+`python -B tools/render_dust_reference.py` regenerates `assets/images/dust-volume-fallback.webp` from `MODEL` at 1600×900, with 96 view and 12 light midpoint samples and the moment `--time` (default 0). It applies the same warp, bloom, tone map, vignette, and dither as the live pass. Options: `--width`, `--height`, `--view-steps`, `--light-steps`, `--time`, and `--output`. NumPy and Pillow are needed only for this development step.
 
-Fonts are self-hosted. Their open font licenses are included in `assets/fonts/`.
+`python -B tools/build_web_images.py` creates WebP variants of the large home-page images and the 1200×630 social card at `assets/images/og-card.jpg`. The source images stay in place, so the articles keep their original files. Run it again after replacing a source image or the fallback.
 
-### Color and information hierarchy
+`python -B tools/validate_volume_study.py` checks the Python reference against the model: the Henyey–Greenstein normalization, the noise periodicity and range, the baked volume distribution, the placement of the lamp and camera outside the dust envelope, and the ray–box span. These are equation and layout checks. They do not compare pixels with a GPU frame.
 
-Color has a small, consistent vocabulary across the homepage, articles, and CV:
+## Color and typography
 
-| Role | Treatment | Use |
-| --- | --- | --- |
-| Content and structure | Graphite, ivory, and muted neutrals | Headings, body copy, metadata, and section boundaries |
-| Actions and selection | Lime, with a darker green equivalent on light surfaces | Primary links, buttons, focus, and selected viewer controls |
-| Technical evidence | Blue, adjusted for each theme | Performance figures, memory cells, pipeline diagrams, and benchmark bars |
+The palette is dark and restrained. Graphite and ivory carry the text. Warm amber marks actions, focus, and the spotlight. Cyan marks measured values. Manrope and IBM Plex Mono are self-hosted. Their open font licenses are in `assets/fonts/`.
 
-The palette keeps navigation and primary actions easy to find while giving technical diagrams a distinct visual role. Typography and contrast establish the reading order; labels and shapes keep the diagrams understandable without color. Technical panels use a dark local palette in both themes. The volume study uses a fixed warm light and neutral dust against charcoal, with a quiet scientific caption.
-
-Text and essential control color pairs are checked against the [WCAG contrast guidance](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html); color is reinforced by [text and other visual cues](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html).
+Text and control color pairs are checked against the [WCAG contrast guidance](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html). Color is reinforced by text, shape, and position, following the [use of color guidance](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html).

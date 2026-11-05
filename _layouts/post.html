@@ -2,65 +2,47 @@
 layout: default
 ---
 
-<article class="post page-shell">
-  <div class="post-kicker">
-    <a href="{{ '/blog/' | relative_url }}" class="text-link">&larr; All articles</a>
-  </div>
-  <header class="post-header">
-    <h1 class="post-title">{{ page.title }}</h1>
-    <div class="post-meta">
-      <time datetime="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date: "%B %d, %Y" }}</time>
-      {% if page.last_modified_at %}
-        <span class="post-updated">Updated <time datetime="{{ page.last_modified_at | date: '%Y-%m-%d' }}">{{ page.last_modified_at | date: "%B %d, %Y" }}</time></span>
-      {% endif %}
-      {% if page.tags %}
-        <span class="post-tags">
-          {% for tag in page.tags %}
-            {% assign tag_label = tag | replace: '-', ' ' | capitalize %}
-            {% if tag == 'cpp' %}
-              {% assign tag_label = 'C++' %}
-            {% endif %}
-            {% if tag == 'gpu' %}
-              {% assign tag_label = 'GPU' %}
-            {% endif %}
-            {% if tag == 'xr' %}
-              {% assign tag_label = 'XR' %}
-            {% endif %}
-            {% if tag == 'best-practices' %}
-              {% assign tag_label = 'Best practices' %}
-            {% endif %}
-            <span class="tag">{{ tag_label }}</span>
-          {% endfor %}
-        </span>
-      {% endif %}
+<div class="progress" aria-hidden="true"><span class="progress__bar" data-progress></span></div>
+
+<article class="article">
+  <div class="article__inner">
+    <a class="back-link" href="{{ '/blog/' | relative_url }}"><span aria-hidden="true">←</span> All writing</a>
+    <header class="article__header">
+      <div class="article__meta">
+        <time datetime="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date: "%B %d, %Y" }}</time>
+        {% if page.last_modified_at %}<span>Updated {{ page.last_modified_at | date: "%B %d, %Y" }}</span>{% endif %}
+        {% for tag in page.tags %}
+        {% assign tag_label = tag | replace: '-', ' ' | capitalize %}
+        {% if tag == 'cpp' %}{% assign tag_label = 'C++' %}{% endif %}
+        {% if tag == 'gpu' %}{% assign tag_label = 'GPU' %}{% endif %}
+        {% if tag == 'xr' %}{% assign tag_label = 'XR' %}{% endif %}
+        {% if tag == 'gltf' %}{% assign tag_label = 'glTF' %}{% endif %}
+        {% if tag == 'best-practices' %}{% assign tag_label = 'Best practices' %}{% endif %}
+        <span class="tag">{{ tag_label }}</span>
+        {% endfor %}
+      </div>
+      <h1>{{ page.title }}</h1>
+      {% if page.excerpt %}<p class="lead">{{ page.excerpt }}</p>{% endif %}
+    </header>
+
+    {% if page.cover_image %}
+    <figure class="article__cover">
+      <img src="{{ page.cover_image | relative_url }}" alt="{{ page.cover_alt }}" width="1600" height="900" fetchpriority="high" decoding="async" />
+      {% if page.cover_caption %}<figcaption>{{ page.cover_caption }}</figcaption>{% endif %}
+    </figure>
+    {% endif %}
+
+    <div class="prose">
+      {{ content }}
     </div>
-  </header>
 
-  {% if page.cover_image %}
-  <figure class="post-cover">
-    <img src="{{ page.cover_image | relative_url }}" alt="{{ page.cover_alt }}" width="1600" height="900" fetchpriority="high">
-    {% if page.cover_caption %}<figcaption>{{ page.cover_caption }}</figcaption>{% endif %}
-  </figure>
-  {% endif %}
-
-  <div class="post-content">
-    {{ content }}
-  </div>
-
-  <footer class="post-footer">
-    <nav class="post-navigation" aria-label="More writing">
+    <nav class="post-nav" aria-label="More writing">
       {% if page.previous %}
-        <a href="{{ page.previous.url | relative_url }}" class="prev-post">
-          <span class="section-kicker">&larr; Previous article</span>
-          <span>{{ page.previous.title }}</span>
-        </a>
+      <a class="post-nav__link" href="{{ page.previous.url | relative_url }}"><span>← Previous article</span><strong>{{ page.previous.title }}</strong></a>
       {% endif %}
       {% if page.next %}
-        <a href="{{ page.next.url | relative_url }}" class="next-post">
-          <span class="section-kicker">Next article &rarr;</span>
-          <span>{{ page.next.title }}</span>
-        </a>
+      <a class="post-nav__link post-nav__link--next" href="{{ page.next.url | relative_url }}"><span>Next article →</span><strong>{{ page.next.title }}</strong></a>
       {% endif %}
     </nav>
-  </footer>
+  </div>
 </article>

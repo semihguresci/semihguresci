@@ -1,1 +1,16 @@
-<footer class="footer"><div class="container"><div class="footer-main"><a class="footer-brand" href="{{ '/' | relative_url }}#home">Semih Güreşçi<span>.</span></a><nav class="footer-socials" aria-label="Professional links"><a href="https://github.com/semihguresci" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a><a href="https://www.linkedin.com/in/semihguresci/" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span></a><a href="{{ '/cv/' | relative_url }}">CV <span aria-hidden="true">↗</span></a><a href="#home" class="back-to-top">Back to top <span aria-hidden="true">↑</span></a></nav></div><div class="footer-bottom"><span>© {{ site.time | date: "%Y" }} {{ site.title }}</span><span class="footer-location">Luxembourg</span><nav class="footer-links" aria-label="Legal links"><a href="{{ '/privacy/' | relative_url }}">Privacy</a><a href="{{ '/data-policy/' | relative_url }}">Data policy</a></nav></div></div></footer>
+<footer class="site-footer">
+  <div class="container site-footer__inner">
+    <div>
+      <a class="brand" href="{{ '/' | relative_url }}">Semih Güreşçi<span class="brand__dot" aria-hidden="true">.</span></a>
+      <p class="site-footer__note">GPU rendering and performance engineering · Luxembourg</p>
+    </div>
+    <nav class="site-footer__links" aria-label="Professional links">
+      <a href="{{ site.social_linkedin }}" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a>
+      <a href="{{ site.social_github }}" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a>
+      <a href="{{ '/cv/' | relative_url }}">CV</a>
+      <a href="{{ '/privacy/' | relative_url }}">Privacy</a>
+      <a href="{{ '/data-policy/' | relative_url }}">Data policy</a>
+    </nav>
+    <p class="site-footer__copy">© {{ site.time | date: "%Y" }} {{ site.title }}</p>
+  </div>
+</footer>

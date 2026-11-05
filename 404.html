@@ -1,0 +1,19 @@
+---
+layout: default
+title: Page not found
+description: The page you are looking for does not exist.
+noindex: true
+---
+
+<section class="not-found">
+  <div class="container not-found__inner">
+    <p class="eyebrow">Error 404</p>
+    <h1>This page is not here.</h1>
+    <p class="lead">The link may be outdated, or the page may have moved. The main sections are still available.</p>
+    <div class="actions">
+      <a class="btn btn--primary" href="{{ '/' | relative_url }}">Back to home <span aria-hidden="true">→</span></a>
+      <a class="btn btn--ghost" href="{{ '/blog/' | relative_url }}">Writing</a>
+      <a class="btn btn--ghost" href="{{ '/cv/' | relative_url }}">CV</a>
+    </div>
+  </div>
+</section>
