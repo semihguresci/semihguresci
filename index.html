@@ -27,7 +27,7 @@ description: Semih Güreşçi, GPU rendering and performance engineer. A live We
         <a class="btn btn--ghost" href="{{ '/cv/' | relative_url }}">Read the CV</a>
         <a class="btn btn--linkedin" href="{{ site.social_linkedin }}" target="_blank" rel="noopener">LinkedIn profile <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a>
       </div>
-      <p class="hero__hint" id="demo-hint">The background is a live volume study: dust drifts and boils through the beam while the pointer steers the light.</p>
+      <p class="hero__hint">The background is a live volume study: dust drifts and boils through the beam while the pointer steers the light.</p>
     </div>
   </div>
 
@@ -62,7 +62,7 @@ description: Semih Güreşçi, GPU rendering and performance engineer. A live We
 
   <div class="hero__media">
     <img class="hero__still" data-volume-still src="{{ '/assets/images/dust-volume-fallback.webp' | relative_url }}" width="1600" height="900" alt="" fetchpriority="high" decoding="async" />
-    <canvas class="hero__canvas" data-volume-canvas width="1600" height="900" role="img" tabindex="0" aria-label="Live background: a warm spotlight scatters through dust that drifts and boils." aria-describedby="demo-hint" hidden></canvas>
+    <canvas class="hero__canvas" data-volume-canvas width="1600" height="900" aria-hidden="true" hidden></canvas>
   </div>
   <div class="hero__scrim" aria-hidden="true"></div>
 </section>
@@ -109,6 +109,7 @@ description: Semih Güreşçi, GPU rendering and performance engineer. A live We
         <p class="metric__value">45</p>
         <h3 class="metric__label">Vulkan compute experiments</h3>
         <p class="metric__text">Layout, coalescing, cache locality, bandwidth, subgroups, and synchronization, written up as a nine-part series.</p>
+        <a class="link" href="{{ '/blog/gpu-memory-experiments-series/' | relative_url }}">Read the series <span aria-hidden="true">→</span></a>
         <div class="cells" aria-hidden="true">
           <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
           <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
@@ -180,7 +181,7 @@ description: Semih Güreşçi, GPU rendering and performance engineer. A live We
       </article>
 
       <article class="card">
-        <div class="card__media">
+        <div class="card__media card__media--chart">
           <img src="{{ '/assets/blog/vk-bench-first-look/scene-average-frame-times.svg' | relative_url }}" alt="Average frame times for the vk-bench scene workloads" width="800" height="450" loading="lazy" decoding="async" />
         </div>
         <div class="card__body">
@@ -368,16 +369,15 @@ description: Semih Güreşçi, GPU rendering and performance engineer. A live We
       <a class="link" href="{{ '/blog/' | relative_url }}">All articles <span aria-hidden="true">→</span></a>
     </header>
     <div class="posts reveal">
-      {% assign featured_posts = site.posts | slice: 0, 3 %}
+      {% assign featured_posts = site.posts | where: "featured", true | slice: 0, 3 %}
       {% for post in featured_posts %}
-      {% assign topic = post.tags | first %}
       <article class="post-card">
         <p class="post-card__meta">
           <time datetime="{{ post.date | date: '%Y-%m-%d' }}">{{ post.date | date: "%b %d, %Y" }}</time>
-          {% if topic == 'gpu' %}<span>GPU performance</span>{% else %}<span>Rendering</span>{% endif %}
+          <span>{% if post.category %}{{ post.category }}{% else %}Writing{% endif %}</span>
         </p>
         <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
-        <p>{{ post.excerpt | strip_html | truncate: 150 }}</p>
+        <p>{{ post.excerpt | strip_html | truncatewords: 24 }}</p>
       </article>
       {% endfor %}
     </div>

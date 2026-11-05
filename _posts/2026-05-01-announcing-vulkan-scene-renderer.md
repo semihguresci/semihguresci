@@ -5,6 +5,8 @@ last_modified_at: 2026-10-23
 description: "A look at forward and deferred rendering, scene inspection, and GPU profiling in my C++23 and Vulkan 1.4 renderer."
 excerpt: "Forward and deferred rendering, scene inspection, and GPU profiling in a C++23 and Vulkan 1.4 scene engine."
 tags: [vulkan, graphics, renderer, gltf]
+featured: true
+category: "Rendering"
 cover_image: /assets/blog/vulkan-scene-renderer/current/flight-helmet-pbr.jpg
 cover_alt: "Flight Helmet rendered with physically based materials in VulkanSceneRenderer"
 cover_caption: "Repository capture · 4 October 2026 · Deferred raster, TAA, 1600 × 900 · Flight Helmet by Gary Hsu, CC0"
@@ -27,7 +29,7 @@ You can switch between forward and deferred rendering while keeping the same
 scenes, materials, lights, and editor controls. Both paths share environment
 lighting, culling, and telemetry.
 
-The core targets Vulkan 1.4 with dynamic rendering and synchronization2.
+The core targets Vulkan 1.4 with dynamic rendering and synchronization.
 Vulkan-Hpp RAII manages Vulkan object lifetime, VMA manages GPU allocations,
 and Slang compiles shaders to SPIR-V 1.6. Bindless descriptors, buffer device
 addresses, indirect draws, and indirect draw counts support the rendering paths.

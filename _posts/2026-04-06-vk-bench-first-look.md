@@ -3,6 +3,8 @@ title: "Measuring Vulkan workloads with vk-bench"
 date: 2026-04-06
 last_modified_at: 2026-10-23
 tags: [vulkan, graphics, performance, benchmark]
+featured: true
+category: "Benchmark"
 excerpt: "A small Vulkan benchmark for comparing CPU and GPU timings across controlled graphics and compute workloads."
 ---
 

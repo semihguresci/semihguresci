@@ -11,6 +11,13 @@ layout: default
       <div class="article__meta">
         <time datetime="{{ page.date | date: '%Y-%m-%d' }}">{{ page.date | date: "%B %d, %Y" }}</time>
         {% if page.last_modified_at %}<span>Updated {{ page.last_modified_at | date: "%B %d, %Y" }}</span>{% endif %}
+        {% if page.reading_minutes %}
+        <span>About {{ page.reading_minutes }} min read</span>
+        {% else %}
+        {% assign words = content | strip_html | number_of_words %}
+        {% assign minutes = words | divided_by: site.reading_wpm %}
+        <span>About {% if minutes < 1 %}1{% else %}{{ minutes }}{% endif %} min read</span>
+        {% endif %}
         {% for tag in page.tags %}
         {% assign tag_label = tag | replace: '-', ' ' | capitalize %}
         {% if tag == 'cpp' %}{% assign tag_label = 'C++' %}{% endif %}
@@ -31,6 +38,8 @@ layout: default
       {% if page.cover_caption %}<figcaption>{{ page.cover_caption }}</figcaption>{% endif %}
     </figure>
     {% endif %}
+
+    {% if page.toc_html %}{{ page.toc_html }}{% endif %}
 
     <div class="prose">
       {{ content }}

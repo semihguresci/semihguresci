@@ -10,6 +10,8 @@
   <meta name="robots" content="{% if page.noindex %}noindex, nofollow{% else %}index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1{% endif %}" />
   <meta name="googlebot" content="{% if page.noindex %}noindex, nofollow{% else %}index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1{% endif %}" />
   <link rel="icon" type="image/svg+xml" href="{{ '/assets/images/favicon.svg' | relative_url }}" />
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ '/assets/images/apple-touch-icon.png' | relative_url }}" />
+  <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ '/feed.xml' | relative_url }}" />
   <link rel="canonical" href="{{ site.url }}{{ page.url }}" />
   <meta property="og:type" content="{% if page.layout == 'post' %}article{% else %}website{% endif %}" />
   <meta property="og:site_name" content="{{ site.title }}" />
@@ -21,7 +23,8 @@
   <meta name="twitter:title" content="{% if page.title %}{{ page.title }} | {{ site.title }}{% else %}{{ site.title }}{% endif %}" />
   <meta name="twitter:description" content="{% if page.description %}{{ page.description | strip_html | strip_newlines | truncate: 160 }}{% else %}{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}{% endif %}" />
   <meta name="twitter:image" content="{% if page.og_image %}{{ site.url }}{{ page.og_image }}{% else %}{{ site.url }}{{ site.seo_image }}{% endif %}" />
-  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}?v=20261106-motion" />
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}?v=20261106-polish4" />
+  <noscript><style>@media (max-width: 900px) { .nav-toggle { display: none; } .mobile-nav { display: grid; position: static; } }</style></noscript>
   {% if page.layout == 'post' %}
   <script type="application/ld+json">
     {

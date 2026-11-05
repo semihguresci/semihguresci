@@ -3,6 +3,8 @@ title: "GPU memory experiments: a guide to the 45-study series"
 date: 2026-10-23
 tags: [gpu, memory, vulkan, experiments]
 excerpt: "A nine-part tour of 45 Vulkan compute experiments, from dispatch timing and data layout to subgroup algorithms and rendering workloads."
+featured: true
+category: "GPU performance"
 ---
 
 I built the GPU memory access benchmark to make memory decisions easier to

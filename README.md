@@ -26,9 +26,11 @@ python -B tools/preview_site.py --source . --output dist
 
 - `index.html`: the home page. The hero background is the live WebGPU study. The page continues with results, selected work, capabilities, the method, experience, writing, about, and contact.
 - `cv/index.html`: the CV page. **Download PDF** serves `assets/cv/SemihGuresciCV.pdf`, the original supplied CV.
-- `blog/index.html` and `_posts/`: the writing index and the articles. Article URLs are preserved.
+- `blog/index.html` and `_posts/`: the writing index and the articles. Article URLs are preserved. Posts marked `featured: true` appear on the home page.
+- `feed.xml`: the RSS feed of all articles, linked from every page.
 - `_layouts/` and `_includes/`: the page shell, navigation, metadata, and article layout.
 - `_data/projects.yml`: the repository list on the home page.
+- `_config.yml`: site settings. `reading_wpm` sets the reading-time estimate for articles, which excludes code blocks.
 - `404.html`: the not-found page (noindex).
 - `assets/css/style.css`: the design system, responsive layouts, and reduced-motion support.
 - `assets/js/site.js`: navigation, section highlighting, reveal animations, and the article progress bar.
@@ -48,7 +50,7 @@ Each frame does the following:
 
 The HUD reports GPU time from timestamp queries when the browser exposes them, and it plots the last 120 samples against a 10 ms budget. In Auto quality, the render scale adjusts to hold that budget. Eco, Balanced, and Ultra fix the scale and sample counts.
 
-Controls: pointer movement steers the light, and the arrow keys do the same when the background has focus. Space pauses, and the pause button does the same. Reduced motion starts paused. The animation also pauses when the hero leaves the viewport or when the tab is hidden.
+Controls: pointer movement steers the light, and the pause button stops the motion. Reduced motion starts paused. The animation also pauses when the hero leaves the viewport or when the tab is hidden.
 
 ### Volume model
 

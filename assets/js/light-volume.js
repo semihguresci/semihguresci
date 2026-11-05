@@ -677,7 +677,6 @@ function boot(host) {
     pageVisible: !document.hidden,
     aim: { x: 0, y: 0 },
     pointer: null,
-    keys: { x: 0, y: 0 },
     lastInput: -Infinity,
     lastHud: 0,
     history: []
@@ -690,8 +689,7 @@ function boot(host) {
   }
 
   function goal(now) {
-    const base = session.pointer ?? (now - session.lastInput > IDLE_MS ? wander(session.time) : { x: 0, y: 0 });
-    return { x: clamp(base.x + session.keys.x), y: clamp(base.y + session.keys.y) };
+    return session.pointer ?? (now - session.lastInput > IDLE_MS ? wander(session.time) : { x: 0, y: 0 });
   }
 
   function sizeCanvas() {
@@ -853,26 +851,6 @@ function boot(host) {
   stage.addEventListener('pointerleave', releasePointer);
   stage.addEventListener('pointerup', event => {
     if (event.pointerType === 'touch') releasePointer();
-  });
-  canvas.addEventListener('keydown', event => {
-    const step = 0.1;
-    const moves = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, step], ArrowDown: [0, -step] };
-    if (event.key === ' ' || event.key === 'Spacebar') {
-      event.preventDefault();
-      setPaused(!session.paused);
-      return;
-    }
-    if (event.key === 'r' || event.key === 'R') {
-      session.keys = { x: 0, y: 0 };
-    } else if (moves[event.key]) {
-      event.preventDefault();
-      session.keys.x = clamp(session.keys.x + moves[event.key][0], -0.8, 0.8);
-      session.keys.y = clamp(session.keys.y + moves[event.key][1], -0.8, 0.8);
-    } else {
-      return;
-    }
-    session.lastInput = performance.now();
-    requestFrame();
   });
   motion.addEventListener('change', event => setPaused(event.matches));
   document.addEventListener('visibilitychange', () => {

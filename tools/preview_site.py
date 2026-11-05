@@ -654,6 +654,8 @@ class TemplateEngine:
             return html.unescape(token[1:-1])
         if DATE_RE.fullmatch(token):
             return dt.date.fromisoformat(token)
+        if token in ("true", "false"):
+            return token == "true"
         if re.fullmatch(r"-?\d+", token):
             return int(token)
         if re.fullmatch(r"-?\d+\.\d+", token):
@@ -725,6 +727,31 @@ class TemplateEngine:
                 return list(sliced)
             return value
 
+        if name == "where":
+            key = stringify(args[0]) if args else ""
+            expected = args[1] if len(args) > 1 else None
+            items = value if isinstance(value, (list, tuple)) else []
+            return [item for item in items if isinstance(item, dict) and item.get(key) == expected]
+        if name == "truncatewords":
+            count = int(args[0]) if args else 15
+            words = stringify(value).split()
+            return " ".join(words[:count]) + ("..." if len(words) > count else "")
+        if name == "xml_escape":
+            return (
+                stringify(value)
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace('"', "&quot;")
+                .replace("'", "&apos;")
+            )
+
+        if name == "number_of_words":
+            return len(stringify(value).split())
+        if name == "divided_by":
+            divisor = int(args[0]) if args else 1
+            return int(value) // divisor if divisor else 0
+
         raise ValueError(f"Unsupported Liquid filter: {name}")
 
 
@@ -778,7 +805,44 @@ def clear_directory(path: Path) -> None:
             child.unlink()
 
 
-def load_posts(source_root: Path) -> list[dict[str, Any]]:
+H2_RE = re.compile(r"<h2>(.*?)</h2>", re.S)
+PRE_RE = re.compile(r"<pre\b.*?</pre>", re.S)
+
+
+def add_heading_anchors(html_text: str) -> tuple[str, list[tuple[str, str]]]:
+    entries: list[tuple[str, str]] = []
+    used: set[str] = set()
+
+    def anchor(match: re.Match[str]) -> str:
+        inner = match.group(1)
+        plain = html.unescape(HTML_TAG_RE.sub("", inner)).strip().lower()
+        slug = re.sub(r"[^a-z0-9]+", "-", plain).strip("-") or "section"
+        candidate = slug
+        counter = 2
+        while candidate in used:
+            candidate = f"{slug}-{counter}"
+            counter += 1
+        used.add(candidate)
+        entries.append((candidate, inner))
+        return f'<h2 id="{candidate}">{inner}</h2>'
+
+    return H2_RE.sub(anchor, html_text), entries
+
+
+def build_toc_html(entries: list[tuple[str, str]]) -> str:
+    if len(entries) < 3:
+        return ""
+    items = "".join(f'<li><a href="#{anchor}">{text}</a></li>' for anchor, text in entries)
+    return f'<nav class="toc" aria-label="On this page"><p class="toc__title">On this page</p><ol>{items}</ol></nav>'
+
+
+def reading_minutes(html_text: str, wpm: int) -> int:
+    prose = PRE_RE.sub(" ", html_text)
+    words = len(html.unescape(HTML_TAG_RE.sub(" ", prose)).split())
+    return max(1, round(words / max(1, wpm)))
+
+
+def load_posts(source_root: Path, wpm: int = 220) -> list[dict[str, Any]]:
     posts: list[dict[str, Any]] = []
 
     for path in sorted((source_root / "_posts").glob("*.md")):
@@ -788,7 +852,7 @@ def load_posts(source_root: Path) -> list[dict[str, Any]]:
             raise ValueError(f"Unsupported post filename format: {path.name}")
 
         slug = filename_match.group(1)
-        content_html = render_markdown(body)
+        content_html, heading_entries = add_heading_anchors(render_markdown(body))
         excerpt = str(metadata.get("excerpt") or "").strip() or extract_excerpt(body)
         post = {
             **metadata,
@@ -796,6 +860,8 @@ def load_posts(source_root: Path) -> list[dict[str, Any]]:
             "url": f"/blog/{slug}/",
             "content": content_html,
             "excerpt": excerpt,
+            "toc_html": build_toc_html(heading_entries),
+            "reading_minutes": reading_minutes(content_html, wpm),
             "source_path": path,
         }
         posts.append(post)
@@ -906,7 +972,7 @@ def write_output(path: Path, content: str) -> None:
 def build_preview(source_root: Path, output_root: Path) -> None:
     config = parse_config((source_root / "_config.yml").read_text(encoding="utf-8"))
     projects = parse_mapping_list((source_root / "_data" / "projects.yml").read_text(encoding="utf-8"))
-    posts = load_posts(source_root)
+    posts = load_posts(source_root, int(config.get("reading_wpm", 220)))
 
     site = {
         **config,
@@ -938,6 +1004,7 @@ def build_preview(source_root: Path, output_root: Path) -> None:
     extra_templates = [
         ("robots.txt", "/robots.txt"),
         ("sitemap.xml", "/sitemap.xml"),
+        ("feed.xml", "/feed.xml"),
     ]
 
     for page_path in sorted(source_root.glob("*.html")):

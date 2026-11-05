@@ -12,6 +12,7 @@ url: "https://semihguresci.com"
 markdown: kramdown
 permalink: /blog/:title/
 timezone: Europe/Luxembourg
+reading_wpm: 220
 
 collections: {}
 

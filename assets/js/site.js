@@ -73,4 +73,36 @@
     window.addEventListener('resize', schedule, { passive: true });
     update();
   }
+
+  const prose = document.querySelector('.prose');
+  const headings = prose ? Array.from(prose.querySelectorAll('h2')) : [];
+  if (headings.length > 2 && !document.querySelector('.toc')) {
+    const used = new Set();
+    headings.forEach((heading, index) => {
+      if (!heading.id) {
+        const slug = heading.textContent.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || `section-${index + 1}`;
+        let id = slug;
+        for (let n = 2; used.has(id) || document.getElementById(id); n++) id = `${slug}-${n}`;
+        heading.id = id;
+      }
+      used.add(heading.id);
+    });
+    const nav = document.createElement('nav');
+    nav.className = 'toc';
+    nav.setAttribute('aria-label', 'On this page');
+    const title = document.createElement('p');
+    title.className = 'toc__title';
+    title.textContent = 'On this page';
+    const list = document.createElement('ol');
+    headings.forEach(heading => {
+      const item = document.createElement('li');
+      const link = document.createElement('a');
+      link.href = `#${heading.id}`;
+      link.textContent = heading.textContent.trim();
+      item.appendChild(link);
+      list.appendChild(item);
+    });
+    nav.append(title, list);
+    prose.before(nav);
+  }
 })();
