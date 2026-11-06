@@ -1,7 +1,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#07090c" />
+  <meta name="theme-color" content="#06080b" />
   <meta name="color-scheme" content="dark" />
   <link rel="preload" href="{{ '/assets/fonts/manrope-latin.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin />
   <title>{% if page.title %}{{ page.title }} | {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
@@ -23,7 +23,9 @@
   <meta name="twitter:title" content="{% if page.title %}{{ page.title }} | {{ site.title }}{% else %}{{ site.title }}{% endif %}" />
   <meta name="twitter:description" content="{% if page.description %}{{ page.description | strip_html | strip_newlines | truncate: 160 }}{% else %}{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}{% endif %}" />
   <meta name="twitter:image" content="{% if page.og_image %}{{ site.url }}{{ page.og_image }}{% else %}{{ site.url }}{{ site.seo_image }}{% endif %}" />
-  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}?v=20261106-polish4" />
+  <meta property="og:image:alt" content="Light through dust: a warm spotlight in a dust volume, rendered with WebGPU." />
+  <meta name="twitter:image:alt" content="Light through dust: a warm spotlight in a dust volume, rendered with WebGPU." />
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}?v=20261106-polish9" />
   <noscript><style>@media (max-width: 900px) { .nav-toggle { display: none; } .mobile-nav { display: grid; position: static; } }</style></noscript>
   {% if page.layout == 'post' %}
   <script type="application/ld+json">

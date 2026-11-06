@@ -80,6 +80,6 @@ Because the same `MODEL` object feeds both the WGSL shaders and the Python refer
 
 ## Color and typography
 
-The palette is dark and restrained. Graphite and ivory carry the text. Warm amber marks actions, focus, and the spotlight. Cyan marks measured values. Manrope and IBM Plex Mono are self-hosted. Their open font licenses are in `assets/fonts/`.
+The palette is dark and restrained. Cool graphite neutrals carry the text. Warm amber marks actions, focus, and the spotlight. Cyan marks measured values, and green marks status. Manrope and IBM Plex Mono are self-hosted. Their open font licenses are in `assets/fonts/`.
 
 Text and control color pairs are checked against the [WCAG contrast guidance](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html). Color is reinforced by text, shape, and position, following the [use of color guidance](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html).

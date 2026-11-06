@@ -271,7 +271,7 @@ description: Semih Güreşçi, GPU rendering and performance engineer. A live We
   </div>
 </section>
 
-<section class="section" id="method" aria-labelledby="method-title">
+<section class="section section--pipeline" id="method" aria-labelledby="method-title">
   <div class="container">
     <header class="section-head reveal">
       <div class="section-head__title">
@@ -378,6 +378,7 @@ description: Semih Güreşçi, GPU rendering and performance engineer. A live We
         </p>
         <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
         <p>{{ post.excerpt | strip_html | truncatewords: 24 }}</p>
+        <span class="post-card__cta" aria-hidden="true">Read article →</span>
       </article>
       {% endfor %}
     </div>

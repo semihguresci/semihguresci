@@ -212,6 +212,73 @@ def truncate_text(text: str, length: int) -> str:
     return f"{clipped}..."
 
 
+SITE_ROOT: Path | None = None
+
+
+def read_image_size(path: Path) -> tuple[int, int] | None:
+    data = path.read_bytes()
+    if data[:8] == b"\x89PNG\r\n\x1a\n" and data[12:16] == b"IHDR":
+        return int.from_bytes(data[16:20], "big"), int.from_bytes(data[20:24], "big")
+    if data[:6] in (b"GIF87a", b"GIF89a"):
+        return int.from_bytes(data[6:8], "little"), int.from_bytes(data[8:10], "little")
+    if data[:4] == b"RIFF" and data[8:12] == b"WEBP":
+        chunk = data[12:16]
+        if chunk == b"VP8 ":
+            return int.from_bytes(data[26:28], "little") & 0x3FFF, int.from_bytes(data[28:30], "little") & 0x3FFF
+        if chunk == b"VP8L":
+            bits = int.from_bytes(data[21:25], "little")
+            return (bits & 0x3FFF) + 1, ((bits >> 14) & 0x3FFF) + 1
+        if chunk == b"VP8X":
+            return int.from_bytes(data[24:27], "little") + 1, int.from_bytes(data[27:30], "little") + 1
+        return None
+    if data[:2] == b"\xff\xd8":
+        index = 2
+        while index + 9 < len(data):
+            if data[index] != 0xFF:
+                index += 1
+                continue
+            marker = data[index + 1]
+            if marker == 0xFF:
+                index += 1
+                continue
+            if marker == 0xD8 or marker == 0x01 or 0xD0 <= marker <= 0xD7:
+                index += 2
+                continue
+            if marker in {0xC0, 0xC1, 0xC2, 0xC3, 0xC5, 0xC6, 0xC7, 0xC9, 0xCA, 0xCB, 0xCD, 0xCE, 0xCF}:
+                height = int.from_bytes(data[index + 5 : index + 7], "big")
+                width = int.from_bytes(data[index + 7 : index + 9], "big")
+                return width, height
+            index += 2 + int.from_bytes(data[index + 2 : index + 4], "big")
+        return None
+    if path.suffix.lower() == ".svg":
+        tag = re.search(r"<svg\b[^>]*>", data.decode("utf-8", errors="replace"), re.IGNORECASE)
+        if not tag:
+            return None
+        width = re.search(r'\swidth="([\d.]+)(?:px)?"', tag.group(0))
+        height = re.search(r'\sheight="([\d.]+)(?:px)?"', tag.group(0))
+        if width and height:
+            return round(float(width.group(1))), round(float(height.group(1)))
+        viewbox = re.search(r'viewBox="[\d.\-]+[\s,]+[\d.\-]+[\s,]+([\d.]+)[\s,]+([\d.]+)"', tag.group(0))
+        if viewbox:
+            return round(float(viewbox.group(1))), round(float(viewbox.group(2)))
+    return None
+
+
+def image_size_attributes(src: str) -> str:
+    if SITE_ROOT is None or not src.startswith("/"):
+        return ""
+    path = SITE_ROOT / src.lstrip("/")
+    if not path.is_file():
+        return ""
+    try:
+        size = read_image_size(path)
+    except (OSError, ValueError):
+        return ""
+    if not size or size[0] <= 0 or size[1] <= 0:
+        return ""
+    return f' width="{size[0]}" height="{size[1]}"'
+
+
 def render_inline_segment(text: str) -> str:
     rendered: list[str] = []
     last_index = 0
@@ -223,7 +290,7 @@ def render_inline_segment(text: str) -> str:
         if image_src is not None:
             alt_attr = html.escape(image_alt, quote=True)
             src_attr = html.escape(image_src.strip(), quote=True)
-            rendered.append(f'<img src="{src_attr}" alt="{alt_attr}" />')
+            rendered.append(f'<img src="{src_attr}" alt="{alt_attr}"{image_size_attributes(image_src.strip())} />')
         elif link_href is not None:
             href_attr = html.escape(link_href.strip(), quote=True)
             rendered.append(f'<a href="{href_attr}">{render_inline_segment(link_label)}</a>')
@@ -970,6 +1037,8 @@ def write_output(path: Path, content: str) -> None:
 
 
 def build_preview(source_root: Path, output_root: Path) -> None:
+    global SITE_ROOT
+    SITE_ROOT = source_root
     config = parse_config((source_root / "_config.yml").read_text(encoding="utf-8"))
     projects = parse_mapping_list((source_root / "_data" / "projects.yml").read_text(encoding="utf-8"))
     posts = load_posts(source_root, int(config.get("reading_wpm", 220)))
