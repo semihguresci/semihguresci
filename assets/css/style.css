@@ -400,6 +400,7 @@ figure { margin: 0; }
 @media (max-width: 900px) {
   .nav { display: none; }
   .nav-toggle { display: inline-flex; }
+  .site-header { background: rgba(6, 8, 11, 0.92); backdrop-filter: none; -webkit-backdrop-filter: none; }
   .hero { justify-content: flex-end; padding-top: 120px; }
   .hero__scrim { -webkit-mask-image: none; mask-image: none; background: linear-gradient(180deg, rgba(6, 8, 11, 0.3) 0%, rgba(6, 8, 11, 0.6) 14%, rgba(6, 8, 11, 0.9) 30%, rgba(6, 8, 11, 0.95) 60%, rgba(6, 8, 11, 0.98) 100%); }
   .hero__top { justify-content: space-between; }

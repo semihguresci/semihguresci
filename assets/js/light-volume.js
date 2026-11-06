@@ -51,6 +51,10 @@ const FRAME_INTERVAL_MS = 14;
 const HISTORY = 120;
 const IDLE_MS = 3500;
 
+const DESKTOP_LIMITS = { canvasPixels: MAX_CANVAS_PIXELS, frameMs: FRAME_INTERVAL_MS, budgetMs: GPU_BUDGET_MS, scaleMin: SCALE_MIN, scaleMax: SCALE_MAX, auto: QUALITY.auto };
+// Phones and touch screens: smaller canvas and trace, fewer steps, 30 fps.
+const CONSTRAINED_LIMITS = { canvasPixels: 600000, frameMs: 28, budgetMs: 16, scaleMin: 0.2, scaleMax: 0.5, auto: { viewSteps: 32, lightSteps: 3, scale: 0.35, adaptive: true } };
+
 const number = value => Number(value).toFixed(6);
 const vec3 = ([x, y, z]) => `vec3f(${number(x)}, ${number(y)}, ${number(z)})`;
 
@@ -308,6 +312,7 @@ async function checkShader(module, label) {
 }
 
 export async function createLightVolume(canvas, options = {}) {
+  const limits = options.limits ?? DESKTOP_LIMITS;
   if (!navigator.gpu) throw new Error('WebGPU is not available');
   const adapter = await navigator.gpu.requestAdapter();
   if (!adapter) throw new Error('no WebGPU adapter');
@@ -415,7 +420,9 @@ export async function createLightVolume(canvas, options = {}) {
     accumulated: 0,
     gpuMs: null,
     previousDirection: null,
-    samples: []
+    samples: [],
+    adaptive: false,
+    busy: false
   };
 
   function targetSize() {
@@ -460,24 +467,25 @@ export async function createLightVolume(canvas, options = {}) {
 
   function setQuality(name) {
     const key = QUALITY[name] ? name : 'auto';
-    const preset = QUALITY[key];
+    const preset = key === 'auto' ? limits.auto : QUALITY[key];
     state.quality = key;
     state.viewSteps = preset.viewSteps;
     state.lightSteps = preset.lightSteps;
     state.scale = preset.scale;
+    state.adaptive = preset.adaptive;
     state.samples = [];
     allocate();
   }
 
   function adapt(ms) {
-    if (!QUALITY[state.quality].adaptive) return;
+    if (!state.adaptive) return;
     state.samples.push(ms);
     if (state.samples.length < 24) return;
     const mean = state.samples.reduce((sum, value) => sum + value, 0) / state.samples.length;
     state.samples.length = 0;
     let next = state.scale;
-    if (mean > GPU_BUDGET_MS) next = Math.max(SCALE_MIN, next - SCALE_STEP);
-    else if (mean < GPU_BUDGET_MS * 0.6) next = Math.min(SCALE_MAX, next + SCALE_STEP);
+    if (mean > limits.budgetMs) next = Math.max(limits.scaleMin, next - SCALE_STEP);
+    else if (mean < limits.budgetMs * 0.6) next = Math.min(limits.scaleMax, next + SCALE_STEP);
     if (next !== state.scale) {
       state.scale = next;
       allocate();
@@ -527,7 +535,7 @@ export async function createLightVolume(canvas, options = {}) {
   }
 
   function frame(time, aimX, aimY) {
-    if (failed || disposed) return;
+    if (failed || disposed || state.busy) return;
     const direction = lightDirection(aimX, aimY);
     const previous = state.previousDirection;
     if (previous && Math.hypot(direction[0] - previous[0], direction[1] - previous[1], direction[2] - previous[2]) > 1e-3) {
@@ -562,6 +570,14 @@ export async function createLightVolume(canvas, options = {}) {
     present.end();
     device.queue.submit([encoder.finish()]);
     state.frameIndex += 1;
+    state.busy = true;
+    const started = performance.now();
+    device.queue.onSubmittedWorkDone().then(() => {
+      state.busy = false;
+      if (!timing && !failed && !disposed) adapt(performance.now() - started);
+    }, () => {
+      state.busy = false;
+    });
     if (timestamps) readTiming();
   }
 
@@ -633,6 +649,7 @@ export async function createLightVolume(canvas, options = {}) {
       };
     },
     frame,
+    busy: () => state.busy,
     setCanvasSize,
     setQuality,
     readLinear,
@@ -663,6 +680,8 @@ function boot(host) {
     spark: host.querySelector('[data-spark]'),
     budget: host.querySelector('[data-budget]')
   };
+  const constrained = window.matchMedia('(pointer: coarse), (max-width: 900px)').matches;
+  const limits = constrained ? CONSTRAINED_LIMITS : DESKTOP_LIMITS;
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const session = {
     renderer: null,
@@ -679,7 +698,9 @@ function boot(host) {
     pointer: null,
     lastInput: -Infinity,
     lastHud: 0,
-    history: []
+    history: [],
+    canvasWidth: 0,
+    canvasHeight: 0
   };
 
   const visible = () => session.inView && session.pageVisible;
@@ -697,9 +718,14 @@ function boot(host) {
     const rect = stage.getBoundingClientRect();
     if (rect.width < 1 || rect.height < 1) return;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    const fit = Math.min(1, Math.sqrt(MAX_CANVAS_PIXELS / (rect.width * rect.height * dpr * dpr)));
+    const fit = Math.min(1, Math.sqrt(limits.canvasPixels / (rect.width * rect.height * dpr * dpr)));
     const scale = dpr * fit;
-    session.renderer.setCanvasSize(Math.max(1, Math.round(rect.width * scale)), Math.max(1, Math.round(rect.height * scale)));
+    const width = Math.max(1, Math.round(rect.width * scale));
+    const height = Math.max(1, Math.round(rect.height * scale));
+    if (width === session.canvasWidth && height === session.canvasHeight) return;
+    session.canvasWidth = width;
+    session.canvasHeight = height;
+    session.renderer.setCanvasSize(width, height);
   }
 
   function drawSpark() {
@@ -751,7 +777,7 @@ function boot(host) {
     session.raf = 0;
     const renderer = session.renderer;
     if (!renderer || !visible()) return;
-    if (session.drawn && now - session.drawn < FRAME_INTERVAL_MS) {
+    if ((session.drawn && now - session.drawn < limits.frameMs) || renderer.busy()) {
       requestFrame();
       return;
     }
@@ -814,6 +840,7 @@ function boot(host) {
     try {
       const renderer = await createLightVolume(canvas, {
         quality: quality.value,
+        limits,
         onTiming: ms => {
           session.history.push(ms);
           if (session.history.length > HISTORY) session.history.shift();
@@ -849,6 +876,7 @@ function boot(host) {
   stage.addEventListener('pointerdown', setPointer);
   stage.addEventListener('pointermove', setPointer);
   stage.addEventListener('pointerleave', releasePointer);
+  stage.addEventListener('pointercancel', releasePointer);
   stage.addEventListener('pointerup', event => {
     if (event.pointerType === 'touch') releasePointer();
   });
