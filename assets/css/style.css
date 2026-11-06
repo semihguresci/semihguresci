@@ -203,12 +203,6 @@ figure { margin: 0; }
 .spec + .spec { padding-left: 28px; border-left: 1px solid var(--line); }
 .spec__index { margin-bottom: 14px; font: 400 12px/1 var(--font-mono); letter-spacing: 0.08em; color: var(--accent); }
 
-@media (min-width: 1081px) {
-  .section--pipeline .spec-grid { position: relative; }
-  .section--pipeline .spec-grid::before { content: ""; position: absolute; left: 0; right: 0; top: 46px; height: 1px; background: linear-gradient(90deg, var(--accent), var(--line-strong) 85%, transparent); }
-  .section--pipeline .spec + .spec { border-left: 0; }
-  .section--pipeline .spec__index { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; margin-bottom: 16px; border: 1px solid var(--accent); border-radius: 50%; background: var(--bg); }
-}
 .spec h3 { margin-bottom: 16px; font-size: 18px; }
 .spec ul { display: grid; gap: 9px; }
 .spec li { position: relative; padding-left: 18px; font-size: 15px; color: var(--muted); }

@@ -271,45 +271,11 @@ description: Semih Güreşçi, GPU rendering and performance engineer. A live We
   </div>
 </section>
 
-<section class="section section--pipeline" id="method" aria-labelledby="method-title">
-  <div class="container">
-    <header class="section-head reveal">
-      <div class="section-head__title">
-        <p class="eyebrow">04 · Behind the background</p>
-        <h2 id="method-title">How the light-through-dust effect runs</h2>
-      </div>
-      <p class="section-lead">A single-scattering volume rendered with WebGPU. Each part of the pipeline is measured, not assumed.</p>
-    </header>
-    <div class="spec-grid reveal">
-      <article class="spec">
-        <p class="spec__index">01</p>
-        <h3>Density</h3>
-        <p>A 64³ noise volume is baked on the GPU at startup. Each density sample is one texture fetch, and a time-varying warp makes the field drift and boil. An analytic ellipsoid keeps the edges soft.</p>
-      </article>
-      <article class="spec">
-        <p class="spec__index">02</p>
-        <h3>Lighting</h3>
-        <p>A spotlight with a soft cone and inverse-square falloff. Each sample marches toward the light to estimate shadowing, and a cool ambient term fills the volume.</p>
-      </article>
-      <article class="spec">
-        <p class="spec__index">03</p>
-        <h3>Sampling</h3>
-        <p>Per-pixel jitter turns banding into fine noise. Each frame blends into a short running average of eight frames, which smooths the noise without smearing the moving dust.</p>
-      </article>
-      <article class="spec">
-        <p class="spec__index">04</p>
-        <h3>Measurement</h3>
-        <p>GPU time comes from timestamp queries where the browser exposes them, and the sparkline plots the last 120 samples against a 10 ms budget. Auto quality lowers the render scale when the average exceeds that budget.</p>
-      </article>
-    </div>
-  </div>
-</section>
-
 <section class="section" id="experience" aria-labelledby="experience-title">
   <div class="container">
     <header class="section-head reveal">
       <div class="section-head__title">
-        <p class="eyebrow">05 · Experience</p>
+        <p class="eyebrow">04 · Experience</p>
         <h2 id="experience-title">From simulation to mobile XR</h2>
       </div>
       <a class="link" href="{{ '/cv/' | relative_url }}">Full CV <span aria-hidden="true">→</span></a>
@@ -363,7 +329,7 @@ description: Semih Güreşçi, GPU rendering and performance engineer. A live We
   <div class="container">
     <header class="section-head reveal">
       <div class="section-head__title">
-        <p class="eyebrow">06 · Writing</p>
+        <p class="eyebrow">05 · Writing</p>
         <h2 id="writing-title">Rendering notes</h2>
       </div>
       <a class="link" href="{{ '/blog/' | relative_url }}">All articles <span aria-hidden="true">→</span></a>
@@ -394,7 +360,7 @@ description: Semih Güreşçi, GPU rendering and performance engineer. A live We
       </picture>
     </figure>
     <div class="about__copy reveal">
-      <p class="eyebrow">07 · About</p>
+      <p class="eyebrow">06 · About</p>
       <h2 id="about-title">How I work</h2>
       <p class="about__lead">I start by finding the bottleneck.</p>
       <p>I measure where a frame spends its time, then run focused experiments to test a change before it reaches the renderer.</p>
@@ -408,7 +374,7 @@ description: Semih Güreşçi, GPU rendering and performance engineer. A live We
   <div class="container">
     <div class="contact reveal">
       <div class="contact__copy">
-        <p class="eyebrow">08 · Contact</p>
+        <p class="eyebrow">07 · Contact</p>
         <h2 id="contact-title">Get in touch</h2>
         <a class="contact__email" href="mailto:{{ site.email }}">{{ site.email }}</a>
         <p class="contact__text">Contact me about rendering, GPU performance, or a project you have in mind.</p>
