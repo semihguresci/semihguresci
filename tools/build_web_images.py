@@ -20,10 +20,10 @@ BACKGROUND = "assets/images/dust-volume-fallback.webp"
 
 VARIANTS = (
     (
-        "assets/blog/vulkan-scene-renderer/current/flight-helmet-pbr.jpg",
-        "assets/blog/vulkan-scene-renderer/current/flight-helmet-pbr.webp",
-        1280,
-        82,
+        "assets/blog/vulkan-scene-renderer/current/sponza-daylight.jpg",
+        "assets/blog/vulkan-scene-renderer/current/sponza-daylight.webp",
+        1920,
+        90,
     ),
     (
         "assets/blog/gpu-memory-experiments-2026-10-23/charts/aos_vs_soa_gpu_ms_vs_size.png",

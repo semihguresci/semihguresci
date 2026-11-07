@@ -1,26 +1,122 @@
 Source: VulkanSceneRenderer repository, docs/images/readme
-Copied without modification for the local website article update on 2026-10-23.
+Website gallery refresh: 2026-11-07. The six new JPEG files are copied unchanged.
+Renderer merge revision containing the gallery and its reproducibility records:
+735bedbb3ef82429565ae27bde4657af8dfa1822
 
-All three images were captured directly by VulkanSceneRenderer on 2026-10-04,
-using a Visual Studio Release build matching source commit
+CURRENT NATIVE CAPTURES — 7 NOVEMBER 2026
+
+sponza-daylight.jpg / sponza-arcade.jpg
+bim-tekla-native-ifc.jpg / bim-tekla-detail.jpg
+  Native 1920x1080, progressive reference path tracing, 512 samples per pixel,
+  eight bounces, OptiX display denoising and native AgX display grading.
+  Sponza and Tekla use the Citrus Orchard Road (Pure Sky) environment.
+
+a-beautiful-game.jpg / a-beautiful-game-detail.jpg
+  Native 1920x1080, forward PBR, TAA, 1x MSAA, two rectangular studio area
+  lights, sampled soft ray-query shadows, native AgX grading and the original
+  2048x2048 textures. Aerodynamics Workshop supplies fill and reflections.
+  The scene's solid glass produces unsupported paths in the current reference
+  tracer; these chess views use forward rendering.
+
+All six images were captured by the renderer on an NVIDIA GeForce RTX 2080 SUPER.
+The JPEG sources were encoded at quality 93 from native PNG captures with the
+complete frame preserved. JPEG is lossy; there is no cropping, resizing of the
+captured frame, retouching, compositing, generated content or image relighting.
+The site's optional WebP card is a separately encoded, smaller-file derivative
+of its source JPEG; it preserves the full 1920x1080 frame and composition.
+
+The capture builds included local source changes before the merge. The merge
+revision is a permanent location for the records, not an assertion that every
+image was captured from an identical clean Git checkout. Per-image executable,
+SPIR-V/runtime, input, native PNG and JPEG hashes identify the actual captures.
+The published v0.2.0-taa-preview remains an older release; these images do not
+claim that the newer work was published in that preview.
+
+FULL CAPTURE SETTINGS AND REPRODUCTION
+
+Credits, licenses, scene preparation and limitations:
+https://github.com/semihguresci/VulkanSceneRenderer/blob/735bedbb3ef82429565ae27bde4657af8dfa1822/docs/images/readme/README.md
+Per-image cameras, lighting, AgX grades, capture sequences, GPU/driver and hashes:
+https://github.com/semihguresci/VulkanSceneRenderer/blob/735bedbb3ef82429565ae27bde4657af8dfa1822/docs/images/readme/capture-settings.json
+Native camera/light sequences and grade presets:
+https://github.com/semihguresci/VulkanSceneRenderer/tree/735bedbb3ef82429565ae27bde4657af8dfa1822/docs/images/readme/grades
+Reference path-tracing support and transport limits:
+https://github.com/semihguresci/VulkanSceneRenderer/blob/735bedbb3ef82429565ae27bde4657af8dfa1822/docs/reference-path-tracing.md
+
+MODEL CREDITS AND USAGE
+
+Sponza:
+  Model copyright 2016 Crytek. Improved model by Frank Meinl, based on Marko
+  Dabrovic's original; PBR textures by Alexandre Pestana. Original model,
+  materials and textures are unchanged. The model and textures use the
+  Cryengine Limited License Agreement. The separate CC-BY-4.0 metadata
+  notice does not replace that model license.
+  Pinned source and credits:
+  https://github.com/KhronosGroup/glTF-Sample-Assets/tree/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/Sponza
+  https://github.com/KhronosGroup/glTF-Sample-Assets/blob/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/Sponza/README.md
+  Model license:
+  https://github.com/KhronosGroup/glTF-Sample-Assets/blob/8f492390ddc7a2ae221a1369ef560589cf8c70fb/LICENSES/LicenseRef-CRYENGINE-Agreement.txt
+
+A Beautiful Game:
+  Original by Moeen Sayed and Mujtaba Sayed for SideFX. Original-model rights
+  copyright 2020 ASWF/MaterialX Project. glTF conversion copyright 2022 Ed Mackey;
+  initial geometry conversion by Chris Rydalch and Jonathan Stone.
+  Distributed under Creative Commons Attribution 4.0 International:
+  https://creativecommons.org/licenses/by/4.0/
+  Pinned model, full source credits and license:
+  https://github.com/KhronosGroup/glTF-Sample-Assets/tree/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/ABeautifulGame
+  https://github.com/KhronosGroup/glTF-Sample-Assets/blob/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/ABeautifulGame/README.md
+  https://github.com/KhronosGroup/glTF-Sample-Assets/blob/8f492390ddc7a2ae221a1369ef560589cf8c70fb/Models/ABeautifulGame/LICENSE.md
+  Gallery preparation appends one 100 m square XZ matte receiver at world Y = -0.001 m
+  with one neutral material; the capture sequence adds two rectangular area
+  lights. The original 49 instances, 15 materials, geometry, transforms, UVs,
+  draw bindings and all 33 original 2K images are unchanged. Original source
+  assets are not overwritten; no edited scene is saved by the renderer.
+  The independently prepared wrapper and attribution/change notice are retained:
+  https://github.com/semihguresci/VulkanSceneRenderer/blob/735bedbb3ef82429565ae27bde4657af8dfa1822/docs/images/readme/scenes/ABeautifulGame-studio-prepared.gltf
+  https://github.com/semihguresci/VulkanSceneRenderer/blob/735bedbb3ef82429565ae27bde4657af8dfa1822/docs/images/readme/scenes/ABeautifulGame-studio-NOTICE.txt
+
+Tekla House:
+  buildingSMART IFC 5 development preliminary examples for education and testing.
+  Both new views load the native TeklaHouse.ifc STEP source, not the IFCX variant.
+  The full model reports 10,042 of 10,042 represented products, no skipped or
+  incomplete representations. IFC and IFCX are alternative representations
+  of the same supplied structural export; no companion building parts were
+  omitted. The absence of furniture/finishes reflects that structural source.
+  The original building is unchanged. The analytic receiver at Y = 5.255 m sits
+  below the minimum model Y = 5.275 m; the receiver, lighting and display grade are
+  viewer settings. No building model is redistributed here.
+  https://github.com/buildingSMART/IFC5-development/tree/1a63082ada967c683cfacee2005f8f749c8e1b79/examples/Tekla%20House
+  Pinned usage notes:
+  https://github.com/buildingSMART/IFC5-development/blob/1a63082ada967c683cfacee2005f8f749c8e1b79/README.md
+
+Environments:
+  Aerodynamics Workshop, by Oliksiy Yakovlyev, Poly Haven, CC0:
+  https://polyhaven.com/a/aerodynamics_workshop
+  Citrus Orchard Road (Pure Sky), photographed by Dimitrios Savva and processed
+  by Jarod Guest, Poly Haven, CC0:
+  https://polyhaven.com/a/citrus_orchard_road_puresky
+  https://polyhaven.com/license
+
+Only renderer screenshots are included here. External original model binaries,
+textures and HDR environment files are not bundled. See the source records for
+scene-specific usage terms; the website's own license does not replace them.
+
+ARCHIVED CAPTURES — 4 OCTOBER 2026
+
+flight-helmet-pbr.jpg / debug-render-targets.jpg / bim-tekla-house.jpg remain
+historical files. Their original website copy date was 2026-10-23. They were
+captured using a Visual Studio Release build matching source commit
 65b58c1514281105a3d9a6733712ff4d33ae9ea0, NVIDIA GeForce RTX 2080 SUPER,
-Vulkan 1.4.325, deferred raster, TAA, 1x MSAA, 1600x900. The repository's native
-PNG captures were converted there to JPEG at quality 93 with no cropping,
-retouching, or generated image content. They predate later renderer additions.
+Vulkan 1.4.325, deferred raster, TAA, 1x MSAA and 1600x900. The native PNGs were
+encoded to quality 93 JPEGs without cropping, retouching or generated content.
+They predate the later renderer additions and do not demonstrate the newer
+reference path-tracing, ray-query or DDGI work.
 
-flight-helmet-pbr.jpg / debug-render-targets.jpg:
-Flight Helmet by Gary Hsu, CC0-1.0.
+Flight Helmet is by Gary Hsu, CC0-1.0:
 https://github.com/KhronosGroup/glTF-Sample-Assets/tree/main/Models/FlightHelmet
-
-bim-tekla-house.jpg:
-Tekla House, buildingSMART IFC 5 development educational/testing examples.
-https://github.com/buildingSMART/IFC5-development/tree/1a63082ada967c683cfacee2005f8f749c8e1b79/examples/Tekla%20House
-Usage notes:
-https://github.com/buildingSMART/IFC5-development/blob/1a63082ada967c683cfacee2005f8f749c8e1b79/README.md
-
-Environment: Poly Haven, Citrus Orchard Road (Pure Sky), CC0.
-https://polyhaven.com/a/citrus_orchard_road_puresky
-
-Full provenance and settings are retained in the renderer source:
-docs/images/readme/README.md
-docs/images/readme/capture-settings.json
+The old bim-tekla-house.jpg used the buildingSMART Tekla House IFCX source
+under the same pinned education/testing usage notes listed above. Its
+environment was Poly Haven's CC0 Citrus Orchard Road (Pure Sky).
+Archived capture settings:
+https://github.com/semihguresci/VulkanSceneRenderer/blob/735bedbb3ef82429565ae27bde4657af8dfa1822/docs/images/readme/capture-settings-2026-10-04.json
