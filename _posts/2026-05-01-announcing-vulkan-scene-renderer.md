@@ -1,16 +1,16 @@
 ---
 title: "Building a Vulkan 1.4 scene renderer"
 date: 2026-05-01
-last_modified_at: 2026-10-23
+last_modified_at: 2026-11-07
 description: "A look at forward and deferred rendering, scene inspection, and GPU profiling in my C++23 and Vulkan 1.4 renderer."
 excerpt: "Forward and deferred rendering, scene inspection, and GPU profiling in a C++23 and Vulkan 1.4 scene engine."
 tags: [vulkan, graphics, renderer, gltf]
 featured: true
 category: "Rendering"
-cover_image: /assets/blog/vulkan-scene-renderer/current/flight-helmet-pbr.jpg
-cover_alt: "Flight Helmet rendered with physically based materials in VulkanSceneRenderer"
-cover_caption: "Repository capture · 4 October 2026 · Deferred raster, TAA, 1600 × 900 · Flight Helmet by Gary Hsu, CC0"
-og_image: /assets/blog/vulkan-scene-renderer/current/flight-helmet-pbr.jpg
+cover_image: /assets/blog/vulkan-scene-renderer/current/sponza-daylight.jpg
+cover_alt: "Sponza daylight courtyard path traced in VulkanSceneRenderer"
+cover_caption: "Native capture · 7 November 2026 · 512 spp path tracing, OptiX display denoising, AgX · 1920 × 1080 · Sponza © 2016 Crytek"
+og_image: /assets/blog/vulkan-scene-renderer/current/sponza-daylight.jpg
 ---
 
 I’m building VulkanSceneRenderer to explore real-time graphics in C++23 and
@@ -40,7 +40,7 @@ generated on the GPU. BIM scenes have a separate visibility and draw-compaction
 path. Transparent surfaces, double-sided geometry, and diagnostic draws keep
 their own draw paths.
 
-A simplified view of the frame is:
+A simplified view of the raster frame is:
 
 ```text
 Scene providers: glTF / BIM / USD
@@ -63,6 +63,16 @@ The glTF material system covers metallic-roughness PBR, normal and emissive
 maps, alpha masks, specular, clearcoat, sheen, transmission and volume,
 iridescence, and dispersion. Refraction and some layered effects remain
 approximations.
+
+![A Beautiful Game chess set with its original 2K textures, rendered in the studio setup](/assets/blog/vulkan-scene-renderer/current/a-beautiful-game.jpg)
+
+![Close view of A Beautiful Game materials and soft contact shadows](/assets/blog/vulkan-scene-renderer/current/a-beautiful-game-detail.jpg)
+
+These native 1920 × 1080 views use forward PBR with TAA, two rectangular
+studio lights and an added matte receiver. The original 49 instances,
+15 materials and 2048 × 2048 textures are retained. The scene's solid glass
+produces unsupported paths in the current reference tracer, so these views
+use the forward renderer.
 
 Lighting combines HDR image-based lighting, cascaded directional and local
 shadow maps, tiled light culling, and GTAO for ambient occlusion. Rectangular
@@ -87,7 +97,16 @@ Native IFC import handles a growing set of representations. When an import is
 partial, it reports the affected source entities and products. USD mesh
 loading uses TinyUSDZ. Both import paths have documented coverage limits.
 
-![Tekla House IFCX building rendered in VulkanSceneRenderer](/assets/blog/vulkan-scene-renderer/current/bim-tekla-house.jpg)
+![Tekla House loaded from native STEP IFC and path traced in VulkanSceneRenderer](/assets/blog/vulkan-scene-renderer/current/bim-tekla-native-ifc.jpg)
+
+![Structural detail from the complete native Tekla House IFC model](/assets/blog/vulkan-scene-renderer/current/bim-tekla-detail.jpg)
+
+Both views load the native STEP IFC source and use 512 samples per pixel,
+eight path-tracing bounces, OptiX display denoising and AgX. The import reports
+10,042 of 10,042 represented products, with no skipped or incomplete
+representations. The supplied model is structural; its simplified materials
+and absence of furniture reflect that source. An analytic receiver sits below
+the foundations, without changing the building geometry.
 
 You can select and move objects in the viewport, browse the scene hierarchy,
 and search BIM elements to inspect their properties and relationships. Filters,
@@ -117,15 +136,34 @@ and relocation. Probe volumes can blend together and follow the camera.
 
 Both require ray-query-capable hardware. Raster shadows are the default and
 fallback. DDGI is off by default and still under development. These features
-extend the raster pipelines; a full path tracer, Gaussian splatting, and
-radiance-field rendering are not implemented.
+extend the raster pipelines. Gaussian splatting and radiance-field rendering
+are not implemented.
+
+## Reference path tracing
+
+The current source also includes progressive reference path tracing on
+supported ray-query hardware, with sample diagnostics, scene-linear EXR output
+and optional display denoising. The Sponza views use 512 samples per pixel,
+eight bounces and OptiX display denoising, followed by a native AgX display
+grade. Each camera starts a separate accumulation history.
+
+![Opposite view of Sponza's courtyard, path traced at 512 samples per pixel](/assets/blog/vulkan-scene-renderer/current/sponza-arcade.jpg)
+
+This is a reference rendering path with documented material and transport
+limits. In particular, the chess scene above uses forward rendering because
+its solid-glass paths are unsupported. The
+[reference path-tracing guide](https://github.com/semihguresci/VulkanSceneRenderer/blob/735bedbb3ef82429565ae27bde4657af8dfa1822/docs/reference-path-tracing.md)
+records those limits and the available denoising backends.
 
 ## Debugging and profiling
 
 Material, normal, depth, shadow, transparency, temporal, and intermediate-target
 views help trace rendering problems back to the data and pass responsible.
 
-![Flight Helmet across VulkanSceneRenderer diagnostic render targets](/assets/blog/vulkan-scene-renderer/current/debug-render-targets.jpg)
+![Historical Flight Helmet capture across VulkanSceneRenderer diagnostic render targets](/assets/blog/vulkan-scene-renderer/current/debug-render-targets.jpg)
+
+Historical diagnostic capture from 4 October 2026: deferred raster, TAA,
+1× MSAA at 1600 × 900. Flight Helmet is by Gary Hsu, CC0.
 
 The telemetry panel shows CPU phase timings and GPU pass timings alongside
 render-graph state, culling and light counters, synchronization, and resource
@@ -165,14 +203,37 @@ of the features described here.
 
 ## Capture notes and credits
 
-The images on this page are repository captures from 4 October 2026, using
-a Release build on an NVIDIA GeForce RTX 2080 SUPER with Vulkan 1.4.325,
-deferred raster rendering, TAA, and 1× MSAA at 1600 × 900. They illustrate
-material rendering, IFCX content, and diagnostics; they do not demonstrate
-the later ray-query or DDGI additions.
+The six new beauty renders were captured directly by VulkanSceneRenderer on
+7 November 2026 at 1920 × 1080, on an NVIDIA GeForce RTX 2080 SUPER. Sponza
+and Tekla use 512 samples per pixel, eight bounces and OptiX display denoising;
+A Beautiful Game uses forward PBR, TAA and two area lights. All six use native
+AgX grading. The source JPEGs were copied unchanged from the renderer's gallery;
+there is no cropping, retouching, generated content or image relighting.
+The Flight Helmet diagnostic image above remains an explicitly historical
+October capture.
 
-Flight Helmet is by Gary Hsu (CC0). Tekla House is from buildingSMART's IFC 5
-development examples. The environment is Poly Haven's Citrus Orchard Road
-(Pure Sky), CC0. The repository records
-[asset attribution and usage notes](https://github.com/semihguresci/VulkanSceneRenderer/blob/main/docs/images/readme/README.md)
-and [capture settings](https://github.com/semihguresci/VulkanSceneRenderer/blob/main/docs/images/readme/capture-settings.json).
+Sponza is © 2016 Crytek, with the improved model by Frank Meinl, based on
+Marko Dabrovic's original, and PBR textures by Alexandre Pestana. Its model
+and textures use the Cryengine Limited License Agreement. A Beautiful Game
+is by Moeen Sayed and Mujtaba Sayed for SideFX, © 2020 ASWF/MaterialX Project;
+the glTF conversion is © 2022 Ed Mackey, with initial geometry conversion by
+Chris Rydalch and Jonathan Stone, under CC-BY-4.0. Its gallery variant adds
+one 100 m matte receiver and two studio lights; the original model's geometry,
+materials, transforms and 2K textures are unchanged. Tekla House comes from
+buildingSMART's preliminary IFC 5 education/testing examples. Its original
+building model is unchanged; the ground receiver and grade are viewer settings.
+
+The environments are Poly Haven's CC0 Citrus Orchard Road (Pure Sky), by
+Dimitrios Savva and Jarod Guest, and Aerodynamics Workshop, by Oliksiy
+Yakovlyev. Full source licenses, change notices and reproducible camera,
+lighting, grading and capture settings are pinned to renderer revision
+`735bedbb3ef82429565ae27bde4657af8dfa1822`:
+
+- [Asset attribution and usage notes](https://github.com/semihguresci/VulkanSceneRenderer/blob/735bedbb3ef82429565ae27bde4657af8dfa1822/docs/images/readme/README.md)
+- [Per-image capture settings and hashes](https://github.com/semihguresci/VulkanSceneRenderer/blob/735bedbb3ef82429565ae27bde4657af8dfa1822/docs/images/readme/capture-settings.json)
+- [Chess scene attribution and change notice](https://github.com/semihguresci/VulkanSceneRenderer/blob/735bedbb3ef82429565ae27bde4657af8dfa1822/docs/images/readme/scenes/ABeautifulGame-studio-NOTICE.txt)
+
+The captures used local source builds before the merge; the recorded executable,
+shader and input hashes identify those builds more precisely than a Git commit.
+The published `v0.2.0-taa-preview` remains an older release and does not contain
+all the features or captures shown here.
