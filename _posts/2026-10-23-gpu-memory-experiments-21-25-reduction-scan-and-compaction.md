@@ -1,6 +1,8 @@
 ---
 title: "GPU memory experiments 21–25: reduction, scan, and compaction"
 date: 2026-10-23
+og_image: /assets/blog/gpu-memory-experiments-2026-10-23/charts/parallel_reduction_median_gpu_ms.png
+og_image_alt: "Global-atomic and shared-tree reduction timings"
 tags: [gpu, memory, vulkan, experiments]
 excerpt: "Reduction, prefix sums, histograms, compaction, and spatial binning show why ordering contracts and auxiliary traffic belong beside GPU timings."
 ---

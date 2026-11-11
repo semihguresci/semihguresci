@@ -24,6 +24,26 @@ python -B tools/preview_site.py --source . --output dist
 
 `dist/` contains the complete site, including `.nojekyll`, assets, articles, the CV, the 404 page, and the custom domain file. It can be served on GitHub Pages or another static host. Building locally does not publish anything. The templates stay within the Liquid subset that the builder supports, and they remain compatible with the Jekyll structure.
 
+## Content security
+
+The shared HTML head sets a Content Security Policy for the static site. It allows the site's assets, inline style attributes used by the charts and tables, and the endpoints Google documents for GA4 without advertising. The Google tag still loads only after visitors opt in.
+
+Framing protection requires a response header from the host or a reverse proxy. When one is available, set `Content-Security-Policy: frame-ancestors 'none'` on HTML responses. Browsers enforce this header alongside the policy in the page. GitHub Pages serves fixed response headers, so the current deployment cannot supply this directive on its own.
+
+### Cloudflare in front of GitHub Pages
+
+Review the complete DNS zone at the registrar before switching nameservers. Preserve the existing GitHub Pages records and any mail or verification records. Keep the site records DNS-only during the nameserver change, then enable Cloudflare proxying for the site once its edge certificate is active. Keep the custom domain and HTTPS enforcement on GitHub Pages and use Full (strict) origin TLS in Cloudflare.
+
+Create a Cloudflare response header transform rule with this expression.
+
+```text
+http.host in {"semihguresci.com" "www.semihguresci.com"} and http.response.content_type.media_type eq "text/html"
+```
+
+Use **Add static** for `Content-Security-Policy` with the value `frame-ancestors 'none'` so any other response policies are preserved. Use **Set static** for `X-Frame-Options` with the value `DENY` for older browsers. Keep Rocket Loader and Cloudflare analytics injection off for these hostnames so the site controls when its analytics script loads.
+
+After cutover, check the HTTP redirect and both framing headers on the homepage, blog, and CV. Once the local GA4 changes are deployed, verify that rejection sends no Google requests and that opt-in produces a pageview in GA4 Realtime.
+
 ## Structure
 
 - `index.html`: the home page. The hero background is the live WebGPU study. The page continues with results, selected work, capabilities, the method, experience, writing, about, and contact.

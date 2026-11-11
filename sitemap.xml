@@ -4,18 +4,20 @@ layout: null
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>{{ site.url }}/</loc>
-    <lastmod>{{ site.time | date: "%Y-%m-%d" }}</lastmod>
+    <loc>{{ '/' | absolute_url | xml_escape }}</loc>
   </url>
   <url>
-    <loc>{{ site.url }}/blog/</loc>
-    <lastmod>{{ site.time | date: "%Y-%m-%d" }}</lastmod>
+    <loc>{{ '/blog/' | absolute_url | xml_escape }}</loc>
+  </url>
+  <url>
+    <loc>{{ '/cv/' | absolute_url | xml_escape }}</loc>
   </url>
   {% for post in site.posts %}
+  {% if post.noindex != true %}
   <url>
-    <loc>{{ site.url }}{{ post.url }}</loc>
+    <loc>{{ post.url | absolute_url | xml_escape }}</loc>
     <lastmod>{% if post.last_modified_at %}{{ post.last_modified_at | date: "%Y-%m-%d" }}{% else %}{{ post.date | date: "%Y-%m-%d" }}{% endif %}</lastmod>
   </url>
+  {% endif %}
   {% endfor %}
-  <url><loc>{{ site.url }}/cv/</loc></url>
 </urlset>

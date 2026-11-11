@@ -1,6 +1,8 @@
 ---
 title: "GPU memory experiments, part 2: layout, padding, and precision"
 date: 2026-10-23
+og_image: /assets/blog/gpu-memory-experiments-2026-10-23/charts/aos_vs_soa_gpu_ms_vs_size.png
+og_image_alt: "AoS and SoA GPU times across the measured particle counts"
 tags: [gpu, memory, vulkan, experiments]
 excerpt: "Experiments 06–10 compare matched particle updates, record footprints, and manually packed formats—and expose why a shared correctness oracle can miss a conversion defect."
 ---

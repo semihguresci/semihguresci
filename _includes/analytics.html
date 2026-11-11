@@ -1,0 +1,10 @@
+<section class="analytics-consent" id="analytics-consent" aria-labelledby="analytics-title" hidden>
+  <h2 id="analytics-title" tabindex="-1">Analytics preferences</h2>
+  <p>With your permission, Google Analytics measures how this site is used. You can change your choice in the footer.</p>
+  <div class="analytics-consent__actions">
+    <button class="btn btn--ghost btn--small" type="button" data-analytics-choice="granted">Accept analytics</button>
+    <button class="btn btn--ghost btn--small" type="button" data-analytics-choice="denied">Reject analytics</button>
+  </div>
+  <a href="{{ '/privacy/' | relative_url }}">Privacy policy</a>
+</section>
+<script src="{{ '/assets/js/analytics.js' | relative_url }}?v=20261111-analytics1" data-measurement-id="{{ site.google_analytics_id }}" data-site-origin="{{ site.url }}" defer></script>

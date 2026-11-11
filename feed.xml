@@ -5,15 +5,15 @@ layout: null
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>{{ site.title | xml_escape }}</title>
-    <link>{{ site.url }}/blog/</link>
+    <link>{{ '/blog/' | absolute_url | xml_escape }}</link>
     <description>{{ site.description | xml_escape }}</description>
     <language>en</language>
-    <atom:link href="{{ site.url }}/feed.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="{{ '/feed.xml' | absolute_url | xml_escape }}" rel="self" type="application/rss+xml" />
     {% for post in site.posts %}
     <item>
       <title>{{ post.title | xml_escape }}</title>
-      <link>{{ site.url }}{{ post.url }}</link>
-      <guid isPermaLink="true">{{ site.url }}{{ post.url }}</guid>
+      <link>{{ post.url | absolute_url | xml_escape }}</link>
+      <guid isPermaLink="true">{{ post.url | absolute_url | xml_escape }}</guid>
       <pubDate>{{ post.date | date: "%a, %d %b %Y 00:00:00 +0000" }}</pubDate>
       <description>{{ post.excerpt | strip_html | strip_newlines | truncatewords: 60 | xml_escape }}</description>
     </item>

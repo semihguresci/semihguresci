@@ -5,10 +5,12 @@ lang: en
 author_name: Semih Güreşçi
 job_title: GPU Rendering and Performance Engineer
 seo_image: /assets/images/og-card.jpg
+seo_image_alt: "Light through dust, rendered in WebGPU"
 social_github: https://github.com/semihguresci
 social_linkedin: https://www.linkedin.com/in/semihguresci/
 baseurl: ""
 url: "https://semihguresci.com"
+google_analytics_id: G-49EYFNQJWK
 markdown: kramdown
 permalink: /blog/:title/
 timezone: Europe/Luxembourg

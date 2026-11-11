@@ -1,6 +1,8 @@
 ---
 title: "GPU memory experiments 16–20: tiling, live state, and barriers"
 date: 2026-10-23
+og_image: /assets/blog/gpu-memory-experiments-2026-10-23/charts/shared_memory_tiling_median_gpu_ms.png
+og_image_alt: "Direct and tiled stencil times by radius"
 tags: [gpu, memory, vulkan, experiments]
 excerpt: "Five Vulkan experiments connect shared-memory reuse, tile size, temporary-state scheduling, branch patterns, and synchronization to measured work."
 ---

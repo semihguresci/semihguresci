@@ -10,7 +10,6 @@ category: "Rendering"
 cover_image: /assets/blog/vulkan-scene-renderer/current/sponza-daylight.jpg
 cover_alt: "Sponza daylight courtyard path traced in VulkanSceneRenderer"
 cover_caption: "Native capture · 7 November 2026 · 512 spp path tracing, OptiX display denoising, AgX · 1920 × 1080 · Sponza © 2016 Crytek"
-og_image: /assets/blog/vulkan-scene-renderer/current/sponza-daylight.jpg
 ---
 
 I’m building VulkanSceneRenderer to explore real-time graphics in C++23 and

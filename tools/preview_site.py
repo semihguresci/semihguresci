@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import html
+import json
 import re
 import shutil
 import sys
@@ -761,6 +762,16 @@ class TemplateEngine:
 
         if name == "relative_url":
             return relative_url(stringify(value), stringify(self.site.get("baseurl", "")))
+        if name == "absolute_url":
+            path = stringify(value)
+            if path.startswith(("http://", "https://")):
+                return path
+            origin = stringify(self.site.get("url")).rstrip("/")
+            return origin + relative_url(path, stringify(self.site.get("baseurl", "")))
+        if name == "append":
+            return stringify(value) + stringify(args[0])
+        if name == "jsonify":
+            return json.dumps(value, ensure_ascii=False, default=stringify)
         if name == "date":
             date_value = coerce_date(value)
             if date_value is None:

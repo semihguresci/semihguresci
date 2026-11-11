@@ -1,6 +1,8 @@
 ---
 title: "GPU memory experiments 35–39: occupancy and rendering data"
 date: 2026-10-23
+og_image: /assets/blog/gpu-memory-experiments-2026-10-23/charts/occupancy_modeling_gpu_ms.png
+og_image_alt: "Shared-memory footprint proxy timings"
 tags: [gpu, memory, vulkan, experiments]
 excerpt: "What shared-memory declarations, node records, frame remapping, visibility counters, and tiled light assignment actually measure."
 ---

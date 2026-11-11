@@ -1,6 +1,8 @@
 ---
 title: "GPU memory experiments 30–34: subgroups, transpose, and radix sort"
 date: 2026-10-23
+og_image: /assets/blog/gpu-memory-experiments-2026-10-23/charts/subgroup_scan_gpu_ms.png
+og_image_alt: "Block-local scan time by items per invocation"
 tags: [gpu, memory, vulkan, experiments]
 excerpt: "Portable subgroup indexing, block-local primitives, tiled transpose, and the cost of a complete GPU radix sort."
 ---

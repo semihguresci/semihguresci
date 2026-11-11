@@ -1,6 +1,8 @@
 ---
 title: "GPU memory experiments 26–29: alignment, heaps, and shared memory"
 date: 2026-10-23
+og_image: /assets/blog/gpu-memory-experiments-2026-10-23/charts/warp_level_coalescing_alignment_median_gpu_ms.png
+og_image_alt: "Contiguous shifted-source timings for six offsets"
 tags: [gpu, memory, vulkan, experiments]
 excerpt: "Four Vulkan studies separate contiguous offsets, access permutations, staging costs, and shared-memory stride from the hardware mechanisms their names suggest."
 ---

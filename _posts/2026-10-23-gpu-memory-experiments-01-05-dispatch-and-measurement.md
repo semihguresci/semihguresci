@@ -1,6 +1,8 @@
 ---
 title: "GPU memory experiments, part 1: dispatch is part of the measurement"
 date: 2026-10-23
+og_image: /assets/blog/gpu-memory-experiments-2026-10-23/charts/dispatch_basics_time_throughput.png
+og_image_alt: "Dispatch time and useful throughput across sizes and repetition counts"
 tags: [gpu, memory, vulkan, experiments]
 excerpt: "Experiments 01–05 establish what a dispatch, a byte count, and a contiguous baseline actually mean before comparing GPU memory layouts."
 ---

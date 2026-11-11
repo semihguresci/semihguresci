@@ -258,10 +258,33 @@ figure { margin: 0; }
 .site-footer__inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px 32px; }
 .site-footer__note { margin-top: 6px; }
 .site-footer__links { display: flex; flex-wrap: wrap; gap: 8px 22px; }
-.site-footer__links a { display: inline-flex; align-items: center; min-height: 32px; color: var(--muted); }
-.site-footer__links a:hover { color: var(--text); }
+.site-footer__links :is(a, button) { display: inline-flex; align-items: center; min-height: 32px; color: var(--muted); }
+.site-footer__links :is(a, button):hover { color: var(--text); }
+.site-footer__links button { padding: 0; border: 0; background: transparent; }
 .site-footer__copy { font: 400 12px/1.5 var(--font-mono); }
 .site-footer .brand { gap: 0; }
+
+.analytics-consent {
+  position: fixed;
+  z-index: 60;
+  inset-inline-end: 16px;
+  inset-block-end: 16px;
+  width: min(380px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  padding: 18px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: 0 8px 28px rgb(0 0 0 / 45%);
+  font-size: 14px;
+}
+.analytics-consent h2 { margin-bottom: 8px; font-size: 18px; }
+.analytics-consent p { color: var(--muted); }
+.analytics-consent__actions { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 8px; }
+.analytics-consent .btn { flex: 1 1 auto; background: var(--surface-2); }
+.analytics-consent .btn:hover { background: var(--surface-3); }
+.analytics-consent a { color: var(--muted); text-decoration: underline; }
 
 .archive { border-top: 1px solid var(--line); }
 .archive li { border-bottom: 1px solid var(--line); }
@@ -394,6 +417,8 @@ figure { margin: 0; }
 @media (max-width: 900px) {
   .nav { display: none; }
   .nav-toggle { display: inline-flex; }
+  .no-js .nav-toggle { display: none; }
+  .no-js .mobile-nav { display: grid; position: static; }
   .site-header { background: rgba(6, 8, 11, 0.92); backdrop-filter: none; -webkit-backdrop-filter: none; }
   .hero { justify-content: flex-end; padding-top: 120px; }
   .hero__scrim { -webkit-mask-image: none; mask-image: none; background: linear-gradient(180deg, rgba(6, 8, 11, 0.3) 0%, rgba(6, 8, 11, 0.6) 14%, rgba(6, 8, 11, 0.9) 30%, rgba(6, 8, 11, 0.95) 60%, rgba(6, 8, 11, 0.98) 100%); }

@@ -1,6 +1,8 @@
 ---
 title: "GPU memory experiments, part 3: addresses matter as much as bytes"
 date: 2026-10-23
+og_image: /assets/blog/gpu-memory-experiments-2026-10-23/charts/coalesced_vs_strided_median_gpu_ms.png
+og_image_alt: "GPU timing for the complete stride sweep"
 tags: [gpu, memory, vulkan, experiments]
 excerpt: "Experiments 11–15 explore stride, gather, atomic scatter, scheduled reuse, and bandwidth curves while keeping their different address and validation contracts visible."
 ---

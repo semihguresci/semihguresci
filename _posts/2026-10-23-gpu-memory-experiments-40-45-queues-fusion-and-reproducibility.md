@@ -1,6 +1,8 @@
 ---
 title: "GPU memory experiments 40–45: queues, fusion, and reproducibility"
 date: 2026-10-23
+og_image: /assets/blog/gpu-memory-experiments-2026-10-23/charts/persistent_threads_work_queues_ms.png
+og_image_alt: "Static and persistent task scheduling"
 tags: [gpu, memory, vulkan, experiments]
 excerpt: "Persistent task claims, portable aggregates, dispatch fusion, layout sensitivity, and a reproducible single-GPU access signature."
 ---
