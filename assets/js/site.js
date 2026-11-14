@@ -65,6 +65,8 @@
       reveals.forEach(element => element.classList.add('is-visible'));
     }
 
+    mountMetrics(signal);
+
     const bar = main.querySelector('[data-progress]');
     if (bar) {
       let frame = 0;
@@ -84,6 +86,79 @@
     }
 
     buildToc();
+  }
+
+  function mountMetrics(signal) {
+    const metrics = main.querySelectorAll('.metrics .metric');
+    if (!metrics.length || reduceMotion.matches || !('IntersectionObserver' in window)) return;
+
+    const observer = new IntersectionObserver(entries => {
+      if (signal.aborted) return;
+      for (const entry of entries) {
+        if (!entry.isIntersecting || entry.intersectionRatio < 0.05) continue;
+        observer.unobserve(entry.target);
+        if (!reduceMotion.matches) animateMetric(entry.target, signal);
+      }
+    }, { threshold: 0.05 });
+    metrics.forEach(metric => observer.observe(metric));
+    signal.addEventListener('abort', () => observer.disconnect(), { once: true });
+  }
+
+  function animateMetric(metric, signal) {
+    const total = metric.querySelector('.metric__total');
+    const match = total?.textContent.trim().match(/^([+−-]?)(\d+)(%?)$/);
+    if (!match) return;
+
+    const [, sign, digits, unit] = match;
+    const target = Number(digits);
+    const cells = metric.querySelectorAll('.cells i');
+    const counter = document.createElement('span');
+    counter.className = 'metric__counter';
+    counter.setAttribute('aria-hidden', 'true');
+    counter.textContent = `${sign}0${unit}`;
+    total.after(counter);
+    metric.style.setProperty('--metric-progress', '0');
+    metric.classList.add('is-counting');
+
+    const started = performance.now();
+    const duration = 900;
+    let frame;
+    let filled = 0;
+    let previousCount = 0;
+
+    function finish() {
+      cancelAnimationFrame(frame);
+      signal.removeEventListener('abort', finish);
+      reduceMotion.removeEventListener('change', finish);
+      metric.classList.remove('is-counting');
+      metric.style.removeProperty('--metric-progress');
+      counter.remove();
+    }
+
+    function update(now) {
+      const elapsed = Math.max(0, (now - started) / duration);
+      if (elapsed >= 1) {
+        finish();
+        return;
+      }
+
+      const progress = 1 - (1 - elapsed) ** 2;
+      const count = Math.floor(target * progress);
+      if (count !== previousCount) {
+        counter.textContent = `${sign}${count}${unit}`;
+        previousCount = count;
+      }
+      metric.style.setProperty('--metric-progress', progress);
+      while (filled < count && filled < cells.length) {
+        cells[filled].classList.add('is-filled');
+        filled++;
+      }
+      frame = requestAnimationFrame(update);
+    }
+
+    signal.addEventListener('abort', finish, { once: true });
+    reduceMotion.addEventListener('change', finish, { once: true });
+    frame = requestAnimationFrame(update);
   }
 
   function buildToc() {

@@ -69,9 +69,9 @@ description: Semih Güreşçi is a GPU rendering and performance engineer in Lux
       <p class="section-lead">Each figure is a before-and-after result from the work it describes.</p>
     </header>
 
-    <div class="metrics reveal">
+    <div class="metrics">
       <article class="metric">
-        <p class="metric__value">+35%</p>
+        <p class="metric__value"><span class="metric__total">+35%</span></p>
         <h3 class="metric__label">Adreno GPU performance</h3>
         <p class="metric__text">Vulkan multiview removed redundant per-eye draw calls for mobile XR rendering.</p>
         <div class="bars" role="img" aria-label="Throughput normalized to baseline: 74 before, 100 after">
@@ -80,7 +80,7 @@ description: Semih Güreşçi is a GPU rendering and performance engineer in Lux
         </div>
       </article>
       <article class="metric">
-        <p class="metric__value">−30%</p>
+        <p class="metric__value"><span class="metric__total">−30%</span></p>
         <h3 class="metric__label">Global memory bandwidth</h3>
         <p class="metric__text">Tile-based rendering with Vulkan render passes and subpasses kept working data in on-chip memory.</p>
         <div class="bars" role="img" aria-label="Bandwidth normalized to baseline: 100 before, 70 after">
@@ -89,7 +89,7 @@ description: Semih Güreşçi is a GPU rendering and performance engineer in Lux
         </div>
       </article>
       <article class="metric">
-        <p class="metric__value">−50%</p>
+        <p class="metric__value"><span class="metric__total">−50%</span></p>
         <h3 class="metric__label">Sparse-volume rendering time</h3>
         <p class="metric__text">Compute-driven volume path tracing with octree acceleration and empty-space skipping.</p>
         <div class="bars" role="img" aria-label="Rendering time normalized to baseline: 100 before, 50 after">
@@ -98,7 +98,7 @@ description: Semih Güreşçi is a GPU rendering and performance engineer in Lux
         </div>
       </article>
       <article class="metric">
-        <p class="metric__value">45</p>
+        <p class="metric__value"><span class="metric__total">45</span></p>
         <h3 class="metric__label">Vulkan compute experiments</h3>
         <p class="metric__text">Layout, coalescing, cache locality, bandwidth, subgroups, and synchronization, written up as a nine-part series.</p>
         <a class="link" href="{{ '/blog/gpu-memory-experiments-series/' | relative_url }}">Read the series <span aria-hidden="true">→</span></a>

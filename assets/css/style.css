@@ -176,6 +176,7 @@ body:not(.home) .volume-background::after { content: ""; position: absolute; ins
 .metric { display: flex; flex-direction: column; gap: 14px; padding: 30px 28px 32px; }
 .metric + .metric { border-left: 1px solid var(--line); }
 .metric__value { font: 400 clamp(44px, 4.4vw, 60px)/1 var(--font-mono); letter-spacing: -0.04em; color: var(--data); }
+.metric__counter { display: none; }
 .metric__label { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
 .metric__text { font-size: 15px; color: var(--muted); }
 .bars { display: grid; gap: 10px; margin-top: auto; padding-top: 22px; }
@@ -186,6 +187,15 @@ body:not(.home) .volume-background::after { content: ""; position: absolute; ins
 .cells { display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 6px; margin-top: auto; padding-top: 22px; }
 .cells i { aspect-ratio: 1; border-radius: 3px; background: var(--data); opacity: 0.85; }
 .metrics__note { margin-top: 14px; font: 400 12px/1.5 var(--font-mono); color: var(--dim); }
+
+@media screen and (prefers-reduced-motion: no-preference) {
+  .metric.is-counting .metric__value { display: grid; }
+  .metric.is-counting .metric__value > span { grid-area: 1 / 1; }
+  .metric.is-counting .metric__total { opacity: 0; }
+  .metric.is-counting .metric__counter { display: block; }
+  .metric.is-counting .bar i::after { transform: scaleX(var(--metric-progress)); transform-origin: left; }
+  .metric.is-counting .cells i:not(.is-filled) { opacity: 0.12; }
+}
 
 .work { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
 .card { display: flex; flex-direction: column; min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface); transition: border-color 0.25s ease, transform 0.25s ease; }
