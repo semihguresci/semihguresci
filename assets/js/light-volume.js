@@ -669,6 +669,8 @@ function boot(host) {
   const canvas = stage.querySelector('[data-volume-canvas]');
   const still = stage.querySelector('[data-volume-still]');
   const pause = host.querySelector('[data-pause]');
+  const pauseHeader = pause.parentElement;
+  const pauseNext = pause.nextElementSibling;
   const constrained = window.matchMedia('(pointer: coarse), (max-width: 900px)').matches;
   const limits = constrained ? CONSTRAINED_LIMITS : DESKTOP_LIMITS;
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -832,6 +834,8 @@ function boot(host) {
     const hero = host.querySelector('[data-volume-hero]');
     status = hero?.querySelector('[data-status]') ?? null;
     quality = hero?.querySelector('[data-quality]') ?? null;
+    if (quality) quality.after(pause);
+    else pauseHeader.insertBefore(pause, pauseNext);
     hud = hero ? {
       gpu: hero.querySelector('[data-hud="gpu"]'),
       gpuLabel: hero.querySelector('[data-hud-label]'),

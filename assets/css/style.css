@@ -133,9 +133,10 @@ body:not(.home) .volume-background::after { content: ""; position: absolute; ins
 .hero .eyebrow { color: var(--muted); }
 .hero h1 { font-size: clamp(40px, 4.2vw, 60px); }
 .hero__hint { max-width: 52ch; font-size: 14.5px; color: var(--muted); }
-.hero__dock { position: absolute; left: 0; right: 0; bottom: clamp(48px, 7vh, 80px); z-index: 4; }
+.hero__dock { position: absolute; left: 0; right: 0; bottom: clamp(48px, 7vh, 80px); z-index: 4; pointer-events: none; }
 .hero__tools { margin-left: auto; width: max-content; display: grid; justify-items: end; gap: 12px; }
 .hero__controls { display: flex; align-items: center; gap: 8px; }
+.hero__controls :is(select, button) { pointer-events: auto; }
 
 .hud__panel { display: grid; gap: 6px; width: 260px; max-width: 100%; padding: 12px 14px; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: var(--r-md); background: rgba(6, 8, 11, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); font: 400 12px/1.5 var(--font-mono); color: var(--muted); }
 .hud__label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--dim); }
