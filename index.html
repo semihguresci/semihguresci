@@ -4,7 +4,7 @@ title: GPU rendering & performance engineer
 description: Semih Güreşçi is a GPU rendering and performance engineer in Luxembourg, building real-time Vulkan systems for mobile XR and desktop graphics.
 ---
 
-<section class="hero" aria-labelledby="hero-title" data-volume data-volume-stage data-state="loading">
+<section class="hero" aria-labelledby="hero-title" data-volume-hero>
   <div class="container hero__top">
     <p class="hero__label"><span class="hero__index" aria-hidden="true">01</span>Light through dust</p>
     <span class="status" data-status aria-live="polite">Starting WebGPU</span>
@@ -52,18 +52,10 @@ description: Semih Güreşçi is a GPU rendering and performance engineer in Lux
           <option value="balanced">Balanced</option>
           <option value="ultra">Ultra</option>
         </select>
-        <button class="icon-btn" type="button" data-pause aria-label="Pause animation" title="Pause animation" disabled>
-          <svg class="icon-pause" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="2" width="3.5" height="12" rx="1"/><rect x="9.5" y="2" width="3.5" height="12" rx="1"/></svg>
-          <svg class="icon-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.5v11l9-5.5z"/></svg>
-        </button>
       </div>
     </div>
   </div>
 
-  <div class="hero__media">
-    <img class="hero__still" data-volume-still src="{{ '/assets/images/dust-volume-fallback.webp' | relative_url }}" width="1600" height="900" alt="" fetchpriority="high" decoding="async" />
-    <canvas class="hero__canvas" data-volume-canvas width="1600" height="900" aria-hidden="true" hidden></canvas>
-  </div>
   <div class="hero__scrim" aria-hidden="true"></div>
 </section>
 
@@ -240,6 +232,7 @@ description: Semih Güreşçi is a GPU rendering and performance engineer in Lux
         <ul>
           <li>RenderDoc, Nsight Graphics</li>
           <li>Nsight Compute</li>
+          <li>Qualcomm Adreno GPU Offline Compiler</li>
           <li>GPU timestamps</li>
           <li>Bandwidth and cache analysis</li>
           <li>Memory layout</li>

@@ -26,7 +26,7 @@ python -B tools/preview_site.py --source . --output dist
 
 ## Content security
 
-The shared HTML head sets a Content Security Policy for the static site. It allows the site's assets, inline style attributes used by the charts and tables, and the endpoints Google documents for GA4 without advertising. The Google tag still loads only after visitors opt in.
+The shared HTML head sets a Content Security Policy for the static site. It allows the site's assets, same-origin page requests, inline style attributes used by the charts and tables, and the endpoints Google documents for GA4 without advertising. The Google tag still loads only after visitors opt in.
 
 Framing protection requires a response header from the host or a reverse proxy. When one is available, set `Content-Security-Policy: frame-ancestors 'none'` on HTML responses. Browsers enforce this header alongside the policy in the page. GitHub Pages serves fixed response headers, so the current deployment cannot supply this directive on its own.
 
@@ -46,7 +46,7 @@ After cutover, check the HTTP redirect and both framing headers on the homepage,
 
 ## Structure
 
-- `index.html`: the home page. The hero background is the live WebGPU study. The page continues with results, selected work, capabilities, the method, experience, writing, about, and contact.
+- `index.html`: the home page, with the WebGPU study controls, results, selected work, capabilities, the method, experience, writing, about, and contact.
 - `cv/index.html`: the CV page. **Download PDF** serves `assets/cv/SemihGuresciCV.pdf`, the original supplied CV.
 - `blog/index.html` and `_posts/`: the writing index and the articles. Article URLs are preserved. Posts marked `featured: true` appear on the home page.
 - `feed.xml`: the RSS feed of all articles, linked from every page.
@@ -61,7 +61,7 @@ After cutover, check the HTTP redirect and both framing headers on the homepage,
 
 ## WebGPU background
 
-The hero background is a single-scattering volume lit by a spotlight. It is rendered full-bleed behind the copy and runs on WebGPU only. When WebGPU is unavailable or the device is lost, the page keeps the static render from `assets/images/dust-volume-fallback.webp`.
+The site background is a single-scattering volume lit by a spotlight. The shared layout keeps the canvas fixed behind the content while you scroll. Browsers that support the Navigation API replace the main content when you follow an internal page link, keeping the same canvas and renderer running. When WebGPU is unavailable or the device is lost, the background shows the static render from `assets/images/dust-volume-fallback.webp`.
 
 Each frame does the following:
 
@@ -72,7 +72,7 @@ Each frame does the following:
 
 The HUD reports GPU time from timestamp queries when the browser exposes them, and it plots the last 120 samples against a 10 ms budget. In Auto quality, the render scale adjusts to hold that budget. Eco, Balanced, and Ultra fix the scale and sample counts.
 
-Controls: pointer movement steers the light, and the pause button stops the motion. Reduced motion starts paused. The animation also pauses when the hero leaves the viewport or when the tab is hidden.
+Pointer movement steers the light across the site. The beam sweeps on its own when the pointer is idle. The pause button in the header stops the motion and remembers the choice for the tab. Reduced motion starts paused. The animation also pauses when the tab is hidden.
 
 ### Volume model
 

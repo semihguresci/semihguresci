@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="{{ site.lang }}" class="no-js">
   {% include head.html %}
-  <body>
+  <body{% if page.url == '/' %} class="home"{% endif %} data-volume data-state="loading">
+    <div class="volume-background" data-volume-stage aria-hidden="true">
+      <img class="volume-background__still" data-volume-still src="{{ '/assets/images/dust-volume-fallback.webp' | relative_url }}" width="1600" height="900" alt="" decoding="async" />
+      <canvas class="volume-background__canvas" data-volume-canvas width="1600" height="900" hidden></canvas>
+    </div>
     {% include header.html %}
     {% include analytics.html %}
     <main id="main" tabindex="-1">

@@ -13,8 +13,13 @@
       <a href="{{ '/cv/' | relative_url }}"{% if page.url == '/cv/' %} aria-current="page"{% endif %}>CV</a>
     </nav>
     <div class="site-header__actions">
-      <a class="btn btn--linkedin btn--small header-linkedin" href="{{ site.social_linkedin }}" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a>
+      <a class="btn btn--linkedin btn--small header-profile" href="{{ site.social_linkedin }}" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a>
+      <a class="btn btn--ghost btn--small header-profile" href="{{ site.social_github }}" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a>
       <a class="btn btn--primary btn--small" href="{{ '/' | relative_url }}#contact">Contact</a>
+      <button class="icon-btn volume-pause" type="button" data-pause aria-label="Pause animation" title="Pause animation" disabled>
+        <svg class="icon-pause" viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="2" width="3.5" height="12" rx="1"/><rect x="9.5" y="2" width="3.5" height="12" rx="1"/></svg>
+        <svg class="icon-play" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 2.5v11l9-5.5z"/></svg>
+      </button>
       <button class="nav-toggle" id="nav-toggle" type="button" aria-controls="mobile-nav" aria-expanded="false" aria-label="Open menu"><span></span><span></span></button>
     </div>
   </div>
@@ -25,6 +30,7 @@
     <a href="{{ '/blog/' | relative_url }}">Writing</a>
     <a href="{{ '/cv/' | relative_url }}">CV</a>
     <a href="{{ site.social_linkedin }}" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a>
+    <a href="{{ site.social_github }}" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span><span class="visually-hidden"> (opens in a new tab)</span></a>
     <a href="{{ '/' | relative_url }}#contact">Contact</a>
   </nav>
 </header>

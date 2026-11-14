@@ -660,40 +660,33 @@ export async function createLightVolume(canvas, options = {}) {
 const clamp = (value, low = -1, high = 1) => Math.min(high, Math.max(low, value));
 
 function wander(time) {
-  return { x: 0.35 * Math.sin(time * 0.11), y: 0.22 * Math.sin(time * 0.067 + 1.3) };
+  return { x: 0.75 * Math.sin(time * 0.42), y: 0.50 * Math.sin(time * 0.29 + 1.3) };
 }
 
 function boot(host) {
-  const canvas = host.querySelector('[data-volume-canvas]');
-  const still = host.querySelector('[data-volume-still]');
-  const stage = host.hasAttribute('data-volume-stage') ? host : host.querySelector('[data-volume-stage]');
-  const status = host.querySelector('[data-status]');
+  const stage = host.querySelector('[data-volume-stage]');
+  const canvas = stage.querySelector('[data-volume-canvas]');
+  const still = stage.querySelector('[data-volume-still]');
   const pause = host.querySelector('[data-pause]');
-  const quality = host.querySelector('[data-quality]');
-  const hud = {
-    gpu: host.querySelector('[data-hud="gpu"]'),
-    gpuLabel: host.querySelector('[data-hud-label]'),
-    scale: host.querySelector('[data-hud="scale"]'),
-    size: host.querySelector('[data-hud="size"]'),
-    steps: host.querySelector('[data-hud="steps"]'),
-    accum: host.querySelector('[data-hud="accum"]'),
-    spark: host.querySelector('[data-spark]'),
-    budget: host.querySelector('[data-budget]')
-  };
   const constrained = window.matchMedia('(pointer: coarse), (max-width: 900px)').matches;
   const limits = constrained ? CONSTRAINED_LIMITS : DESKTOP_LIMITS;
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const pauseKey = 'site-volume-paused';
+  let userPaused = savedPause();
+  let heroListeners;
+  let status = null;
+  let quality = null;
+  let hud = null;
+  let renderQuality = 'auto';
   const session = {
     renderer: null,
-    failed: false,
-    paused: motion.matches,
+    failure: null,
+    paused: motion.matches || userPaused,
     time: 0,
     last: 0,
     drawn: 0,
     frameMs: 0,
     raf: 0,
-    inView: true,
-    pageVisible: !document.hidden,
     aim: { x: 0, y: 0 },
     pointer: null,
     lastInput: -Infinity,
@@ -703,14 +696,21 @@ function boot(host) {
     canvasHeight: 0
   };
 
-  const visible = () => session.inView && session.pageVisible;
+  function savedPause() {
+    try {
+      return sessionStorage.getItem(pauseKey) === 'true';
+    } catch {
+      return false;
+    }
+  }
 
   function requestFrame() {
-    if (!session.raf && session.renderer && visible()) session.raf = requestAnimationFrame(tick);
+    if (!session.raf && session.renderer && !document.hidden) session.raf = requestAnimationFrame(tick);
   }
 
   function goal(now) {
-    return session.pointer ?? (now - session.lastInput > IDLE_MS ? wander(session.time) : { x: 0, y: 0 });
+    if (now - session.lastInput > IDLE_MS) return wander(session.time);
+    return session.pointer ?? { x: 0, y: 0 };
   }
 
   function sizeCanvas() {
@@ -741,7 +741,7 @@ function boot(host) {
   }
 
   function readout(now) {
-    if (now - session.lastHud < 250) return;
+    if (!hud || now - session.lastHud < 250) return;
     session.lastHud = now;
     const info = session.renderer.info;
     hud.gpuLabel.textContent = info.timing ? 'GPU' : 'Frame';
@@ -758,12 +758,18 @@ function boot(host) {
     drawSpark();
   }
 
+  function updateStatus() {
+    if (!status) return;
+    const playback = session.paused ? 'Paused' : 'Live';
+    status.textContent = session.failure ?? (session.renderer ? playback : 'Starting WebGPU');
+  }
+
   function applyPaused() {
     const label = session.paused ? 'Play animation' : 'Pause animation';
     pause.setAttribute('aria-label', label);
     pause.title = label;
     host.dataset.mode = session.paused ? 'paused' : 'live';
-    status.textContent = session.paused ? 'Paused' : 'Live';
+    updateStatus();
   }
 
   function setPaused(value) {
@@ -776,7 +782,7 @@ function boot(host) {
   function tick(now) {
     session.raf = 0;
     const renderer = session.renderer;
-    if (!renderer || !visible()) return;
+    if (!renderer || document.hidden) return;
     if ((session.drawn && now - session.drawn < limits.frameMs) || renderer.busy()) {
       requestFrame();
       return;
@@ -800,7 +806,7 @@ function boot(host) {
   }
 
   function setPointer(event) {
-    if (!session.renderer || event.target.closest('button, select, label')) return;
+    if (!session.renderer || event.target.closest('a, button, select, label')) return;
     const rect = stage.getBoundingClientRect();
     session.pointer = {
       x: clamp(((event.clientX - rect.left) / rect.width) * 2 - 1),
@@ -816,10 +822,45 @@ function boot(host) {
     requestFrame();
   }
 
+  function mountHero() {
+    heroListeners?.abort();
+    heroListeners = null;
+    if (session.pointer) releasePointer();
+    const hero = host.querySelector('[data-volume-hero]');
+    status = hero?.querySelector('[data-status]') ?? null;
+    quality = hero?.querySelector('[data-quality]') ?? null;
+    hud = hero ? {
+      gpu: hero.querySelector('[data-hud="gpu"]'),
+      gpuLabel: hero.querySelector('[data-hud-label]'),
+      scale: hero.querySelector('[data-hud="scale"]'),
+      size: hero.querySelector('[data-hud="size"]'),
+      steps: hero.querySelector('[data-hud="steps"]'),
+      accum: hero.querySelector('[data-hud="accum"]'),
+      spark: hero.querySelector('[data-spark]'),
+      budget: hero.querySelector('[data-budget]')
+    } : null;
+    if (!hero) return;
+
+    heroListeners = new AbortController();
+    const options = { signal: heroListeners.signal };
+    if (quality) {
+      quality.value = renderQuality;
+      quality.disabled = !session.renderer;
+      quality.addEventListener('change', event => {
+        renderQuality = event.currentTarget.value;
+        session.renderer?.setQuality(renderQuality);
+        requestFrame();
+      }, options);
+    }
+    updateStatus();
+    session.lastHud = -Infinity;
+    if (session.renderer) readout(performance.now());
+  }
+
   function stop(message) {
     cancelAnimationFrame(session.raf);
     session.raf = 0;
-    session.failed = true;
+    session.failure = message;
     try {
       session.renderer?.dispose();
     } catch {
@@ -830,16 +871,16 @@ function boot(host) {
     still.hidden = false;
     host.dataset.state = 'static';
     host.dataset.mode = 'static';
-    status.textContent = message;
+    updateStatus();
     pause.disabled = true;
-    quality.disabled = true;
-    hud.gpu.textContent = '—';
+    if (quality) quality.disabled = true;
+    if (hud) hud.gpu.textContent = '—';
   }
 
   async function start() {
     try {
       const renderer = await createLightVolume(canvas, {
-        quality: quality.value,
+        quality: renderQuality,
         limits,
         onTiming: ms => {
           session.history.push(ms);
@@ -847,7 +888,7 @@ function boot(host) {
         },
         onFailure: () => stop('Static render · GPU error')
       });
-      if (session.failed) {
+      if (session.failure) {
         renderer.dispose();
         return;
       }
@@ -858,44 +899,51 @@ function boot(host) {
       still.hidden = true;
       host.dataset.state = 'live';
       pause.disabled = false;
-      quality.disabled = false;
+      if (quality) quality.disabled = false;
       applyPaused();
       readout(performance.now());
       requestFrame();
     } catch (error) {
       console.info('Light volume: static render.', error);
-      stop('Static render · WebGPU unavailable');
+      if (!session.failure) stop('Static render · WebGPU unavailable');
     }
   }
 
-  pause.addEventListener('click', () => setPaused(!session.paused));
-  quality.addEventListener('change', () => {
-    session.renderer?.setQuality(quality.value);
-    requestFrame();
+  pause.addEventListener('click', () => {
+    userPaused = !session.paused;
+    try {
+      sessionStorage.setItem(pauseKey, String(userPaused));
+    } catch {
+      // The pause control still works if browser storage is unavailable.
+    }
+    setPaused(userPaused);
   });
-  stage.addEventListener('pointerdown', setPointer);
-  stage.addEventListener('pointermove', setPointer);
-  stage.addEventListener('pointerleave', releasePointer);
-  stage.addEventListener('pointercancel', releasePointer);
-  stage.addEventListener('pointerup', event => {
-    if (event.pointerType === 'touch') releasePointer();
+  motion.addEventListener('change', event => {
+    if (!session.failure) setPaused(event.matches || userPaused);
   });
-  motion.addEventListener('change', event => setPaused(event.matches));
+  window.addEventListener('pageshow', event => {
+    if (!event.persisted || session.failure) return;
+    userPaused = savedPause();
+    setPaused(motion.matches || userPaused);
+  });
   document.addEventListener('visibilitychange', () => {
-    session.pageVisible = !document.hidden;
     session.last = 0;
     requestFrame();
   });
-  new IntersectionObserver(([entry]) => {
-    session.inView = entry.isIntersecting;
-    session.last = 0;
-    requestFrame();
-  }, { threshold: 0.05 }).observe(stage);
   new ResizeObserver(() => {
     sizeCanvas();
     requestFrame();
   }).observe(stage);
 
+  window.addEventListener('site:page-change', mountHero);
+  host.addEventListener('pointerdown', setPointer);
+  host.addEventListener('pointermove', setPointer);
+  host.addEventListener('pointerleave', releasePointer);
+  host.addEventListener('pointercancel', releasePointer);
+  host.addEventListener('pointerup', event => {
+    if (event.pointerType === 'touch') releasePointer();
+  });
+  mountHero();
   start();
 }
 
