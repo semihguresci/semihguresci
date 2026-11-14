@@ -49,7 +49,8 @@ const SCALE_MAX = 1;
 const SCALE_STEP = 0.0625;
 const FRAME_INTERVAL_MS = 14;
 const HISTORY = 120;
-const IDLE_MS = 3500;
+const POINTER_RESPONSE = 18;
+const IDLE_RESPONSE = 4;
 
 const DESKTOP_LIMITS = { canvasPixels: MAX_CANVAS_PIXELS, frameMs: FRAME_INTERVAL_MS, budgetMs: GPU_BUDGET_MS, scaleMin: SCALE_MIN, scaleMax: SCALE_MAX, auto: QUALITY.auto };
 // Phones and touch screens: smaller canvas and trace, fewer steps, 30 fps.
@@ -511,8 +512,8 @@ export async function createLightVolume(canvas, options = {}) {
   function lightDirection(aimX, aimY) {
     const target = MODEL.lightTarget;
     const origin = MODEL.lightPosition;
-    const dx = target[0] + aimX * 0.6 - origin[0];
-    const dy = target[1] + aimY * 0.4 - origin[1];
+    const dx = target[0] + aimX - origin[0];
+    const dy = target[1] + aimY - origin[1];
     const dz = target[2] - origin[2];
     const inverse = 1 / Math.hypot(dx, dy, dz);
     return [dx * inverse, dy * inverse, dz * inverse];
@@ -660,7 +661,7 @@ export async function createLightVolume(canvas, options = {}) {
 const clamp = (value, low = -1, high = 1) => Math.min(high, Math.max(low, value));
 
 function wander(time) {
-  return { x: 0.75 * Math.sin(time * 0.42), y: 0.50 * Math.sin(time * 0.29 + 1.3) };
+  return { x: 0.45 * Math.sin(time * 0.42), y: 0.20 * Math.sin(time * 0.29 + 1.3) };
 }
 
 function boot(host) {
@@ -689,7 +690,6 @@ function boot(host) {
     raf: 0,
     aim: { x: 0, y: 0 },
     pointer: null,
-    lastInput: -Infinity,
     lastHud: 0,
     history: [],
     canvasWidth: 0,
@@ -706,11 +706,6 @@ function boot(host) {
 
   function requestFrame() {
     if (!session.raf && session.renderer && !document.hidden) session.raf = requestAnimationFrame(tick);
-  }
-
-  function goal(now) {
-    if (now - session.lastInput > IDLE_MS) return wander(session.time);
-    return session.pointer ?? { x: 0, y: 0 };
   }
 
   function sizeCanvas() {
@@ -795,8 +790,9 @@ function boot(host) {
     session.last = now;
     session.drawn = now;
     if (!session.paused) session.time += dt;
-    const target = goal(now);
-    const ease = 1 - Math.exp(-dt * 4);
+    const target = session.pointer ?? wander(session.time);
+    const response = session.pointer ? POINTER_RESPONSE : IDLE_RESPONSE;
+    const ease = 1 - Math.exp(-dt * response);
     session.aim.x += (target.x - session.aim.x) * ease;
     session.aim.y += (target.y - session.aim.y) * ease;
     const settled = Math.abs(target.x - session.aim.x) + Math.abs(target.y - session.aim.y) < 0.002;
@@ -806,26 +802,33 @@ function boot(host) {
   }
 
   function setPointer(event) {
-    if (!session.renderer || event.target.closest('a, button, select, label')) return;
+    if (!event.isPrimary || session.failure) return;
     const rect = stage.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const [cameraX, cameraY, cameraZ] = MODEL.camera;
+    const [targetX, targetY, targetZ] = MODEL.lightTarget;
+    const halfHeight = (cameraZ - targetZ) * MODEL.fovTan;
+    const halfWidth = halfHeight * rect.width / rect.height;
+    const x = cameraX + clamp(((event.clientX - rect.left) / rect.width) * 2 - 1) * halfWidth;
+    const y = cameraY + clamp(1 - ((event.clientY - rect.top) / rect.height) * 2) * halfHeight;
+    // Keep the target inside the dust so the beam stays visible at viewport edges.
+    const [dustWidth, dustHeight] = MODEL.ellipsoid;
+    const scale = Math.max(1, Math.hypot(x / dustWidth, y / dustHeight) / 0.8);
     session.pointer = {
-      x: clamp(((event.clientX - rect.left) / rect.width) * 2 - 1),
-      y: clamp(1 - ((event.clientY - rect.top) / rect.height) * 2)
+      x: x / scale - targetX,
+      y: y / scale - targetY
     };
-    session.lastInput = performance.now();
     requestFrame();
   }
 
   function releasePointer() {
     session.pointer = null;
-    session.lastInput = performance.now();
     requestFrame();
   }
 
   function mountHero() {
     heroListeners?.abort();
     heroListeners = null;
-    if (session.pointer) releasePointer();
     const hero = host.querySelector('[data-volume-hero]');
     status = hero?.querySelector('[data-status]') ?? null;
     quality = hero?.querySelector('[data-quality]') ?? null;
@@ -936,13 +939,14 @@ function boot(host) {
   }).observe(stage);
 
   window.addEventListener('site:page-change', mountHero);
-  host.addEventListener('pointerdown', setPointer);
-  host.addEventListener('pointermove', setPointer);
+  host.addEventListener('pointerdown', setPointer, { passive: true });
+  host.addEventListener('pointermove', setPointer, { passive: true });
   host.addEventListener('pointerleave', releasePointer);
   host.addEventListener('pointercancel', releasePointer);
   host.addEventListener('pointerup', event => {
-    if (event.pointerType === 'touch') releasePointer();
+    if (event.isPrimary && event.pointerType === 'touch') releasePointer();
   });
+  window.addEventListener('blur', releasePointer);
   mountHero();
   start();
 }

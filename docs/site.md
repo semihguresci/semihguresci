@@ -72,7 +72,7 @@ Each frame does the following:
 
 The HUD reports GPU time from timestamp queries when the browser exposes them, and it plots the last 120 samples against a 10 ms budget. In Auto quality, the render scale adjusts to hold that budget. Eco, Balanced, and Ultra fix the scale and sample counts.
 
-Pointer movement steers the light across the site. The beam sweeps on its own when the pointer is idle. The pause button in the header stops the motion and remembers the choice for the tab. Reduced motion starts paused. The animation also pauses when the tab is hidden.
+The spotlight aims toward the pointer across the site. Its target stays inside the dust volume near the viewport edges. The beam sweeps on its own when the pointer leaves the page. The pause button in the header stops the automatic motion and remembers the choice for the tab. Reduced motion starts paused. The animation also pauses when the tab is hidden.
 
 ### Volume model
 
