@@ -733,7 +733,9 @@ function boot(host) {
   }
 
   function requestFrame() {
-    if (!session.raf && session.renderer && !document.hidden) session.raf = requestAnimationFrame(tick);
+    if (!session.paused && !session.raf && session.renderer && !document.hidden) {
+      session.raf = requestAnimationFrame(tick);
+    }
   }
 
   function sizeCanvas() {
@@ -798,14 +800,25 @@ function boot(host) {
   function setPaused(value) {
     session.paused = value;
     session.last = 0;
+    session.drawn = 0;
     applyPaused();
+
+    if (value) {
+      cancelAnimationFrame(session.raf);
+      session.raf = 0;
+      return;
+    }
+
+    const renderer = session.renderer;
+    if (renderer && renderer.info.quality !== renderQuality) renderer.setQuality(renderQuality);
+    sizeCanvas();
     requestFrame();
   }
 
   function tick(now) {
     session.raf = 0;
     const renderer = session.renderer;
-    if (!renderer || document.hidden) return;
+    if (!renderer || session.paused || document.hidden) return;
     if ((session.drawn && now - session.drawn < limits.frameMs) || renderer.busy()) {
       requestFrame();
       return;
@@ -817,16 +830,15 @@ function boot(host) {
     }
     session.last = now;
     session.drawn = now;
-    if (!session.paused) session.time += dt;
+    session.time += dt;
     const target = session.pointer ?? wander(session.time);
     const response = session.pointer ? POINTER_RESPONSE : IDLE_RESPONSE;
     const ease = 1 - Math.exp(-dt * response);
     session.aim.x += (target.x - session.aim.x) * ease;
     session.aim.y += (target.y - session.aim.y) * ease;
-    const settled = Math.abs(target.x - session.aim.x) + Math.abs(target.y - session.aim.y) < 0.002;
     renderer.frame(session.time, session.aim.x, session.aim.y);
     readout(now);
-    if (!session.paused || !settled || !renderer.info.converged) requestFrame();
+    requestFrame();
   }
 
   function setPointer(event) {
@@ -860,7 +872,7 @@ function boot(host) {
     const hero = host.querySelector('[data-volume-hero]');
     status = hero?.querySelector('[data-status]') ?? null;
     quality = hero?.querySelector('[data-quality]') ?? null;
-    if (quality) quality.after(pause);
+    if (status) status.after(pause);
     else pauseHeader.insertBefore(pause, pauseNext);
     hud = hero ? {
       gpu: hero.querySelector('[data-hud="gpu"]'),
@@ -881,8 +893,7 @@ function boot(host) {
       quality.disabled = !session.renderer;
       quality.addEventListener('change', event => {
         renderQuality = event.currentTarget.value;
-        session.renderer?.setQuality(renderQuality);
-        requestFrame();
+        if (!session.paused) session.renderer?.setQuality(renderQuality);
       }, options);
     }
     updateStatus();
@@ -964,6 +975,8 @@ function boot(host) {
     requestFrame();
   });
   new ResizeObserver(() => {
+    // Resizing the backing canvas would clear the frozen frame.
+    if (session.paused) return;
     sizeCanvas();
     requestFrame();
   }).observe(stage);
