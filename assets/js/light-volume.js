@@ -1,4 +1,4 @@
-// Light through dust: a single-scattering volume lit by a spotlight, rendered with WebGPU.
+// Light through dust: a single-scattering volume lit by two spotlights, rendered with WebGPU.
 // Density is a baked 3D value-noise volume inside an analytic ellipsoid envelope. Each frame adds
 // one jittered estimate per pixel to a running average that restarts when the light moves.
 // MODEL is shared with tools/render_dust_reference.py, which renders the static fallback image.
@@ -25,6 +25,9 @@ export const MODEL = {
   "lightTarget": [1.35, -1.15, -0.15],
   "lightColor": [1.0, 0.84, 0.64],
   "lightIntensity": 170,
+  "secondLightPosition": [2.9, 1.65, 1.05],
+  "secondLightColor": [0.61, 0.8, 1.0],
+  "secondLightIntensity": 105,
   "cosInner": 0.96,
   "cosOuter": 0.90,
   "ambient": [0.035, 0.05, 0.08],
@@ -129,7 +132,11 @@ const WISP_HIGH = ${number(MODEL.wispHigh)};
 const DENSITY_FLOOR = ${number(MODEL.densityFloor)};
 const DENSITY_GAIN = ${number(MODEL.densityGain)};
 
-@group(0) @binding(0) var<uniform> u: array<vec4f, 8>;
+const SECOND_LIGHT_POSITION = ${vec3(MODEL.secondLightPosition)};
+const SECOND_LIGHT_COLOR = ${vec3(MODEL.secondLightColor)};
+const SECOND_LIGHT_INTENSITY = ${number(MODEL.secondLightIntensity)};
+
+@group(0) @binding(0) var<uniform> u: array<vec4f, 9>;
 @group(0) @binding(1) var volumeTex: texture_3d<f32>;
 @group(0) @binding(2) var volumeSampler: sampler;
 @group(0) @binding(3) var accumTex: texture_2d<f32>;
@@ -183,6 +190,38 @@ fn lightTransmittance(p: vec3f, toLight: vec3f, dist: f32, steps: u32, jitter: f
   return exp(-sigmaT * tau);
 }
 
+struct Spotlight {
+  position: vec3f,
+  direction: vec3f,
+  color: vec3f,
+  intensity: f32,
+}
+
+fn spotlightRadiance(light: Spotlight, p: vec3f, rd: vec3f, jitter: f32) -> vec3f {
+  let delta = light.position - p;
+  let d2 = max(dot(delta, delta), 1e-4);
+  let d = sqrt(d2);
+  let toLight = delta / d;
+  let cone = smoothstep(u[4].w, u[3].w, dot(-toLight, light.direction));
+  if (cone <= 0.0) {
+    return vec3f(0.0);
+  }
+  let sigmaT = u[6].x + u[6].y;
+  let lightT = lightTransmittance(p, toLight, d, u32(u[7].y), jitter, u[5].w, sigmaT);
+  return light.color * (light.intensity * cone * lightT / d2) * phaseHG(dot(rd, toLight), u[6].z);
+}
+
+fn lampHalo(position: vec3f, camera: vec3f, rd: vec3f) -> f32 {
+  let toLamp = position - camera;
+  let along = dot(toLamp, rd);
+  if (along <= 0.0) {
+    return 0.0;
+  }
+  let across = toLamp - rd * along;
+  let across2 = dot(across, across);
+  return 1.0 / (1.0 + 400.0 * across2) + 0.15 / (1.0 + 12.0 * across2);
+}
+
 @vertex
 fn fullscreen(@builtin(vertex_index) index: u32) -> @builtin(position) vec4f {
   let corners = array<vec2f, 3>(vec2f(-1.0, -1.0), vec2f(3.0, -1.0), vec2f(-1.0, 3.0));
@@ -196,19 +235,13 @@ fn trace(@builtin(position) frag: vec4f) -> @location(0) vec4f {
   let blend = u[0].w;
   let camera = u[1].xyz;
   let fovTan = u[1].w;
-  let lightPos = u[2].xyz;
-  let lightIntensity = u[2].w;
-  let lightDir = u[3].xyz;
-  let cosInner = u[3].w;
-  let lightColor = u[4].xyz;
-  let cosOuter = u[4].w;
+  let left = Spotlight(u[2].xyz, u[3].xyz, u[4].xyz, u[2].w);
+  let right = Spotlight(SECOND_LIGHT_POSITION, u[8].xyz, SECOND_LIGHT_COLOR, SECOND_LIGHT_INTENSITY);
   let ambient = u[5].xyz;
   let time = u[5].w;
   let sigmaA = u[6].x;
   let sigmaS = u[6].y;
-  let g = u[6].z;
   let viewSteps = u32(u[7].x);
-  let lightSteps = u32(u[7].y);
 
   let sigmaT = sigmaA + sigmaS;
   let albedo = sigmaS / sigmaT;
@@ -231,30 +264,17 @@ fn trace(@builtin(position) frag: vec4f) -> @location(0) vec4f {
       if (rho > 0.0) {
         let segT = exp(-sigmaT * rho * ds);
         let scatter = albedo * (1.0 - segT);
-        let delta = lightPos - p;
-        let d2 = max(dot(delta, delta), 1e-4);
-        let d = sqrt(d2);
-        let toLight = delta / d;
-        let cone = smoothstep(cosOuter, cosInner, dot(-toLight, lightDir));
-        var key = vec3f(0.0);
-        if (cone > 0.0) {
-          let lightT = lightTransmittance(p, toLight, d, lightSteps, lightJitter, time, sigmaT);
-          key = lightColor * (lightIntensity * cone * lightT / d2) * phaseHG(dot(rd, toLight), g);
-        }
-        radiance += viewT * scatter * (key + ambient);
+        let leftLight = spotlightRadiance(left, p, rd, lightJitter);
+        let rightLight = spotlightRadiance(right, p, rd, lightJitter);
+        radiance += viewT * scatter * (leftLight + rightLight + ambient);
         viewT *= segT;
       }
     }
   }
 
-  let toLamp = lightPos - camera;
-  let along = dot(toLamp, rd);
-  let across = toLamp - rd * along;
-  let across2 = dot(across, across);
-  let halo = 1.0 / (1.0 + 400.0 * across2) + 0.15 / (1.0 + 12.0 * across2);
-  if (along > 0.0) {
-    radiance += viewT * GLARE * lightColor * halo;
-  }
+  let leftGlare = left.color * lampHalo(left.position, camera, rd);
+  let rightGlare = right.color * lampHalo(right.position, camera, rd) * (right.intensity / left.intensity);
+  radiance += viewT * GLARE * (leftGlare + rightGlare);
 
   let background = BACKGROUND * (0.85 + 0.15 * exp(-dot(uv, uv) * 0.7));
   let hdr = radiance + background * viewT;
@@ -396,8 +416,8 @@ export async function createLightVolume(canvas, options = {}) {
 
   const repeatSampler = device.createSampler({ addressModeU: 'repeat', addressModeV: 'repeat', addressModeW: 'repeat', magFilter: 'linear', minFilter: 'linear' });
   const clampSampler = device.createSampler({ addressModeU: 'clamp-to-edge', addressModeV: 'clamp-to-edge', magFilter: 'linear', minFilter: 'linear' });
-  const uniformBuffer = device.createBuffer({ label: 'frame parameters', size: 128, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
-  const uniforms = new Float32Array(32);
+  const uniforms = new Float32Array(36);
+  const uniformBuffer = device.createBuffer({ label: 'frame parameters', size: uniforms.byteLength, usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST });
   const timing = timed ? {
     set: device.createQuerySet({ type: 'timestamp', count: 2 }),
     resolve: device.createBuffer({ size: 16, usage: GPUBufferUsage.QUERY_RESOLVE | GPUBufferUsage.COPY_SRC }),
@@ -420,7 +440,7 @@ export async function createLightVolume(canvas, options = {}) {
     frameIndex: 0,
     accumulated: 0,
     gpuMs: null,
-    previousDirection: null,
+    previousDirections: null,
     samples: [],
     adaptive: false,
     busy: false
@@ -509,9 +529,8 @@ export async function createLightVolume(canvas, options = {}) {
     });
   }
 
-  function lightDirection(aimX, aimY) {
+  function lightDirection(origin, aimX, aimY) {
     const target = MODEL.lightTarget;
-    const origin = MODEL.lightPosition;
     const dx = target[0] + aimX - origin[0];
     const dy = target[1] + aimY - origin[1];
     const dz = target[2] - origin[2];
@@ -519,7 +538,7 @@ export async function createLightVolume(canvas, options = {}) {
     return [dx * inverse, dy * inverse, dz * inverse];
   }
 
-  function writeUniforms(time, direction, blend) {
+  function writeUniforms(time, [left, right], blend) {
     const camera = MODEL.camera;
     const light = MODEL.lightPosition;
     const color = MODEL.lightColor;
@@ -527,25 +546,32 @@ export async function createLightVolume(canvas, options = {}) {
     uniforms.set([state.width, state.height, state.frameIndex, blend], 0);
     uniforms.set([camera[0], camera[1], camera[2], MODEL.fovTan], 4);
     uniforms.set([light[0], light[1], light[2], MODEL.lightIntensity], 8);
-    uniforms.set([direction[0], direction[1], direction[2], MODEL.cosInner], 12);
+    uniforms.set([left[0], left[1], left[2], MODEL.cosInner], 12);
     uniforms.set([color[0], color[1], color[2], MODEL.cosOuter], 16);
     uniforms.set([ambient[0], ambient[1], ambient[2], time], 20);
     uniforms.set([MODEL.sigmaA, MODEL.sigmaS, MODEL.g, MODEL.exposure], 24);
     uniforms.set([state.viewSteps, state.lightSteps, state.canvasWidth, state.canvasHeight], 28);
+    uniforms.set(right, 32);
     device.queue.writeBuffer(uniformBuffer, 0, uniforms);
   }
 
   function frame(time, aimX, aimY) {
     if (failed || disposed || state.busy) return;
-    const direction = lightDirection(aimX, aimY);
-    const previous = state.previousDirection;
-    if (previous && Math.hypot(direction[0] - previous[0], direction[1] - previous[1], direction[2] - previous[2]) > 1e-3) {
+    const directions = [
+      lightDirection(MODEL.lightPosition, aimX, aimY),
+      lightDirection(MODEL.secondLightPosition, aimX, aimY)
+    ];
+    const previous = state.previousDirections;
+    if (previous && directions.some(([x, y, z], index) => {
+      const [px, py, pz] = previous[index];
+      return Math.hypot(x - px, y - py, z - pz) > 1e-3;
+    })) {
       state.accumulated = 0;
     }
-    state.previousDirection = direction;
+    state.previousDirections = directions;
     const count = Math.min(state.accumulated + 1, ACCUMULATION_LIMIT);
     state.accumulated = count;
-    writeUniforms(time, direction, 1 / count);
+    writeUniforms(time, directions, 1 / count);
 
     const p = state.frameIndex & 1;
     const timestamps = Boolean(timing) && !timing.busy;

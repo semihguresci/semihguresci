@@ -61,18 +61,18 @@ After cutover, check the HTTP redirect and both framing headers on the homepage,
 
 ## WebGPU background
 
-The site background is a single-scattering volume lit by a spotlight. The shared layout keeps the canvas fixed behind the content while you scroll. Browsers that support the Navigation API replace the main content when you follow an internal page link, keeping the same canvas and renderer running. When WebGPU is unavailable or the device is lost, the background shows the static render from `assets/images/dust-volume-fallback.webp`.
+The site background is a single-scattering volume lit by a warm spotlight on the upper left and a cool spotlight on the upper right. The shared layout keeps the canvas fixed behind the content while you scroll. Browsers that support the Navigation API replace the main content when you follow an internal page link, keeping the same canvas and renderer running. When WebGPU is unavailable or the device is lost, the background shows the static render from `assets/images/dust-volume-fallback.webp`.
 
 Each frame does the following:
 
 1. **Density:** a 64³ value-noise volume is baked by a compute pass at startup. Each density sample is one trilinear fetch. The field drifts across the frame, and a time-varying warp makes the dust boil, so the structure keeps changing. An analytic ellipsoid envelope keeps the edges soft.
-2. **Trace:** each pixel takes one jittered estimate. Each sample marches toward the spotlight to estimate shadowing. A cool ambient term adds fill, and a stylized lamp glare marks the source.
+2. **Trace:** each pixel takes one jittered estimate. A sample inside either spotlight cone marches toward that light to estimate shadowing. A cool ambient term adds fill, and a halo marks each light source.
 3. **Accumulation:** the estimate is blended into a running average of eight frames. That smooths the jitter without smearing the moving dust. The average restarts when the light moves.
 4. **Present:** an ACES tone map, a small glow around bright regions, a vignette, and triangular dither before the sRGB encode.
 
 The HUD reports GPU time from timestamp queries when the browser exposes them, and it plots the last 120 samples against a 10 ms budget. In Auto quality, the render scale adjusts to hold that budget. Eco, Balanced, and Ultra fix the scale and sample counts.
 
-The spotlight aims toward the pointer across the site. Its target stays inside the dust volume near the viewport edges. The beam sweeps on its own when the pointer leaves the page. The pause button sits next to Render quality on the homepage and in the header on other pages. It stops the automatic motion and remembers the choice for the tab. Reduced motion starts paused. The animation also pauses when the tab is hidden.
+Both spotlights aim toward the pointer across the site. Their shared target stays inside the dust volume near the viewport edges. The beams sweep on their own when the pointer leaves the page. The pause button sits next to Render quality on the homepage and in the header on other pages. It stops the automatic motion and remembers the choice for the tab. Reduced motion starts paused. The animation also pauses when the tab is hidden.
 
 ### Volume model
 
@@ -86,7 +86,7 @@ L += Tview * (sigmaS / sigmaT) * (1 - Tsegment) * (incident * phaseHG(mu) + ambi
 Tview *= Tsegment
 ```
 
-`warp(t)` is a smooth set of sine offsets in the three axes, so the dust boils as well as drifting. `sigmaT = sigmaA + sigmaS`. The segment transmittance is analytic. The in-scattered light is sampled at the jittered point. The spotlight has inverse-square falloff and a soft cone. The Henyey–Greenstein phase uses `g = 0.30`. The references are [Beer–Lambert transmittance](https://www.pbr-book.org/4ed/Volume_Scattering/Transmittance) and [Henyey–Greenstein scattering](https://www.pbr-book.org/4ed/Volume_Scattering/Phase_Functions).
+`warp(t)` is a smooth set of sine offsets in the three axes, so the dust boils as well as drifting. `sigmaT = sigmaA + sigmaS`. The segment transmittance is analytic. The in-scattered light is sampled at the jittered point. Both spotlights have inverse-square falloff and soft cones. The Henyey–Greenstein phase uses `g = 0.30`. The references are [Beer–Lambert transmittance](https://www.pbr-book.org/4ed/Volume_Scattering/Transmittance) and [Henyey–Greenstein scattering](https://www.pbr-book.org/4ed/Volume_Scattering/Phase_Functions).
 
 Because the same `MODEL` object feeds both the WGSL shaders and the Python reference, editing a parameter there and regenerating the fallback keeps the static image in step with the live background.
 

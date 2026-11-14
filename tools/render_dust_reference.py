@@ -167,9 +167,20 @@ def light_transmittance(model, grid, p, to_light, distance, time_seconds, sigma_
 
 def render_hdr(model, grid, width, height, view_steps, light_steps, time_seconds=0.0, rows_per_chunk=24):
     camera = np.asarray(model["camera"], dtype=np.float64)
-    light_pos = np.asarray(model["lightPosition"], dtype=np.float64)
-    light_dir = normalize(np.asarray(model["lightTarget"], dtype=np.float64) - light_pos)
-    light_color = np.asarray(model["lightColor"], dtype=np.float64)
+    target = np.asarray(model["lightTarget"], dtype=np.float64)
+    lights = []
+    for position, color, intensity, glare in (
+        (model["lightPosition"], model["lightColor"], model["lightIntensity"], model["glare"]),
+        (
+            model["secondLightPosition"],
+            model["secondLightColor"],
+            model["secondLightIntensity"],
+            model["glare"] * model["secondLightIntensity"] / model["lightIntensity"],
+        ),
+    ):
+        pos = np.asarray(position, dtype=np.float64)
+        lights.append((pos, normalize(target - pos), np.asarray(color, dtype=np.float64), intensity, glare))
+    cos_outer, cos_inner = model["cosOuter"], model["cosInner"]
     ambient = np.asarray(model["ambient"], dtype=np.float64)
     background = np.asarray(model["background"], dtype=np.float64)
     ellipsoid = np.asarray(model["ellipsoid"], dtype=np.float64)
@@ -200,26 +211,27 @@ def render_hdr(model, grid, width, height, view_steps, light_steps, time_seconds
             scatter = albedo * (1.0 - seg_t)
             radiance += (view_t * scatter)[..., None] * ambient
 
-            delta = light_pos - p
-            d2 = np.maximum(np.sum(delta * delta, axis=-1), 1e-4)
-            d = np.sqrt(d2)
-            to_light = delta / d[..., None]
-            cone = smoothstep(model["cosOuter"], model["cosInner"], -np.sum(to_light * light_dir, axis=-1))
-            lit = (cone > 0.0) & (rho > 0.0)
-            if np.any(lit):
-                light_t = light_transmittance(model, grid, p[lit], to_light[lit], d[lit], time_seconds, sigma_t, light_steps)
-                phase = phase_hg(np.sum(rd[lit] * to_light[lit], axis=-1), g)
-                key = light_color * (model["lightIntensity"] * cone[lit] * light_t / d2[lit] * phase)[:, None]
-                radiance[lit] += (view_t[lit] * scatter[lit])[:, None] * key
+            for light_pos, light_dir, light_color, intensity, _ in lights:
+                delta = light_pos - p
+                d2 = np.maximum(np.sum(delta * delta, axis=-1), 1e-4)
+                d = np.sqrt(d2)
+                to_light = delta / d[..., None]
+                cone = smoothstep(cos_outer, cos_inner, -np.sum(to_light * light_dir, axis=-1))
+                lit = (cone > 0.0) & (rho > 0.0)
+                if np.any(lit):
+                    light_t = light_transmittance(model, grid, p[lit], to_light[lit], d[lit], time_seconds, sigma_t, light_steps)
+                    phase = phase_hg(np.sum(rd[lit] * to_light[lit], axis=-1), g)
+                    key = light_color * (intensity * cone[lit] * light_t / d2[lit] * phase)[:, None]
+                    radiance[lit] += (view_t[lit] * scatter[lit])[:, None] * key
             view_t *= seg_t
 
-        to_lamp = light_pos - camera
-        along = np.sum(rd * to_lamp, axis=-1)
-        across = to_lamp - rd * along[..., None]
-        across2 = np.sum(across * across, axis=-1)
-        halo = 1.0 / (1.0 + 400.0 * across2) + 0.15 / (1.0 + 12.0 * across2)
-        glare = view_t * model["glare"] * (along > 0.0) * halo
-        radiance += glare[..., None] * light_color
+        for light_pos, _, light_color, _, glare in lights:
+            to_lamp = light_pos - camera
+            along = np.sum(rd * to_lamp, axis=-1)
+            across = to_lamp - rd * along[..., None]
+            across2 = np.sum(across * across, axis=-1)
+            halo = 1.0 / (1.0 + 400.0 * across2) + 0.15 / (1.0 + 12.0 * across2)
+            radiance += (view_t * glare * (along > 0.0) * halo)[..., None] * light_color
 
         glow = np.exp(-0.7 * (uv_x * uv_x + uv_y * uv_y))
         radiance += (background * (0.85 + 0.15 * glow)[..., None]) * view_t[..., None]

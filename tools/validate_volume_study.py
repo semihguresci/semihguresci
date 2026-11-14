@@ -15,7 +15,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from render_dust_reference import SOURCE, box_span, build_volume, load_model, phase_hg, value_noise  # noqa: E402
+from render_dust_reference import SOURCE, box_span, build_volume, load_model, phase_hg, render_hdr, value_noise  # noqa: E402
 
 
 def check(condition: bool, message: str, failures: list[str]) -> None:
@@ -52,12 +52,21 @@ def main() -> int:
     share = float(np.mean((grid > low) & (grid < high)))
     check(0.05 < share < 0.95, f"wisp thresholds cover a useful share of the volume ({share:.2f} in transition band)", failures)
 
-    # The lamp and camera stay outside the dust envelope, so the spotlight never sits inside the medium.
+    # The lamps and camera stay outside the dust envelope.
     ellipsoid = np.asarray(model["ellipsoid"])
-    for name in ("lightPosition", "camera"):
+    for name in ("lightPosition", "secondLightPosition", "camera"):
         point = np.asarray(model[name])
         radius = float(np.sum((point / ellipsoid) ** 2))
         check(radius > 1.0, f"{name} lies outside the dust envelope (r^2 = {radius:.2f})", failures)
+
+    # Isolate volumetric scattering from lamp glare when checking the second beam.
+    no_glare = {**model, "glare": 0}
+    primary_only = render_hdr({**no_glare, "secondLightIntensity": 0}, grid, 64, 36, 12, 4)
+    both = render_hdr(no_glare, grid, 64, 36, 12, 4)
+    brighter = render_hdr({**no_glare, "secondLightIntensity": 2 * model["secondLightIntensity"]}, grid, 64, 36, 12, 4)
+    second_light = both - primary_only
+    check(np.max(second_light) > 1e-6, "second spotlight illuminates the dust", failures)
+    check(np.allclose(brighter - both, second_light), "second spotlight radiance scales with intensity", failures)
 
     # Ray-box span: a ray through the centre crosses the envelope symmetrically.
     origin = np.array([0.0, 0.0, 6.0])
